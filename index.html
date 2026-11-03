@@ -4607,10 +4607,13 @@ function retoRounds(m){
 const TT={
   PER:[null,['08:55','09:50'],['09:50','10:45'],['11:15','12:10'],['12:10','13:05'],['13:05','14:00']],
   W:{
-    sbr:[[1,2],[2,5],[3,2],[3,4],[4,2],[4,3],[5,2]],
+    sbr:[[1,2],[2,5],[3,2],[3,4],[4,2],[4,3]],
     apb:[[1,1],[2,1],[2,2],[3,1],[4,1],[5,1]],
-    a4e:[[1,3],[2,4],[3,5],[5,4]]
+    a4e:[[1,3],[3,5],[5,4]]
   },
+  /* desde el 03/11/2026 el grupo tiene Educación Física el martes 12:10-13:05 (antes M1) y el viernes 09:50-10:45 (antes M3): esas horas solo cuentan antes de esa fecha */
+  CAMBIO:'2026-11-03',
+  ANTES:{a4e:[[2,4]],sbr:[[5,2]]},
   MIN:55,
   DAYS:['domingo','lunes','martes','miércoles','jueves','viernes','sábado']
 };
@@ -5159,22 +5162,22 @@ const sumMins=a=>a.reduce((x,y)=>x+(y.mins||0),0);
 /* ---------- calendario: huecos del horario ---------- */
 const isShared=(dow,per)=>MODS.some(m=>m.n>=4)&&(TT.SH||[]).some(z=>z[0]===dow&&z[1]===per);   /* hora de docencia compartida (Álvaro y Bea) */
 const hasNC=m=>!!UBY[m.id+':NC0'];                                     /* solo los módulos profesionales llevan el proyecto «Nuestra Cafetería» */
-function slotsOf(m,nod){
+function slotsOf(m,nod,legacy){
   const P=PROG[m.id],W=TT.W[m.id],out=[];
   const END=P.uts[P.uts.length-1].b>COURSE_END?P.uts[P.uts.length-1].b:COURSE_END;
   for(let d=P.uts[0].a;d<=END;d=addDaysISO(d,1)){
     const dow=dowOf(d);if(dow<1||dow>5||nod.has(d))continue;
     const ut=P.uts.find(u=>d>=u.a&&d<=u.b);if(!ut)continue;
-    W.forEach(([wd,per])=>{if(wd===dow)out.push({date:d,per,dow,ut:ut.k,key:d+'#'+per,sh:isShared(dow,per)});});
+    (legacy||d<TT.CAMBIO?W.concat(TT.ANTES[m.id]||[]):W).forEach(([wd,per])=>{if(wd===dow)out.push({date:d,per,dow,ut:ut.k,key:d+'#'+per,sh:isShared(dow,per)});});
   }
   return out.sort((x,y)=>x.date<y.date?-1:x.date>y.date?1:x.per-y.per);
 }
 function markDias(slots){slots.forEach(s=>{const D=DIAS.find(z=>s.date>=z.a&&s.date<=z.b);if(D)s.dia=D.k;});return slots;}
 /* la víspera de cada día de centro (última sesión normal anterior) se dedica a prepararlo con su ficha de «Nuestra Cafetería» */
-function reserveNC(reg,from,m){
+function reserveNC(reg,from,m,noNC0){
   if(m&&!hasNC(m))return {};
   const res={},use=reg.filter(s=>!from||s.date>=from);
-  if(use.length)res[use[0].key]='NC0';
+  if(use.length&&!noNC0)res[use[0].key]='NC0';
   DIAS.forEach(D=>{
     if(from&&D.a<from)return;
     for(let i=use.length-1;i>=0;i--){const s=use[i];if(s.date<D.a&&!res[s.key]){if(s.date>=addDaysISO(D.a,-9))res[s.key]=D.k;break;}}
@@ -5307,23 +5310,44 @@ function spread(extra,ws){
   while(sum<extra&&guard++<500){let bi=0,bv=-1e9;raw.forEach((v,i)=>{const f=v-out[i];if(f>bv){bv=f;bi=i;}});out[bi]++;sum++;}
   return out;
 }
+/* Cambio de horario a mitad de curso (TT.CAMBIO): las lecciones anteriores al cambio se quedan como estaban (son las que el alumnado ya ha hecho)
+   y lo que falta se reparte en los huecos del horario nuevo, empezando por lo que quedó a medias. */
 function lessonsOf(m){   /* secuencia de lecciones desde el inicio del plan; no depende de los ajustes del calendario del profe */
-  const lk=m.id+'|'+planStart();
+  const st=planStart(),lk=m.id+'|'+st;
   if(LES[lk])return LES[lk];
-  const P=PROG[m.id],B=baseCal(m),all=m.tris.flatMap(t=>t.units),L=[],simSeen=new Set(),seen=[];
+  const C=TT.CAMBIO;
+  if(!C||st>=C||!(TT.ANTES[m.id]||[]).length)return LES[lk]=buildLessons(m,baseCal(m),null);
+  const slotsL=markDias(slotsOf(m,new Set(FESTIVOS),true).filter(s=>s.date>=st)),regL=slotsL.filter(s=>!s.dia);
+  const Lold=buildLessons(m,{reg:regL,reserved:reserveNC(regL,st,m)},null);
+  const pre=Lold.filter(l=>l.bd<C);
+  const last=pre[pre.length-1],nextL=Lold[pre.length];
+  const done=new Set(pre.map(l=>l.u)),rest={};
+  if(last&&nextL&&nextL.u===last.u){   /* ficha a medias en el momento del cambio: quedan sus actividades nuevas aún no dadas */
+    done.delete(last.u);
+    rest[last.u]=Lold.slice(pre.length).filter(l=>l.u===last.u).flatMap(l=>l.items.filter(x=>!x.rep));
+  }
+  const slots2=markDias(slotsOf(m,new Set(FESTIVOS)).filter(s=>s.date>=C)),reg2=slots2.filter(s=>!s.dia);
+  const seen=[];pre.forEach(l=>{const u=UBY[l.u];if(u&&seen[seen.length-1]!==u)seen.push(u);});
+  const simSeen=new Set(pre.flatMap(l=>l.items.filter(x=>x.t==='sim'&&!x.rep).map(x=>x.sim)));
+  return LES[lk]=buildLessons(m,{reg:reg2,reserved:reserveNC(reg2,C,m,true)},{L:pre.slice(),done,rest,seen,simSeen});
+}
+function buildLessons(m,B,init){
+  init=init||{};
+  const P=PROG[m.id],all=m.tris.flatMap(t=>t.units),L=init.L||[],simSeen=init.simSeen||new Set(),seen=init.seen||[],done=init.done||new Set(),rest=init.rest||{};
+  const needOf=u=>rest[u.uid]?Math.max(1,Math.ceil(sumMins(rest[u.uid])/SESS_MIN)):needSess(u);
   /* Calendario comprimido: las fichas de las unidades cuya ventana ya ha pasado (o que no caben en la suya) no se pierden: se dan antes que las siguientes,
      en cuanto hay hueco. Lo que se recorta es el repaso y el relleno, nunca el núcleo (ficha, juegos y taller de cada AAE). */
   let debt=[];
   P.uts.forEach(ut=>{
     const slots=B.reg.filter(s=>s.ut===ut.k&&!B.reserved[s.key]);
-    const aae=all.filter(u=>u.ut===ut.k&&u.kind==='aae'),rep=all.find(u=>u.ut===ut.k&&u.kind==='rep');
+    const aae=all.filter(u=>u.ut===ut.k&&u.kind==='aae'&&!done.has(u.uid)),rep=all.find(u=>u.ut===ut.k&&u.kind==='rep'&&!done.has(u.uid));
     const own=aae.map(u=>({u,w:(aaeData(m,u.key)||{sw:3}).sw,rep:false}));
     if(rep)own.push({u:rep,w:2,rep:true});
     if(!slots.length){debt=debt.concat(own);return;}
     let plan=null;
     if(!debt.length&&slots.length>=aae.length+(rep?1:0)){      /* lo de siempre: la unidad cabe en su ventana, y cada AAE con todo su núcleo */
       const al=allocate(slots.length,aae.map(u=>(aaeData(m,u.key)||{sw:3}).sw),!!rep);
-      if(al.aae.every((s,i)=>s>=needSess(aae[i]))){
+      if(al.aae.every((s,i)=>s>=needOf(aae[i]))){
         plan=aae.map((u,i)=>({u,s:al.aae[i],rep:false}));
         if(rep)plan.push({u:rep,s:al.rep,rep:true});
       }
@@ -5331,7 +5355,7 @@ function lessonsOf(m){   /* secuencia de lecciones desde el inicio del plan; no 
     if(!plan){     /* no cabe sin recortar el núcleo: cada ficha lleva lo que pide, el sobrante va para repaso y lo que no entra pasa a la unidad siguiente */
       const pool=debt.concat(own),n=slots.length,nxt=P.uts[P.uts.indexOf(ut)+1],closing=!nxt||nxt.ev!==ut.ev;
       if(!pool.length)return;
-      let ns=pool.map(b=>needSess(b.u)),keep=pool.slice(),tot=ns.reduce((x,y)=>x+y,0);
+      let ns=pool.map(b=>needOf(b.u)),keep=pool.slice(),tot=ns.reduce((x,y)=>x+y,0);
       debt=[];
       if(tot>n&&!closing){      /* se aplaza a la unidad siguiente (de la misma evaluación) lo que no cabe */
         let j=0,t=0;while(j<pool.length&&t+ns[j]<=n){t+=ns[j];j++;}
@@ -5353,7 +5377,7 @@ function lessonsOf(m){   /* secuencia de lecciones desde el inicio del plan; no 
     let si=0;
     const block=(u,s,isRep)=>{
       if(s<=0)return;
-      const st=stageItems(u,simSeen);
+      const st=rest[u.uid]?rest[u.uid].slice():stageItems(u,simSeen);
       let tot=sumMins(st);
       while(st.length>2&&tot>s*SESS_MIN){tot-=st.pop().mins;}
       const packs=packStage(st,s);
@@ -5374,7 +5398,7 @@ function lessonsOf(m){   /* secuencia de lecciones desde el inicio del plan; no 
     };
     plan.forEach(b=>block(b.u,b.s,b.rep));
   });
-  return LES[lk]=L;
+  return L;
 }
 
 /* ---------- sesiones con fecha ---------- */
