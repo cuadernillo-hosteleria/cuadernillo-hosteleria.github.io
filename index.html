@@ -4614,6 +4614,7 @@ const TT={
   /* desde el 03/11/2026 el grupo tiene Educación Física el martes 12:10-13:05 (antes M1) y el viernes 09:50-10:45 (antes M3): esas horas solo cuentan antes de esa fecha */
   CAMBIO:'2026-11-03',
   ANTES:{a4e:[[2,4]],sbr:[[5,2]]},
+  EF:[[2,4],[5,2]],   /* horas de Educación Física (desde TT.CAMBIO): se enseñan en «Hoy» para que el alumnado vea su horario completo */
   MIN:55,
   DAYS:['domingo','lunes','martes','miércoles','jueves','viernes','sábado']
 };
@@ -5825,8 +5826,15 @@ function modCard(m){
 function dayRows(iso){
   const np=iso===todayISO()?nowPeriod():0,rows=[];
   MODS.forEach(m=>planOf(m).slots.filter(sl=>sl.date===iso).forEach(sl=>rows.push({m,sl})));
+  const dw=dowOf(iso),ef=rows.length&&TT.CAMBIO&&iso>=TT.CAMBIO?(TT.EF||[]).filter(z=>z[0]===dw).map(z=>({ef:true,sl:{per:z[1]}})):[];
+  rows.push(...ef);
   rows.sort((x,y)=>x.sl.per-y.sl.per);
-  return rows.map(({m,sl})=>{
+  return rows.map(({m,sl,ef})=>{
+    if(ef)return h('div',{class:'dayrow'+(np&&sl.per===np?' now':'')},
+      h('div',{class:'dr-t'},h('b',null,perLabel(sl.per)),h('small',null,TT.PER[sl.per][0]+' - '+TT.PER[sl.per][1])),
+      tile('zapatos','sm'),
+      h('div',{class:'dr-b'},h('b',null,'Educación Física'),h('small',null,'Gimnasio · sin tablet')),
+      np&&sl.per===np?h('span',{class:'pill warn'},'Ahora'):null);
     const ses=sl.sess,st=ses?sessStatus(ses):'';
     const now=np&&sl.per===np;
     const body=ses
