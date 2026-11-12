@@ -1383,7 +1383,7 @@ const newStu=()=>({done:{},errs:{},data:{},games:{},srs:{},time:{},mood:{},sess:
 /* sp: PIN de entrada de cada alumno (nombre en minúsculas → 4 cifras; '' = sin PIN) · spOff: el profe ha desactivado el PIN del alumnado · sl: intentos fallidos y esperas de cada alumno */
 /* bad/lockUntil/locks: intentos fallidos del PIN y esperas · rosterV: versión de la lista de la clase ya copiada a esta tablet · start: día en que empieza el plan · nodays: días sin clase añadidos por el profe · cal: sesiones marcadas por módulo
    notes: notas del cuaderno de aula · ptr: por dónde vamos (lección) en cada módulo · kbd: teclado del dispositivo permitido en los huecos de palabra */
-const CFG_DEF={thr:60,max:3,bad:0,lockUntil:0,locks:0,lastBad:0,rosterV:'',purgeV:'',dev:'',tab:'',tri:{},wkOff:false,roster:[],free:true,start:'2026-10-26',sv:'',sy:{},syr:'',syt:0,syp:null,nodays:[],cal:{},notes:{},ptr:{},play:true,voice:'',acc:'auto',vrate:0.9,pron:{},vmode:'auto',vdef:'f',rg:{},gm:{},cm:{},demo:true,sp:{},spOff:false,sl:{},spMode:'dia',hrOff:false,bote:{},zonas:0,stLvl:{}};
+const CFG_DEF={thr:60,max:3,bad:0,lockUntil:0,locks:0,lastBad:0,rosterV:'',purgeV:'',dev:'',tab:'',tri:{},wkOff:false,roster:[],free:true,start:'2026-10-26',sv:'',sy:{},syr:'',syt:0,syp:null,nodays:[],cal:{},notes:{},ptr:{},play:true,voice:'',acc:'auto',vrate:0.9,pron:{},vmode:'auto',vdef:'f',rg:{},gm:{},cm:{},demo:true,sp:{},spOff:false,sl:{},spMode:'fijo',hrOff:false,bote:{},zonas:0,stLvl:{}};
 function cfg(){
   const c=store.cfg||(store.cfg={});
   for(const k in CFG_DEF){const d=CFG_DEF[k];if(c[k]===undefined)c[k]=Array.isArray(d)?[]:(d&&typeof d==='object')?{}:d;}
@@ -1478,7 +1478,7 @@ function stuOk(n){const c=cfg();delete c.sl[String(n).toLowerCase()];saveNow();}
    Así no hace falta que el profe escriba el PIN de cada uno y el alumnado no puede entrar en casa otro día. Sale de una semilla fija, el nombre y la fecha
    (la misma semilla que el script de Google que manda los correos: no cambiarla). */
 const SP_SEED='UU2yFAM5aL0yPjZPo7L8oNNc';
-const spDaily=()=>cfg().spMode!=='fijo';
+const spDaily=()=>cfg().spMode==='diario';   /* por defecto, PIN fijo de cada alumno (el que reparte el profe); el código del día solo si el profe lo elige */
 function dayCode(n,iso){
   const t=SP_SEED+'|'+String(n).toLowerCase().trim()+'|'+iso;
   let a=2166136261>>>0,b=0x9e3779b9>>>0;
@@ -8077,7 +8077,7 @@ function tabAjustes(v){
   const hrBtn=h('button',{class:'chk'+(!c.hrOff?' on':''),type:'button','aria-pressed':String(!c.hrOff)},h('span',{class:'ck'},gl('check')),h('span',null,'El alumnado solo puede entrar en horario de clase ('+HR_TXT+'; no en festivos ni días sin clase)'));
   hrBtn.addEventListener('click',()=>{c.hrOff=!c.hrOff;save();re();});
   const modeSeg=h('div',{class:'seg',role:'group','aria-label':'Tipo de PIN'},
-    [['dia','Código del día (tarjetas)'],['fijo','PIN fijo de cada alumno']].map(([k,t])=>h('button',{type:'button',class:(c.spMode||'dia')===k?'cur':'','aria-pressed':String((c.spMode||'dia')===k),onclick:()=>{c.spMode=k;c.sl={};save();re();}},t)));
+    [['fijo','PIN fijo de cada alumno'],['diario','Código del día (tarjetas)']].map(([k,t])=>h('button',{type:'button',class:(c.spMode==='diario'?'diario':'fijo')===k?'cur':'','aria-pressed':String((c.spMode==='diario'?'diario':'fijo')===k),onclick:()=>{c.spMode=k;c.sl={};save();re();}},t)));
   const spin=spDaily()?h('div',{class:'aula-box'},h('h2',{class:'sec',style:'margin-top:0'},'PIN de entrada del alumnado'),spBtn,hrBtn,modeSeg,
     h('p',{class:'note'},'Cada alumno tiene un código de 4 cifras que cambia cada día. Imprime las tarjetas por la mañana (o la tarde antes) y repártelas: el alumno toca su nombre y escribe el número de su tarjeta. Mañana ese número ya no vale, así que en casa no puede entrar otro día. Recoge las tarjetas al final de la clase. Los códigos salen solos en todos los dispositivos: no hay que copiar nada. Un alumno con el PIN vacío en «PIN fijo» entra sin código.'),
     codesBox(),
