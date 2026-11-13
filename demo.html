@@ -1224,6 +1224,34 @@ input.note-in{width:100%}
 .w3-hi{font-size:26px;text-align:center}.w3-hl kbd{font:700 16px/1.2 Atkinson Hyperlegible,Arial,sans-serif;background:#13263A;color:#fff;border-radius:8px;padding:4px 8px;white-space:nowrap}
 .w3-hn{margin:10px 0 0;font-weight:700}
 @media (max-width:700px){.w3-b{width:54px;min-height:50px}.w3-b span{font-size:20px}.w3-hl li{grid-template-columns:40px 1fr}.w3-hl kbd{grid-column:2}.w3-der .w3-joy{right:72px}}
+
+/* ===== v12: plano por zonas con botones grandes ===== */
+.pg-box{background:#FBF6EC;border:3px solid #13263A;border-radius:18px;padding:14px;min-height:520px;display:grid;gap:12px;align-content:start}
+.pg-head{display:flex;flex-wrap:wrap;align-items:center;gap:14px}.pg-head .cf-sign{margin:0}.pg-total{font:700 1.15rem var(--f-body);color:#5A4028}
+.pg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.pg-card{display:grid;justify-items:center;gap:6px;padding:16px 10px 14px;min-height:170px;border:0;border-radius:16px;background:#fff;color:#13263A;font:inherit;cursor:pointer;box-shadow:0 0 0 2px rgba(19,38,58,.14),0 4px 0 var(--c);border-top:10px solid var(--c);touch-action:manipulation}
+.pg-card:hover,.pg-card:focus-visible{transform:translateY(-2px);outline:4px solid #F6C945;outline-offset:2px}
+.pg-card b{font:700 1.3rem/1.15 var(--f-display);text-align:center}.pg-card small{font:700 1rem var(--f-body);background:#13263A;color:#fff;border-radius:99px;padding:3px 12px}
+.pg-card.lock{opacity:.6}.pg-cic{width:84px;height:84px;display:grid;place-items:center}.pg-cic svg,.pg-cic img{width:100%;height:100%}
+.pg-zhead{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:8px 10px;border-radius:14px;background:var(--c);color:#fff}
+.pg-zhead h2{margin:0;font:700 1.6rem/1.1 var(--f-display);color:#fff;flex:1;min-width:8ch}.pg-zhead i{font:700 1.1rem var(--f-body);font-style:normal;background:#F6C945;color:#13263A;border-radius:99px;padding:3px 12px}
+.pg-zic{width:48px;height:48px;background:#fff;border-radius:12px;display:grid;place-items:center}.pg-zic svg,.pg-zic img{width:84%;height:84%}
+.pg-back{background:#fff;color:#13263A;font-weight:700}
+.pg-items{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:10px}
+.pg-it{position:relative;display:grid;justify-items:center;align-content:start;gap:4px;padding:10px 6px;border:0;border-radius:14px;background:#fff;color:#13263A;font:inherit;cursor:pointer;box-shadow:0 0 0 2px rgba(19,38,58,.12);touch-action:manipulation}
+.pg-it:hover,.pg-it:focus-visible{outline:4px solid #F6C945;outline-offset:1px}.pg-it.cur{background:#FFF3C4;box-shadow:0 0 0 3px #13263A}
+.pg-ic{width:96px;height:96px;display:grid;place-items:center}.pg-ic svg,.pg-ic img{width:100%;height:100%}
+.pg-l{font:700 1rem/1.15 var(--f-body);text-align:center;overflow-wrap:anywhere}.pg-p{font:700 1rem var(--f-body);color:#B7950B}
+.pg-it.u1::after,.pg-it.u2::after{position:absolute;top:6px;left:6px;font-size:.9rem;line-height:1;padding:3px 6px;border-radius:99px;background:#F6C945;color:#13263A;font-weight:700}.pg-it.u1::after{content:'★'}.pg-it.u2::after{content:'★★'}
+.pg-it.pop .pg-ic{animation:pop .7s}.pg-it .pl-n{top:6px;right:6px;font-size:.9rem;padding:3px 7px}
+.pg-det{display:grid;grid-template-columns:minmax(220px,360px) 1fr;gap:14px;align-items:center;background:#fff;border:3px solid #13263A;border-radius:16px;padding:12px}
+.pg-det[hidden]{display:none}
+.pg-3d{position:relative;height:300px;border-radius:12px;overflow:hidden;background:#EAF2F8}.pg-3d .w3-vp{position:absolute;inset:0}.pg-3d .w3-cv{width:100%;height:100%;display:block}
+.pg-3dl{position:absolute;left:8px;bottom:8px;font:700 .85rem var(--f-body);background:rgba(19,38,58,.85);color:#fff;border-radius:99px;padding:3px 10px;pointer-events:none}
+.w3-solo .w3-ctl,.w3-solo .w3-joy,.w3-solo .w3-hud,.w3-solo .w3-help,.w3-solo .w3-tag{display:none!important}
+.pg-big{height:220px;display:grid;place-items:center;background:#FBF6EC;border-radius:12px}.pg-big svg,.pg-big img{width:190px;height:190px}
+.pg-txt h3{margin:0 0 6px;font:700 1.6rem/1.15 var(--f-display);color:#13263A}.pg-txt p{margin:0 0 8px;font-size:1.15rem;line-height:1.4}.pg-meta{font-weight:700;color:#5A4028}.pg-btns{display:flex;gap:8px;flex-wrap:wrap}
+@media (max-width:700px){.pg-det{grid-template-columns:1fr}.pg-3d{height:240px}.pg-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.pg-card{min-height:140px}.pg-cic{width:64px;height:64px}.pg-items{grid-template-columns:repeat(auto-fill,minmax(104px,1fr))}.pg-ic{width:72px;height:72px}}
 .info-m{max-width:560px;max-height:calc(100vh - 40px);overflow:auto;text-align:left;justify-items:stretch}
 .info-m>.tile,.info-m>h2{justify-self:center;text-align:center}
 .info-b{display:grid;gap:12px}.pasos-r{margin:0;padding-left:1.6em;display:grid;gap:6px;font-size:1.05rem;line-height:1.4}.pasos-r li::marker{font-weight:700}.info-b h3{margin:0 0 4px;font-size:1.05rem}.info-b p{margin:0;line-height:1.5}
@@ -7430,37 +7458,70 @@ function plSize(n,bw,bh){
   for(let s=150;s>24;s-=2){const c=Math.floor((bw+10)/(s+10)),r=Math.floor((bh+10)/(s*1.32+10));if(c*r>=n)return s;}
   return 24;
 }
+/* v12: los 11 grupos son botones grandes. Al tocar uno, esa zona ocupa todo el cuadro y sus cosas se ven grandes.
+   Al tocar una cosa sale su ficha: nombre, para qué sirve y, si tiene modelo, la cosa en 3D girando despacio. */
+const PL_ICON={barra:'cafetera',cocina:'olla',carta:'taza',sala:'mesa',recep:'mostrador',equipo:'camarero',terraza:'sombrilla',aseos:'wc_accesible',segur:'escudo',despensa:'queso',eventos:'furgo_iso'};
+const PL_COL={barra:'#8E5B3A',cocina:'#7F8C8D',carta:'#C0392B',sala:'#B9770E',recep:'#1F618D',equipo:'#6C3483',terraza:'#D68910',aseos:'#2E86C1',segur:'#B03A2E',despensa:'#1E8449',eventos:'#117A65'};
+let PL_OPEN=null,PL_VIEW=null;
+/* un objeto solo, en 3D, sobre su trozo de mueble */
+function plModel(it){
+  if(typeof W3_IDS==='undefined'||!W3_IDS.has(it.id)||!webglOK()||!threeReady())return null;
+  const id=it.id,g={};for(let j=0;j<=3;j++)g[j]=Array(3).fill('wood');const obj=[];let c={x:1.5,y:.95,z:1.5,d:2.3};
+  if(id==='mesa'){g[1][1]='tablec';c.y=.5;}else if(id==='silla'){g[1][1]='chair';c.y=.5;}else if(id==='s2_taburete'){g[1][1]='stool';c.y=.45;}
+  else if(W3_WALL.has(id)){g[0][0]=g[0][1]=g[0][2]='wall';obj.push({i:1,j:0,id,ic:it.ic});c={x:1.5,y:1.6,z:1,d:2.3};}
+  else{const stand=isoStand(id)||it.z==='floor'||it.g==='banos'||it.g==='segur'||/^(k_cubo|basura|extintor)$/.test(id);
+    g[1][1]=id==='t_coctel'?'cbar':/^as_/.test(id)?'wc':stand?'wood':it.g==='snack'?'steel':'back';obj.push({i:1,j:1,id,ic:it.ic});
+    c.y=stand?.7:1.05;if(/sombrilla|estufa|nevera|k_camara/.test(id)){c.y=1.1;c.d=3.6;}if(id==='k_campana'){c.y=1.6;c.d=2.8;}}
+  try{return world3d({M:{g,obj,block:{},seats:[],F:3,j0:0,scr:[],signs:[],locks:[],xmas:[1,1],door:{i:1,j:3}},W:3,H:3,solo:c,me:{i:1,j:1,fi:1,fj:1,path:[]},staff:[],parties:[],tables:[],tasks:[],walkers:[],cars:[],menu:[],fiesta:null,TK:{},
+    name:'',mode:'3p',tap(){},step(){},busy:()=>true,act(){},hand:()=>'ambas',setHand(){},openCarta(){},onMode(){},onHelp(){},firstHelp:()=>false,hud:()=>'',tag:()=>null,targets:()=>[]});}catch(e){console.warn('modelo 3D',e);return null;}
+}
 function planoScene(w,o){
   o=o||{};
   const own=it=>Math.min(w.items[it.id]||0,maxOf(it));
-  const cap=h('div',{class:'pl-cap',role:'status'},'Toca una zona para acercarte. Toca una cosa para oír su nombre.');
-  const zones={};let pz=null;
-  const capOf=k=>zones[k].n+'. Toca una cosa para oír su nombre.'+(zones[k].many?' Arrastra con el dedo para ver más.':'');
-  const itBtn=(it,k)=>{const u=upLvl(w,it.id),c=own(it),nm=it.n+(u?', '+UP_N[u].toLowerCase():'');
-    return h('button',{class:'pl-it'+(o.just===it.id?' pop':'')+(u?' u'+u:''),type:'button','data-id':it.id,'aria-label':nm+'. '+it.d,
-      onclick:()=>{cap.replaceChildren(h('b',null,it.n+(c>1?' (tienes '+c+')':'')+(u?' · '+UP_N[u]:'')),h('span',null,' '+it.d));speak(nm+'. '+it.d);}},
-      h('span',{class:'pl-ic'},ic(it.ic)),c>1?h('i',{class:'pl-n'},'×'+c):null,h('span',{class:'pl-l'},it.n));};
-  const rooms=PL_ROOMS.map(([k,n,x,y,rw,rh,f,zn])=>{
-    const open=!zn||zoneOpen(zn),its=open?SHOP.filter(it=>own(it)>0&&f(it)):[];
-    const iw=rw-2*PL_WALL-40,ih=rh-2*PL_WALL-90;
-    const s=k==='carta'?0:plSize(its.length,iw,ih);
-    zones[k]={x:x-6,y:y-6,w:rw+12,h:rh+12,n,s:its.length&&s?Math.min(4,84/s):0,cap:its.length&&s?140/s:0,many:its.length>0&&s>0&&84/s>1.3};
+  const data=PL_ROOMS.map(([k,n,x,y,rw,rh,f,zn])=>{const open=!zn||zoneOpen(zn);return{k,n,zn,open,its:open?SHOP.filter(it=>own(it)>0&&f(it)):[]};});
+  if(o.just&&SHBY[o.just]){const r=PL_ROOMS.find(r=>r[6](SHBY[o.just]));if(r)PL_OPEN=r[0];}
+  const box=h('div',{class:'pg-box'}),cap=h('div',{class:'pl-cap',role:'status'});
+  const stopView=()=>{if(PL_VIEW){try{PL_VIEW.dispose();}catch(e){}PL_VIEW=null;}};
+  function home(){
+    stopView();PL_OPEN=null;cap.textContent='Toca una zona para verla en grande.';
+    box.replaceChildren(h('div',{class:'pg-head'},cafeSign(w),h('span',{class:'pg-total'},itemCount(w)===1?'Tienes 1 cosa':'Tienes '+itemCount(w)+' cosas')),
+      h('div',{class:'pg-grid',role:'list'},data.map(z=>h('button',{type:'button',class:'pg-card'+(z.open?'':' lock'),style:'--c:'+PL_COL[z.k],role:'listitem','data-z':z.k,
+        'aria-label':z.n+'. '+(z.open?(z.its.length===1?'1 cosa':z.its.length+' cosas'):'Cerrada'),onclick:()=>{speak(z.n);zone(z.k);}},
+        h('span',{class:'pg-cic'},ic(PL_ICON[z.k])),h('b',null,z.n),h('small',null,!z.open?'🔒 Cerrada':z.its.length===1?'1 cosa':z.its.length+' cosas')))));
+  }
+  function zone(k,sel){
+    stopView();PL_OPEN=k;const z=data.find(q=>q.k===k);
+    const det=h('div',{class:'pg-det',hidden:true});
+    function show(it,quiet){
+      stopView();const u=upLvl(w,it.id),c=own(it),nm=it.n+(u?', '+UP_N[u].toLowerCase():''),pv=k==='carta'&&pvOf(it)!=null?eur(pvOf(it)):null;
+      const V=plModel(it);let pic;
+      if(V){PL_VIEW=V;V.el.classList.add('w3-solo');pic=h('div',{class:'pg-3d'},V.el,h('span',{class:'pg-3dl'},'Así es en 3D'));
+        const loop=now=>{if(PL_VIEW!==V||!V.el.isConnected)return;try{V.frame(now);}catch(e){console.warn(e);return;}requestAnimationFrame(loop);};requestAnimationFrame(()=>requestAnimationFrame(loop));}
+      else pic=h('div',{class:'pg-big'},ic(it.ic));
+      det.replaceChildren(pic,h('div',{class:'pg-txt'},h('h3',null,it.n),h('p',null,it.d),
+        h('p',{class:'pg-meta'},[c>1?'Tienes '+c:null,u?'★ '+UP_N[u]:null,pv?'Precio: '+pv:null].filter(Boolean).join(' · ')),
+        h('div',{class:'pg-btns'},h('button',{type:'button',class:'btn ghost sm',onclick:()=>speak(nm+'. '+it.d)},'🔊 Escuchar'),h('button',{type:'button',class:'btn ghost sm',onclick:()=>{stopView();det.hidden=true;list.querySelectorAll('.cur').forEach(b=>b.classList.remove('cur'));}},'Cerrar'))));
+      det.hidden=false;list.querySelectorAll('.pg-it').forEach(b=>b.classList.toggle('cur',b.dataset.id===it.id));
+      cap.replaceChildren(h('b',null,it.n),h('span',null,' '+it.d));if(!quiet)speak(nm+'. '+it.d);
+      if(det.scrollIntoView)det.scrollIntoView({block:'nearest',behavior:'smooth'});
+    }
+    const list=h('div',{class:'pg-items',role:'list'},z.its.map(it=>{const u=upLvl(w,it.id),c=own(it);
+      return h('button',{type:'button',class:'pg-it'+(o.just===it.id?' pop':'')+(u?' u'+u:''),'data-id':it.id,role:'listitem','aria-label':it.n+'. '+it.d,onclick:()=>show(it)},
+        h('span',{class:'pg-ic'},ic(it.ic)),c>1?h('i',{class:'pl-n'},'×'+c):null,h('span',{class:'pg-l'},it.n),k==='carta'&&pvOf(it)!=null?h('b',{class:'pg-p'},eur(pvOf(it))):null);}));
     let body;
-    if(!open)body=h('div',{class:'pl-none'},h('b',null,'🔒 Cerrada'),h('span',null,zoneMsg(zn)));
-    else if(!its.length)body=h('div',{class:'pl-none'},h('b',null,PL_EMPTY[k]),h('span',null,'Compra cosas en la tienda de abajo.'));
-    else if(k==='carta')body=plBoard(w,its,cap);
-    else body=h('div',{class:'pl-b',style:'--s:'+s+'px'},its.map(it=>itBtn(it,k)));
-    const room=h('section',{class:'pl-room pl-'+k+(open?'':' lock'),style:'left:'+(x+PL_WALL/2)+'px;top:'+(y+PL_WALL/2)+'px;width:'+(rw-PL_WALL)+'px;height:'+(rh-PL_WALL)+'px','aria-label':n},
-      h('span',{class:'pl-tag'},n,open&&its.length?h('i',null,String(its.length)):null),body);
-    /* con la vista entera, tocar una zona es acercarse a ella */
-    room.addEventListener('click',e=>{if(pz&&pz.far()&&!e.target.closest('.pb-h')){e.stopPropagation();pz.zoomTo(k);cap.textContent=capOf(k);}},true);
-    return room;
-  });
-  const lvl=localLvl(w);
-  const stage=h('div',{class:'pl-stage lv'+lvl},h('div',{class:'pl-front'},cafeSign(w),h('span',{class:'pl-total'},itemCount(w)===1?'Tienes 1 cosa':'Tienes '+itemCount(w)+' cosas')),rooms);
-  pz=pzBox(stage,PL_W,PL_H,zones,{key:'plano',cls:'pl-vp',max:7,onPick:k=>{cap.textContent=k==='todo'?'Toca una zona para acercarte. Toca una cosa para oír su nombre.':capOf(k);}});
-  if(o.just){const r=PL_ROOMS.find(r=>SHBY[o.just]&&r[6](SHBY[o.just]));if(r)PZMEM.plano=r[0];}
-  return h('div',{class:'pl-wrap cafe-plano'},pz.bar,pz.vp,cap);
+    if(!z.open)body=h('div',{class:'pl-none'},h('b',null,'🔒 Cerrada'),h('span',null,zoneMsg(z.zn)));
+    else if(!z.its.length)body=h('div',{class:'pl-none'},h('b',null,PL_EMPTY[k]),h('span',null,'Compra cosas en la tienda de abajo.'));
+    else body=list;
+    box.replaceChildren(h('div',{class:'pg-zhead',style:'--c:'+PL_COL[k]},
+        h('button',{type:'button',class:'btn sm pg-back',onclick:()=>{speak('Todas las zonas');home();}},'← Todas las zonas'),
+        h('span',{class:'pg-zic'},ic(PL_ICON[k])),h('h2',null,z.n),z.its.length?h('i',null,String(z.its.length)):null,
+        k==='carta'&&z.its.length?h('button',{type:'button',class:'btn ghost sm pb-h',onclick:()=>cartaFull(w)},'Ver la carta completa'):null),
+      det,body);
+    cap.textContent=z.its.length?z.n+'. Toca una cosa para verla y oír su nombre.':z.n+'.';
+    if(sel){const it=z.its.find(q=>q.id===sel);if(it)show(it,true);}
+  }
+  if(PL_OPEN&&data.some(q=>q.k===PL_OPEN))zone(PL_OPEN,o.just);else home();
+  return h('div',{class:'pl-wrap cafe-plano pg-wrap'},box,cap);
 }
 /* pizarra de la carta: los productos van pasando solos, de abajo arriba; al tocar uno se oye su nombre y su precio */
 function plBoard(w,its,cap){
@@ -8589,6 +8650,9 @@ function threeReady(){
   const cw=console.warn;try{console.warn=()=>{};(0,eval)(s.textContent);}catch(e){}finally{console.warn=cw;}
   return !!window.THREE;
 }
+/* cosas de la tienda que tienen modelo en 3D (para enseñarlas girando en el plano por zonas) */
+const W3_IDS=new Set(["as_accesible", "as_cambiador", "as_hombres", "as_inodoro", "as_lavabo", "as_mujeres", "as_secamanos", "aviso", "b_botellero", "b_chocolatera", "b_cortafiambre", "b_expositor", "b_granizadora", "b_hervidor", "b_lavamanos", "b_lavavasos", "b_tpv", "b_vitrinafria", "balanza", "bandeja", "basura", "batidora", "cafetera", "caja", "calendario", "campana", "corazon", "ev_hielo", "exprimidor", "extintor", "freidora", "globo", "horno", "jarra", "k_abatidor", "k_amasadora", "k_camara", "k_campana", "k_congel", "k_crepera", "k_cubo", "k_envasadora", "k_fogones", "k_fregadero", "k_freidoraaire", "k_horno", "k_isla", "k_lavamanos", "k_marmita", "k_picadora", "k_robot", "k_roner", "k_salamandra", "lavavajillas", "libro", "licuadora", "mesa", "microondas", "molinillo", "nevera", "plancha", "r_vinoteca", "reloj2", "s2_altavoz", "s2_aparador", "s2_atril", "s2_estufa", "s2_jardinera", "s2_lampara", "s2_pizarra", "s2_planta", "s2_sombrilla", "s2_taburete", "s2_trona", "sandwichera", "sg2_amarillo", "sg2_azul", "sg2_marron", "sg2_verde", "silla", "t_coctel", "termo", "tostadora", "vitrina"]);
+const W3_WALL=new Set(['reloj2','calendario','campana','libro','aviso','globo','corazon','s2_pizarra','s2_altavoz','s2_lampara']);
 function webglOK(){try{const c=document.createElement('canvas');return !!(window.WebGLRenderingContext&&(c.getContext('webgl2')||c.getContext('webgl')));}catch(e){return false;}}
 let W3R=null;
 if(window.CanvasRenderingContext2D&&!CanvasRenderingContext2D.prototype.roundRect)CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h){this.rect(x,y,w,h);};   /* un solo renderizador para toda la sesión: los navegadores limitan los contextos WebGL */
@@ -8653,6 +8717,8 @@ function world3d(A){
   for(let k=-30;k<50;k+=3){const l=new T.Mesh(new T.PlaneGeometry(1.4,.12),mat('#F7F9F9'));l.rotation.x=-Math.PI/2;l.position.set(k,.01,H+2.1);S.add(l);}
   const walk=new T.Mesh(new T.PlaneGeometry(80,1.2),mat('#D5D8DC'));walk.rotation.x=-Math.PI/2;walk.position.set(W/2,.008,H+.4);S.add(walk);
   ['#F5B041','#EC7063','#F7DC6F','#7FB3D5','#F0B27A','#82E0AA','#FDFEFE'].forEach((c,k)=>{const hh=4+((k*7)%4);box(5.4,hh,4,c,-12+k*7.4,0,H+5.5);for(let f=0;f<Math.floor(hh/1.6);f++)for(let q=0;q<2;q++)box(1,1,.05,'#5D6D7E',-13.5+k*7.4+q*2.8,1+f*1.6,H+3.47);});
+  /* modo «solo un objeto» (plano por zonas): sin paisaje, fondo liso */
+  if(A.solo){while(S.children.length>2)S.remove(S.children[2]);S.background=new T.Color('#EAF2F8');S.fog=null;}
   /* ---------- suelo, paredes, muebles fijos ---------- */
   const STAND=new Set(M.obj.filter(q=>isoStand(q.id)).map(q=>q.i+','+q.j));
   const WL=t=>t==='wall'||t==='win',southB=(i,j)=>M.g[j+1]&&WL(M.g[j+1][i])&&!(M.g[j-1]&&WL(M.g[j-1][i]));
@@ -8670,7 +8736,7 @@ function world3d(A){
       if(!front)box(1.01,.12,1.01,wallTrim,i+.5,0,j+.5);
       continue;}
     const f=new T.Mesh(new T.PlaneGeometry(1,1),FM[t==='door'&&M.wcBox&&i>24&&j>13&&j<F?'wc':t==='door'&&M.wcBox&&i>24&&j>0&&j<13?'kit':floorOf(t)]);f.rotation.x=-Math.PI/2;f.position.set(i+.5,0,j+.5);S.add(f);cellOf(f,i,j);
-    if(j>=0&&j<F&&!['out','grass','lockter'].includes(t)){const c=new T.Mesh(new T.PlaneGeometry(1,1),new T.MeshBasicMaterial({color:'#F2EEE6',side:T.BackSide}));c.rotation.x=-Math.PI/2;c.position.set(i+.5,WALLH,j+.5);S.add(c);}
+    if(j>=0&&j<F&&!A.solo&&!['out','grass','lockter'].includes(t)){const c=new T.Mesh(new T.PlaneGeometry(1,1),new T.MeshBasicMaterial({color:'#F2EEE6',side:T.BackSide}));c.rotation.x=-Math.PI/2;c.position.set(i+.5,WALLH,j+.5);S.add(c);}
     if((t==='counter'||t==='back'||t==='steel'||t==='desk')&&STAND.has(i+','+j))continue;
     if(t==='counter'){cellOf(box(1,.95,.62,'#6E3B1A',i+.5,0,j+.5),i,j);cellOf(box(1.02,.05,.72,'#F2E6D8',i+.5,.95,j+.5),i,j);}
     else if(t==='back'){cellOf(box(1,.9,.66,'#95A5A6',i+.5,0,j+.33),i,j);cellOf(box(1,.04,.7,'#D5DBDB',i+.5,.9,j+.35),i,j);box(1,.03,.26,'#BDC3C7',i+.5,1.55,j+.13);}
@@ -8710,11 +8776,12 @@ function world3d(A){
   /* guirnalda de luces */
   if(M.luces){for(let r=0;r<3;r++){const z=J0+1.5+r*2;for(let k=0;k<=24;k++){const x=k*W/24,y=2.6-Math.sin(Math.PI*k/24)*.4;const b=new T.Mesh(new T.SphereGeometry(.05,8,6),new T.MeshBasicMaterial({color:['#F9E79F','#FAD7A0','#FDFEFE'][k%3]}));b.position.set(x,y,z);S.add(b);}}[0,W].forEach(x=>[J0+1.5,J0+3.5,J0+5.5].forEach(z=>cyl(.04,.04,2.65,'#566573',x,0,z)));}
   /* pared del fondo a la derecha (cocina y aseos) */
-  for(let j=0;j<=F;j++){const m=box(.2,WALLH,1,wallM.clone(),W+.1,0,j+.5);m.userData.wall=1;m.userData.full=1;}
+  for(let j=0;j<=F&&!A.solo;j++){const m=box(.2,WALLH,1,wallM.clone(),W+.1,0,j+.5);m.userData.wall=1;m.userData.full=1;}
   /* puerta de entrada de cristal y toldo */
   for(let i=0;i<W;i++)if(M.g[F][i]==='door'){box(.06,2.3,.06,'#6E4428',i+.03,0,F+.5);box(.06,2.3,.06,'#6E4428',i+.97,0,F+.5);box(1,WALLH-2.3,.25,wallM,i+.5,2.3,F+.5).userData.dronHide=1;}
   const awn=new T.Mesh(new T.BoxGeometry(W,.08,1.1),mat('#C0392B'));awn.position.set(W/2,2.75,F+1.4);awn.rotation.x=.25;S.add(awn);awn.userData.dronHide=1;
   const sign=new T.Mesh(new T.PlaneGeometry(4,.7),new T.MeshBasicMaterial({map:label((A.name||'Mi cafetería').slice(0,24),'#F4D03F','#13263A')}));sign.position.set(M.door?M.door.i+1:7,2.55,F+.37+.26);S.add(sign);sign.userData.dronHide=1;
+  if(A.solo){S.remove(awn);S.remove(sign);}
   /* zonas cerradas: un cartel bien grande */
   function lockSign(txt,x,z){const s=sprite(label('🔒 '+txt),1,x,1.7,z);s.scale.set(3.4,.85,1);}
   (M.locks||[]).forEach(L=>lockSign(L[0],L[3],L[4]));
@@ -8932,7 +8999,7 @@ function world3d(A){
     if(k==='h'||k==='+'||k==='?'){e.preventDefault();toggleHelp();return;}
     if(k==='escape'){if(!help.hidden){toggleHelp(false);return;}if(dron)toggleDron(false);}
   }
-  document.addEventListener('keydown',kd);document.addEventListener('keyup',kd);window.addEventListener('blur',()=>{for(const k in keys)keys[k]=false;});
+  if(!A.solo){document.addEventListener('keydown',kd);document.addEventListener('keyup',kd);}window.addEventListener('blur',()=>{for(const k in keys)keys[k]=false;});
   function wantMove(dt){let fx=0,fz=0;if(jv&&Math.hypot(jv.x,jv.y)>.35){fx=jv.x;fz=jv.y;}
     if(keys.w||keys.arrowup)fz=-1;if(keys.s||keys.arrowdown)fz=1;if(keys.a||keys.arrowleft)fx=-1;if(keys.d||keys.arrowright)fx=1;
     const tl=keys.q||keys[','],tr=keys.e||keys['.'];
@@ -8979,6 +9046,7 @@ function world3d(A){
     const dt=Math.min(50,now-(lastT||now));lastT=now;
     const r=el.getBoundingClientRect();const cw=Math.max(1,Math.round(r.width)),ch=Math.max(1,Math.round(r.height));
     if(cvs.width!==Math.round(cw*R.getPixelRatio())||cvs.height!==Math.round(ch*R.getPixelRatio())){R.setSize(cw,ch,false);cam.aspect=cw/ch;cam.updateProjectionMatrix();}
+    if(A.solo){const c=A.solo,a=Math.sin(now/1700)*1.05;cam.position.set(c.x+Math.sin(a)*c.d,c.y+c.d*.32,c.z+Math.cos(a)*c.d);cam.lookAt(c.x,c.y,c.z);glows.forEach(m=>{m.material=mat(Math.floor(now/600)%2?'#E67E22':'#F39C12');});swayers.forEach((g,k)=>{g.rotation.z=Math.sin(now/900+k*1.7)*.04;});R.render(S,cam);return;}
     /* moverse con el joystick o las teclas */
     const mv=wantMove(dt);if(mv&&!A.me.path.length&&!A.busy())A.step(mv[0],mv[1]);
     /* personas */
