@@ -1125,6 +1125,28 @@ input.note-in{width:100%}
 .rc-opt:hover{background:#EAF4FB}.rc-opt.x{opacity:.45;border-color:#C0392B;text-decoration:line-through}
 .rt-how{width:100%;max-width:960px}.rt-how ol{margin:6px 0 0;padding-left:1.4em;display:grid;gap:4px}
 .pl-barra .pl-b{padding-bottom:44px}
+.cf-bd{padding:12px}
+.cf{width:100%;max-width:980px;max-height:calc(100vh - 24px);display:flex;flex-direction:column;border-radius:22px;overflow:hidden;background:#1f3a2c;border:6px solid #7a4a22;box-shadow:0 18px 50px rgba(0,0,0,.45);color:#fff}
+.cf-top{position:relative;padding:14px 18px 10px;text-align:center;border-bottom:2px dashed rgba(255,255,255,.35)}
+.cf-top h2{margin:6px 0 2px;font-size:clamp(28px,5vw,44px);letter-spacing:.12em;color:#FFCC00}
+.cf-top p{margin:0;font-size:15px;opacity:.85}
+.cf-flag{display:block;height:8px;border-radius:4px;background:linear-gradient(90deg,#fff 0 33.3%,#0072C6 33.3% 66.6%,#FFCC00 66.6%)}
+.cf-x{position:absolute;right:12px;top:18px}
+.cf-body{overflow:auto;padding:12px 18px 20px;columns:2 300px;column-gap:28px}
+.cf-sec{break-inside:avoid;margin:0 0 16px}
+.cf-sec h3{margin:0 0 6px;padding:4px 10px;display:inline-block;border-radius:999px;background:#FFCC00;color:#1b1b1b;font-size:17px}
+.cf-row{display:flex;align-items:center;gap:8px;width:100%;padding:5px 2px;background:none;border:0;color:#fff;font:inherit;font-size:17px;text-align:left;cursor:pointer;border-radius:8px}
+.cf-row:hover,.cf-row:focus-visible{background:rgba(255,255,255,.1)}
+.cf-ic{flex:0 0 34px;height:34px;display:grid;place-items:center;background:#fff;border-radius:8px}
+.cf-ic svg,.cf-ic img{width:28px;height:28px}
+.cf-n{flex:0 1 auto}
+.cf-dots{flex:1 1 20px;border-bottom:2px dotted rgba(255,255,255,.45);margin:0 4px;transform:translateY(5px)}
+.cf-p{color:#FFCC00;white-space:nowrap}
+.cf-empty{font-size:18px;text-align:center}
+.rb-t{cursor:pointer;border:0;font:inherit}
+.rb-t:hover{filter:brightness(1.1)}
+.pb-h{cursor:pointer;border:0;width:100%;font:inherit}
+.pb-more{display:block;font-size:12px;opacity:.85;font-weight:600}
 .info-m{max-width:560px;max-height:calc(100vh - 40px);overflow:auto;text-align:left;justify-items:stretch}
 .info-m>.tile,.info-m>h2{justify-self:center;text-align:center}
 .info-b{display:grid;gap:12px}.pasos-r{margin:0;padding-left:1.6em;display:grid;gap:6px;font-size:1.05rem;line-height:1.4}.pasos-r li::marker{font-weight:700}.info-b h3{margin:0 0 4px;font-size:1.05rem}.info-b p{margin:0;line-height:1.5}
@@ -7345,7 +7367,7 @@ function planoScene(w,o){
     const room=h('section',{class:'pl-room pl-'+k+(open?'':' lock'),style:'left:'+(x+PL_WALL/2)+'px;top:'+(y+PL_WALL/2)+'px;width:'+(rw-PL_WALL)+'px;height:'+(rh-PL_WALL)+'px','aria-label':n},
       h('span',{class:'pl-tag'},n,open&&its.length?h('i',null,String(its.length)):null),body);
     /* con la vista entera, tocar una zona es acercarse a ella */
-    room.addEventListener('click',e=>{if(pz&&pz.far()){e.stopPropagation();pz.zoomTo(k);cap.textContent=capOf(k);}},true);
+    room.addEventListener('click',e=>{if(pz&&pz.far()&&!e.target.closest('.pb-h')){e.stopPropagation();pz.zoomTo(k);cap.textContent=capOf(k);}},true);
     return room;
   });
   const lvl=localLvl(w);
@@ -7359,7 +7381,7 @@ function plBoard(w,its,cap){
   const row=it=>h('button',{class:'pb-row',type:'button','aria-label':it.n+(it.pk?', '+eur(PR[it.pk]):''),onclick:()=>{cap.replaceChildren(h('b',null,it.n+(it.pk?' · '+eur(PR[it.pk]):'')),h('span',null,' '+it.d));speak(it.n+(it.pk?'. '+eur(PR[it.pk]):''));}},
     h('span',{class:'pb-ic'},ic(it.ic)),h('span',{class:'pb-n'},it.n),it.pk?h('b',{class:'pb-p'},eur(PR[it.pk])):null);
   const many=its.length>5,list=h('div',{class:'pb-list'+(many?' run':''),style:many?'--t:'+Math.max(12,its.length*2.2)+'s':''},its.map(row),many?its.map(it=>{const r=row(it);r.setAttribute('aria-hidden','true');r.tabIndex=-1;return r;}):null);
-  return h('div',{class:'pb'},h('div',{class:'pb-h'},'CARTA · '+its.length+(its.length===1?' producto':' productos')),h('div',{class:'pb-win'},list));
+  return h('div',{class:'pb'},h('button',{type:'button',class:'pb-h',onclick:e=>{e.stopPropagation();cartaFull(w);}},'CARTA · '+its.length+(its.length===1?' producto':' productos'),h('span',{class:'pb-more'},'Toca aquí para ver la carta completa')),h('div',{class:'pb-win'},list));
 }
 
 /* ===== Límite de juego (nov. 2026): comprar se puede siempre; atender clientes en la vista animada, solo
@@ -7394,9 +7416,9 @@ const RT_ZONES=()=>{const T=RT.T;return{barra:{x:0,y:0,w:13.2*T,h:5.3*T,n:'La ba
 /* cartelera luminosa de la carta: los productos pasan de derecha a izquierda */
 function rtBoard(w,menu){
   const its=menu.map(id=>SHBY[id]).filter(Boolean);
-  if(!its.length)return h('div',{class:'rt-board empty'},h('b',null,'CARTA'),h('span',null,'Pon productos en «Mi carta» y saldrán aquí.'));
+  if(!its.length)return h('div',{class:'rt-board empty'},h('button',{type:'button',class:'rb-t',onclick:()=>cartaFull(w)},'CARTA'),h('span',null,'Pon productos en «Mi carta» y saldrán aquí.'));
   const one=it=>h('span',{class:'rb-it'},h('span',{class:'rb-ic'},ic(it.ic)),h('span',{class:'rb-n'},it.n),it.pk?h('b',null,eur(PR[it.pk])):null);
-  return h('div',{class:'rt-board',role:'marquee','aria-label':'Carta: '+its.map(i=>i.n).join(', ')},h('b',{class:'rb-t'},'CARTA'),
+  return h('div',{class:'rt-board',role:'marquee','aria-label':'Carta: '+its.map(i=>i.n).join(', ')},h('button',{type:'button',class:'rb-t','aria-label':'Ver la carta completa',onclick:()=>cartaFull(w)},'CARTA'),
     h('div',{class:'rb-win'},h('div',{class:'rb-run',style:'--t:'+Math.max(14,its.length*3.2)+'s'},its.map(one),its.map(one))));
 }
 function retroScene(w){
@@ -7552,6 +7574,31 @@ function retroScene(w){
   return h('div',{class:'rt-wrap'},h('div',{class:'rt-top'},cafeSign(w)),rtBoard(w,menu),gateBox,pz.bar,pz.vp,choice,h('div',{class:'rt-bot'},msg,pad),how,noMenu,noSeat);
 }
 
+
+/* ===== carta completa: al tocar el cartel CARTA sale la carta entera, por familias, como en un bar de verdad ===== */
+function cartaIds(w){
+  const own=SHOP.filter(it=>(it.g==='carta'||it.z==='menu')&&(w.items[it.id]||0)>0).map(it=>it.id);
+  almCarta(w).forEach(id=>{if(!own.includes(id))own.push(id);});return own;
+}
+function cartaFull(w){
+  const its=cartaIds(w).map(id=>SHBY[id]).filter(Boolean);
+  const fams=CARTA_S.map(([k,l])=>[l,its.filter(it=>it.g==='carta'&&it.sub===k)]);
+  fams.push(['Recetario de Gran Canaria',its.filter(it=>it.g!=='carta'&&it.pasos)]);
+  fams.push(['Platos de la casa',its.filter(it=>it.g!=='carta'&&!it.pasos)]);
+  const row=it=>h('button',{type:'button',class:'cf-row',onclick:()=>speak(it.n+(it.pk&&PR[it.pk]!=null?'. '+eur(PR[it.pk]):''))},
+    h('span',{class:'cf-ic'},ic(it.ic)),h('span',{class:'cf-n'},it.n),it.pk&&PR[it.pk]!=null?[h('span',{class:'cf-dots','aria-hidden':'true'}),h('b',{class:'cf-p'},eur(PR[it.pk]))]:null);
+  const bd=h('div',{class:'modal-bd cf-bd',role:'dialog','aria-modal':'true','aria-label':'Carta completa'});
+  const close=()=>{bd.remove();document.removeEventListener('keydown',esc);};
+  const esc=e=>{if(e.key==='Escape')close();};document.addEventListener('keydown',esc);
+  bd.addEventListener('click',e=>{if(e.target===bd)close();});
+  const body=its.length?fams.filter(f=>f[1].length).map(([l,list])=>h('section',{class:'cf-sec'},h('h3',null,l),list.map(row)))
+    :[h('p',{class:'cf-empty'},'Tu carta está vacía. Compra productos en «Mi carta» y saldrán aquí.')];
+  bd.append(h('div',{class:'cf'},
+    h('div',{class:'cf-top'},h('span',{class:'cf-flag','aria-hidden':'true'}),h('h2',null,'CARTA'),h('p',null,its.length+(its.length===1?' producto':' productos')+' · toca uno para oír su nombre y su precio'),
+      h('button',{type:'button',class:'btn primary sm cf-x',onclick:close},'Cerrar')),
+    h('div',{class:'cf-body'},body)));
+  document.body.append(bd);bd.querySelector('.cf-x').focus();
+}
 /* versión pequeña para el inicio */
 function cafeMini(w){
   const own=SHOP.filter(it=>it.g!=='local'&&(w.items[it.id]||0)>0),show=own.slice(0,9);
