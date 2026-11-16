@@ -1187,7 +1187,7 @@ input.note-in{width:100%}
 .iso-tt{display:grid;line-height:1.2}.iso-tt b{font-size:17px}.iso-tt span{font-size:15px;opacity:.85}
 .iso-tb{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px}
 .iso-who{grid-column:1/-1;font-weight:700;color:#1F618D}
-.iso-res{font-size:15px;color:#1F618D}
+.iso-res{display:grid;gap:6px}.iso-res:empty{display:none}.iso-res-h{font-size:18px;font-weight:800}.iso-res-l{display:flex;flex-wrap:wrap;gap:8px}.iso-res-c{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:12px;background:#EAF2FB;border:2px solid #1F618D;color:#12263a;font-size:19px;font-weight:800}.iso-res-n{margin:0;font-size:15px}.iso-tip{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;align-items:start;padding:10px 12px;border-radius:12px;background:#E8F8EF;border:2px solid #1E8449;color:#12263a}.iso-tip[hidden]{display:none}.iso-tip .ti{font-size:26px;line-height:1}.iso-tip b{font-size:16px}.iso-tip p{margin:2px 0 0;font-size:17px;font-weight:600;line-height:1.35}.iso-tip .tb{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px}
 .iso-pay{display:grid;gap:8px}
 .iso-bill{display:flex;flex-wrap:wrap;gap:8px}.iso-bill span{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:10px;background:#fff;border:1px solid #d5dbe1}
 .iso-sumrow{display:flex;align-items:center;gap:10px;font-size:18px}
@@ -1209,7 +1209,7 @@ input.note-in{width:100%}
 .iso-dot{width:34px;height:34px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2px #aab7b8;cursor:pointer}.iso-dot.on{box-shadow:0 0 0 3px #1F618D}
 .iso-op{padding:6px 10px;border-radius:999px;border:2px solid #d5dbe1;background:#fff;font:inherit;font-size:15px;cursor:pointer}.iso-op.on{border-color:#1F618D;background:#D6EAF8;font-weight:700}.iso-op.lock{opacity:.6}
 /* modo oscuro del ordenador: los recuadros blancos llevan siempre letra oscura */
-.cv,.mesa,.cover,.rt-choice,.rc-opt,.iso-task,.iso-bill span,.iso-sum,.iso-op,.iso-dlg,.dlg-ic,.w3-knob,.w3-b.w3-act,.w3-hand,.w3-hl li,.pg-box,.pg-it.cur,.pg-det,.pg-3d,.pg-big,.svgbox,.pict-r,.shopit.ex.out,.alm-cierre.bad,.alm-it.out,.cf-pantry{color:#12263a;--ink:#12263a;--ink-2:#44586b;--brand:#1b4f8f;--brand-ink:#ffffff;--ok-ink:#154d1d;--bad-ink:#8a1c1c;--line:#c9d6e0;--surface:#ffffff;--surface-2:#f4f8fa;--sun-soft:#fff2bf}
+.cv,.mesa,.cover,.rt-choice,.rc-opt,.iso-task,.iso-bill span,.iso-sum,.iso-op,.iso-dlg,.dlg-ic,.w3-knob,.w3-b.w3-act,.w3-hand,.w3-hl li,.pg-box,.pg-it.cur,.pg-det,.pg-3d,.pg-big,.svgbox,.pict-r,.shopit.ex.out,.alm-cierre.bad,.alm-it.out,.cf-pantry,.iso-res-c,.iso-tip,.alm-guia,.ped-rec{color:#12263a;--ink:#12263a;--ink-2:#44586b;--brand:#1b4f8f;--brand-ink:#ffffff;--ok-ink:#154d1d;--bad-ink:#8a1c1c;--line:#c9d6e0;--surface:#ffffff;--surface-2:#f4f8fa;--sun-soft:#fff2bf}
 :root[data-theme="dark"] .alm-hoy .ko{color:#F5B37A}:root[data-theme="dark"] .alm-hoy .ok{color:#86EFAC}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .alm-hoy .ko{color:#F5B37A}:root:not([data-theme="light"]) .alm-hoy .ok{color:#86EFAC}}
 @media (max-width:560px){.iso-part{grid-template-columns:1fr}}
@@ -1528,7 +1528,7 @@ button.kim-it:hover{border-color:var(--brand)}
 .alm-it.out{border-color:#C2410C;background:#FFF4ED}.lots{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}.lots .pill.warn{background:#FFEDD5;color:#9A3412;border-color:#C2410C}
 .ped{display:flex;flex-direction:column;gap:8px}.ped-row{display:flex;gap:12px;align-items:center;border:2px solid var(--line);border-radius:12px;padding:8px 12px;background:var(--surface)}
 .ped-t{flex:1;min-width:0;display:flex;flex-direction:column}.ped-q{display:flex;gap:8px;align-items:center}.ped-q .qty{min-width:28px;text-align:center;font-size:1.3rem}
-.ped-tot{position:sticky;bottom:0;background:var(--bg);padding:10px 0;justify-content:space-between}
+.ped-tot{position:sticky;bottom:0;background:var(--bg);padding:10px 0;justify-content:space-between}.alm-guia{border:2px solid #1F618D;background:#EAF2FB;color:#12263a;border-radius:var(--r);padding:12px 16px;margin:8px 0}.alm-guia b{font-size:18px}.alm-guia p{margin:4px 0 0}.alm-guia .btn{margin-top:8px}.ped-n{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}.ped-n span{font-size:14px;padding:2px 8px;border-radius:999px;background:var(--surface-2,#f4f8fa);border:1px solid var(--line)}.ped-rec{align-self:flex-start;margin-top:4px;font-weight:800;font-size:16px;padding:4px 10px;border-radius:10px;background:#FFF2BF;color:#5c3d00!important;border:2px solid #E0A800}.ped-rec.ok{background:#E8F8EF;color:#154d1d!important;border-color:#1E8449}.ped-row.need{border-color:#E0A800}
 .tbl.alb td{vertical-align:middle}.tbl.alb .rc-b{display:flex;gap:6px;flex-wrap:wrap}
 button.exwarn{width:100%;text-align:left;cursor:pointer;font:inherit}.cf-pantry{background:#FDF6DC;border-bottom:3px solid #C9A46A;padding:8px 12px}.cf-pantry b{display:block;margin-bottom:4px;font-size:.95rem}.seg.sub{margin-top:6px}.seg.sub button{font-size:.92rem}.botecard .bar{margin:6px 0}.botecard.done{border-color:#2E7D32}
 .hr-closed{border:3px solid var(--line);border-radius:var(--r);padding:16px 18px;background:var(--surface);margin:6px 0 10px}.hr-closed b{font-size:1.2rem}.hr-closed p{margin:6px 0 0}
@@ -4744,6 +4744,7 @@ function normWins(s){
   if(!w.ord||typeof w.ord!=='object')w.ord={};
   if(!w.rec||typeof w.rec!=='object')w.rec={};
   if(typeof w.alS!=='string')w.alS='';
+  if(!w.alG||typeof w.alG!=='object')w.alG={};
   return w;
 }
 function pwin(){const s=S();return s?normWins(s):null;}
@@ -4767,8 +4768,9 @@ function buyItem(it){
   const have=w.items[it.id]||0,price=priceAt(it,have);
   if(tipsNow()<price)return false;
   w.items[it.id]=have+1;
+  const gift=almGift(w);
   const nb=checkBadges();save();
-  return{price,badges:nb};
+  return{price,badges:nb,gift};
 }
 /* ===== Cafetería ampliada (nov. 2026): existencias, mejoras, segundo local y bote de la clase =====
    Todo lo que se gasta sale de contadores que solo suben (se unen entre dispositivos cogiendo el mayor), igual que las cosas compradas. */
@@ -4902,25 +4904,37 @@ function albaranOf(name,od,ord){
   return{[pid]:R()<0.5?'falta':'roto'};
 }
 const ordArrive=od=>nextSchoolD(od.slice(0,10));
+/* regalo (nov. 2026): cada producto del almacén que entra en la carta llega con 5 paquetes (los básicos ya traían 1 de la apertura, así que se suman 4) */
+const ALM_GIFT=5;
+/* el pan y la bollería del regalo llegan congelados: se sacan del congelador lo que se gasta cada día y no caducan */
+const ALM_FZ=['pan','bolleria','pansg','bolleriasg','panmolde'];
+function almGift(w){
+  if(!almOn(w))return[];const t=todayISO();if(!/^\d{4}-\d\d-\d\d$/.test(t))return[];
+  if(!w.alG||typeof w.alG!=='object')w.alG={};const out=[];
+  almCarta(w).forEach(id=>(RECETA[id]||[]).forEach(p=>{if(ALBY[p]&&p!=='servilletas'&&!w.alG[p]){w.alG[p]=t;out.push(p);}}));
+  return out;
+}
 /* simulación de todos los días desde que abrió el almacén hasta hoy */
 const ALM_C={};
 function almSim(w,name){
   if(!almOn(w))return null;
   const lv=almLvl(name),today=todayISO();
   if(!/^\d{4}-\d\d-\d\d$/.test(today)||!/^\d{4}-\d\d-\d\d$/.test(w.alS))return null;
-  const key=[name,lv,today,w.alS,JSON.stringify(w.ord),JSON.stringify(w.rec),almCarta(w).join(','),localLvl(w),cfg().stLvl&&1].join('|');
+  const key=[name,lv,today,w.alS,JSON.stringify(w.ord),JSON.stringify(w.rec),JSON.stringify(w.alG||{}),almCarta(w).join(','),localLvl(w),cfg().stLvl&&1].join('|');
   if(ALM_C[name]&&ALM_C[name].key===key)return ALM_C[name].r;
   const lots={};ALM.forEach(x=>{lots[x.id]=[];});
-  const addLot=(pid,q,d,f)=>{const x=ALBY[pid];if(!x||q<=0)return;lots[pid].push({q,in:d,exp:caduca(x,f)?schoolPlus(d,x.v-1):''});};
+  const addLot=(pid,q,d,f,fz)=>{const x=ALBY[pid];if(!x||q<=0)return;lots[pid].push(fz?{q,in:d,exp:'',fz:1}:{q,in:d,exp:caduca(x,f)?schoolPlus(d,x.v-1):''});};
   const days=[];let d=isSchool(w.alS)?w.alS:nextSchoolD(w.alS),first=true,refund=0;
+  const d0=d,gAt={};Object.keys(w.alG||{}).forEach(p=>{const g=String(w.alG[p]);if(!ALBY[p]||!/^\d{4}-\d\d-\d\d$/.test(g))return;let a=g<d0?d0:g;if(!isSchool(a))a=nextSchoolD(a);(gAt[a]=gAt[a]||[]).push(p);});
   const pend=[];
   let guard=0;
   while(d<=today&&guard++<800){
     const f=cadFase(lv,d),waste={};
     /* caducado: se tira al empezar el día */
-    ALM.forEach(x=>{lots[x.id]=lots[x.id].filter(l=>{if(caduca(x,f)&&!l.exp)l.exp=schoolPlus(l.in,x.v-1);if(l.exp&&l.exp<d&&l.q>0){waste[x.id]=(waste[x.id]||0)+l.q;return false;}return l.q>0;});});
+    ALM.forEach(x=>{lots[x.id]=lots[x.id].filter(l=>{if(caduca(x,f)&&!l.exp&&!l.fz)l.exp=schoolPlus(l.in,x.v-1);if(l.exp&&l.exp<d&&l.q>0){waste[x.id]=(waste[x.id]||0)+l.q;return false;}return l.q>0;});});
     /* regalo de apertura: un paquete de cada cosa */
     if(first){ALM.forEach(x=>{if(!x.nw)addLot(x.id,x.r,d,f);});first=false;}
+    (gAt[d]||[]).forEach(p=>{const x=ALBY[p];addLot(p,(x.nw?ALM_GIFT:ALM_GIFT-1)*x.r,d,f,ALM_FZ.includes(p));});
     /* mercancía que entra hoy en el almacén */
     Object.keys(w.ord).sort().forEach(od=>{
       const arr=ordArrive(od);if(arr>d)return;
@@ -8075,7 +8089,8 @@ function retroScene(w){
     if(parties.filter(p=>p.state!=='out').length>=Math.min(free.length+parties.length,1+lvl+(o('cliente')||o('e_oficina')||o('e_familia')||o('e_turistas')?1:0)))return;
     const big=free.filter(t=>t.seats.length>=2);
     const grp=res?res.n:(lvl>=2&&big.length&&rnd()<.3)?2+Math.floor(rnd()*Math.min(3,big[0].seats.length-1)):1;
-    const tb=grp>1?(big.find(t=>t.seats.length>=grp)||big[0]):free[Math.floor(rnd()*free.length)];if(!tb)return;
+    /* si no hay mesa tan grande, la reserva se sienta en la que haya (si no, se quedaría esperando para siempre) */
+    const tb=grp>1?(big.find(t=>t.seats.length>=grp)||big[0]||(res?free[0]:null)):free[Math.floor(rnd()*free.length)];if(!tb)return;
     const n=Math.min(grp,tb.seats.length);
     const regOK=menu.length&&rnd()<.25&&!res&&n===1;const reg=regOK?REGS.find(r=>menu.includes(r[1])&&!parties.some(P=>P.reg===r[0]))||null:null;
     const alg=!reg&&rnd()<(lvl>=2?.25:.15)?rtPick(['lec','glu','hue','fru'],rnd):null;
@@ -8163,9 +8178,48 @@ function retroScene(w){
       bt.addEventListener('click',()=>{if(v===hr){good();hideChoice();w.rt.res.push({n,hr});save();endTask(t);score(2,10,11,'📒 +2');drawRes();say('¡Reserva apuntada! Mesa para '+n+' a las '+hr+'. Ese grupo vendrá en un rato.');resAt=performance.now()+40000;}else{bt.classList.add('x');bt.disabled=true;bad();}});return bt;})),again);};
     talk([{who:'Teléfono',t:'¡Ring, ring! ¡Ring, ring!',col:'#7D3C98'},{who:'Tú',t:'Cafetería '+(w.cafe||'El Buen Café')+', ¿dígame?',col:YOU},{who:'Al teléfono',t:'Hola, buenos días. Quiero reservar una mesa para '+n+' personas, a las '+hrTxt+'.',col:'#7D3C98'}],()=>{busy='tel';ask1();});
   }
-  let resAt=0,steam=0;
+  let resAt=w.rt.res.length?performance.now()+20000:0,steam=0;
   const resBox=h('div',{class:'iso-res'});
-  function drawRes(){resBox.replaceChildren(w.rt.res.length?h('span',null,'📒 Reservas de hoy: '+w.rt.res.map(r=>r.n+' pers. · '+r.hr).join('  |  ')):'');}
+  function drawRes(){if(!w.rt.res.length){resBox.replaceChildren();return;}
+    resBox.replaceChildren(h('div',{class:'iso-res-h'},'📒 Reservas de hoy'),h('div',{class:'iso-res-l'},w.rt.res.map(r=>h('span',{class:'iso-res-c'},'👥 '+r.n+' personas · 🕘 '+r.hr))),
+      h('p',{class:'iso-res-n'},'Mientras esperas a las reservas, entran menos clientes sin reservar.'));}
+  /* ---------- consejos y tutorial ---------- */
+  const tipBox=h('div',{class:'iso-tip',hidden:true,role:'status','aria-live':'polite'});
+  const tipSeen={};let tipAt=0,tipCur=null,tipShown=0,tipGen=0;
+  function showTip(k,t,btn){tipCur=k;tipShown=performance.now();tipSeen[k]=(tipSeen[k]||0)+1;
+    const sp=h('button',{type:'button',class:'btn ghost sm',onclick:()=>speak(t)},'🔊 Escuchar');
+    const ok=h('button',{type:'button',class:'btn ghost sm',onclick:()=>{tipBox.hidden=true;tipCur=null;tipAt=performance.now()+25000;}},'Entendido');
+    tipBox.replaceChildren(h('span',{class:'ti','aria-hidden':'true'},'💡'),h('div',null,h('b',null,'Consejo'),h('p',null,t)),h('div',{class:'tb'},sp,btn||'',ok));tipBox.hidden=false;}
+  const GEN_TIPS=[['gen_martes','Los martes de '+PLAY_TXT+' a '+PLAY_END+' la propina del juego es el precio entero. ¡Ese día aprovecha!'],
+    ['gen_tienda','Con las propinas compras en la tienda: mesas, máquinas, uniformes y empleados.'],
+    ['gen_barra','Los pedidos se preparan en la barra, en la franja amarilla.'],
+    ['gen_cobrar','Para cobrar, cuenta despacio y da las monedas justas.'],
+    ['gen_almacen','Mira el almacén cada día: si falta algo, los clientes se van sin tomar nada.']];
+  function tipCheck(now){
+    if(!gate.ok||now<tipAt||busy==='talk')return;tipAt=now+2500;
+    if(tipCur&&now-tipShown<15000)return;
+    const once=k=>(tipSeen[k]||0)<2,free=tasks.filter(t=>!t.who),L=[];
+    if(free.length>=3&&!staff.some(s=>s.role==='sala')&&!o('camarero')&&once('ayudante'))
+      L.push(['ayudante','Tienes muchas tareas a la vez. En la tienda (Equipo) puedes comprar un camarero ayudante por '+((SHOP.find(z=>z.id==='camarero')||{}).p||60)+' propinas. Te ayuda a tomar nota, llevar, cobrar y recoger.',
+        h('button',{type:'button',class:'btn primary sm',onclick:()=>go({name:'cafe',g:'equipo'})},'🛒 Ir a la tienda')]);
+    if(staff.length&&!autoOn()&&free.some(t=>now-t.t>10000)&&once('reparte'))L.push(['reparte','Tus empleados están esperando. En cada tarea, toca el botón con su nombre. O toca «Yo reparto el trabajo» para que trabajen solos.']);
+    const ph=tasks.find(t=>t.type==='telefono'&&!t.who);if(ph&&now-ph.t>7000&&once('tel'))L.push(['tel','Suena el teléfono. Toca «Lo hago yo» y apunta la reserva. Así sabes cuántos clientes van a venir.']);
+    if(parties.some(p=>p.state==='call'&&now-p.t>CALL*0.4)&&once('nota'))L.push(['nota','Un cliente lleva rato esperando. Ve a su mesa a tomar nota antes de que se vaya.']);
+    if(tasks.some(t=>t.type==='recoger'&&!t.who&&now-t.t>8000)&&once('recoger'))L.push(['recoger','Hay una mesa sucia. Recógela y vuelve a ponerla. Si no, nadie se puede sentar.']);
+    if(w.rt.res.length&&once('res'))L.push(['res','Tienes '+(w.rt.res.length===1?'una reserva':w.rt.res.length+' reservas')+'. Deja una mesa limpia y puesta para cuando lleguen.']);
+    if(parties.some(p=>p.alg&&p.state!=='out')&&once('alg'))L.push(['alg','Hay un cliente con alergia. Antes de servir, mira bien qué lleva cada cosa.']);
+    const nx=L.find(z=>z[0]!==tipCur);
+    if(nx){showTip(nx[0],nx[1],nx[2]);return;}
+    if(now-tipShown>55000){const g=GEN_TIPS.find(z=>!tipSeen[z[0]]);if(g)showTip(g[0],g[1]);}
+  }
+  const TUT=[{who:'Consejo',col:'#1E8449',t:'¡Hola! Te enseño a jugar en un momento. Toca este cuadro para seguir.'},
+    {who:'Consejo',col:'#1E8449',t:'Cuando entra un cliente, sale una tarea en la lista de «Tareas».'},
+    {who:'Consejo',col:'#1E8449',t:'Toca «Lo hago yo» y tu camarero va solo. Si tienes empleados, toca su nombre y lo hacen ellos.'},
+    {who:'Consejo',col:'#1E8449',t:'El orden es: tomar nota, preparar, llevar, cobrar, recoger y poner la mesa.'},
+    {who:'Consejo',col:'#1E8449',t:'Si suena el teléfono, apunta la reserva. Las reservas de hoy salen en grande al lado de las tareas.'},
+    {who:'Consejo',col:'#1E8449',t:'En el cuadro verde de «Consejo» te voy ayudando mientras juegas. ¡A jugar!'}];
+  function tutorial(){if(busy)return;hideChoice();const keep=spawnAt;spawnAt=Infinity;talk(TUT,()=>{w.rtTut=1;save();spawnAt=Math.max(keep,performance.now()+2500);say(HELP);});}
+  const tutBtn=h('button',{type:'button',class:'btn ghost sm',onclick:()=>tutorial()},'📖 Cómo se juega');
   /* llegar a un sitio: hacer la tarea que toca */
   function arrive(){
     const t=me.job;
@@ -8360,9 +8414,13 @@ function retroScene(w){
     const dt=Math.min(50,now-(last||now));last=now;
     if(now-gateAt>2000){gateAt=now;const g=playGate();if(g.ok!==gate.ok||g.why!==gate.why||g.left!==gate.left){const was=gate.ok;gate=g;gateBox.replaceChildren(playGateEl(g)||'');if(was&&!g.ok){me.path=[];me.carry=null;hideChoice();tasks.length=0;say(g.why==='tarde'?'Se acabó el rato de juego. ¡Hasta mañana!':'Ahora no se puede jugar. Mira el aviso de arriba.');}else if(!was&&g.ok)say(HELP);drawTasks();}}
     street(now,dt);
-    if(gate.ok&&now>spawnAt){const n0=parties.length;spawn(now);if(parties.length>n0)spawnAt=now+(staff.length?22000+rnd()*14000:8000+rnd()*5000);else spawnAt=now+1500;}
+    if(gate.ok&&now>spawnAt){const nr=w.rt.res.length;
+      /* con reservas pendientes, los clientes sin reserva esperan: primero llegan los que reservaron */
+      if(nr>=2||(nr&&!staff.length))spawnAt=now+3000;
+      else{const n0=parties.length;spawn(now);if(parties.length>n0)spawnAt=now+(staff.length?22000+rnd()*14000:8000+rnd()*5000)*(nr?1.7:1);else spawnAt=now+1500;}}
+    tipCheck(now);
     if(gate.ok&&resAt&&now>resAt&&w.rt.res.length){const r=w.rt.res[0];const before=parties.length;spawn(now,{n:r.n});if(parties.length>before){w.rt.res.shift();save();drawRes();}resAt=now+15000;}
-    if(gate.ok&&M.recep&&(o('ev_telefono'))&&now>phoneAt&&(staff.length||!parties.some(p=>p.state!=='out'))){if(!tasks.some(t=>t.type==='telefono'))addTask('telefono',{});phoneAt=now+90000+rnd()*60000;}
+    if(gate.ok&&M.recep&&(o('ev_telefono'))&&now>phoneAt&&w.rt.res.length<3&&(staff.length||!parties.some(p=>p.state!=='out'))){if(!tasks.some(t=>t.type==='telefono'))addTask('telefono',{});phoneAt=now+90000+rnd()*60000;}
     if(me.path.length){if(walk(me,dt))arrive();const p=scr(me.fi,me.fj);pz.keepIn(p.x,p.y-30);}
     if(gate.ok&&autoOn()&&now-autoAt>700){autoAt=now;tasks.forEach(t=>{if(t.who||now-t.t<1800)return;const s=staff.filter(z=>canDo(z,t.type)).sort((a,b)=>(Math.abs(a.i-targetOf(t).i)+Math.abs(a.j-targetOf(t).j))-(Math.abs(b.i-targetOf(t).i)+Math.abs(b.j-targetOf(t).j)))[0];if(s)assign(t,s,true);});}
     staff.forEach(s=>{if(s.path.length){walk(s,dt);}staffWork(s,now);});
@@ -8468,6 +8526,7 @@ function retroScene(w){
   RT.cust=parties;RT.dbg={w3:()=>W3,w3on:()=>w3on,tapAt:(i,j,who)=>tapAt(i,j,who),pick:(a,b)=>pickCell(a,b),isoP,isoTapH,isoAppl,isoModel,ISO_TALL,me,parties,tasks,tables,staff,arrive,doMe,assign,M,gamePrep,spawn:()=>spawn(performance.now()),phone:()=>addTask('telefono',{}),rtPath};
   drawTasks();drawRes();
   if(!gate.ok)lockSay();
+  else if(!w.rtTut)setTimeout(()=>{if(document.body.contains(dlg))tutorial();},1600);
   if(can3d&&store.rt3d!==false)setTimeout(()=>{if(cv.isConnected||document.body.contains(w3box))w3start();},0);
   const noMenu=!menu.length?h('p',{class:'note'},'Pon cosas en «Mi carta» para que vengan clientes.'):null;
   const noSeat=!tables.length?h('p',{class:'note'},'Compra mesas y sillas en «La sala» para que los clientes se puedan sentar.'):null;
@@ -8478,7 +8537,7 @@ function retroScene(w){
     h('li',null,'Cuidado con las alergias: elige algo que el cliente pueda tomar.'),
     h('li',null,'Las propinas del juego solo cuentan de '+PLAY_TXT+' a '+PLAY_END+'. Los martes, la propina es el precio entero; los otros días, el 10 %.')));
   return h('div',{class:'rt-wrap iso-wrap'},h('div',{class:'rt-top'},cafeSign(w)),rtBoard(w,menu),gateBox,pz.bar,h('div',{class:'w3-top'},viewBtn),w3bar,h('div',{class:'iso-stage'},pz.vp,w3box,dlg),choice,
-    h('div',{class:'iso-side'},h('div',{class:'iso-th'},h('b',null,'📋 Tareas'),h('div',{class:'iso-thb'},autoBtn,musBtn)),taskBox,resBox),
+    h('div',{class:'iso-side'},tipBox,resBox,h('div',{class:'iso-th'},h('b',null,'📋 Tareas'),h('div',{class:'iso-thb'},tutBtn,autoBtn,musBtn)),taskBox),
     h('div',{class:'rt-bot'},msg,pad),crewDesigner(w),how,noMenu,noSeat);
 }
 /* ---------- diseña tu equipo ---------- */
@@ -9452,11 +9511,11 @@ function upBtn(it,w){
 }
 
 /* ---------- el almacén (alumno) ---------- */
-function almOpen(w){if(!w.alS){const t=todayISO();if(/^\d{4}-\d\d-\d\d$/.test(t)){w.alS=t;save();}}}
+function almOpen(w){if(!w.alS){const t=todayISO();if(/^\d{4}-\d\d-\d\d$/.test(t)){w.alS=t;save();}}if(almGift(w).length)save();}
 const EV_IC={grupo:'grupo',lluvia:'sol',partido:'refresco',tranquilo:'luna'};
 function cierreCard(w,r,small){
   const y=r.days[r.days.length-1];
-  if(!y)return h('div',{class:'alm-cierre'},h('b',null,'Hoy abres tu almacén.'),h('p',null,'Te regalamos un paquete de cada producto básico para empezar. Lo demás lo pides cuando lo pongas en tu carta. Mañana verás aquí cómo ha ido el día.'));
+  if(!y)return h('div',{class:'alm-cierre'},h('b',null,'Hoy abres tu almacén.'),h('p',null,'Te regalamos 5 paquetes de cada cosa que usa tu carta y uno de cada producto básico. Cada vez que pongas algo nuevo en la carta, te regalamos 5 paquetes de lo que lleva. El pan y la bollería del regalo van al congelador y no caducan. Mañana verás aquí cómo ha ido el día.'));
   const miss=Object.keys(y.miss).map(pid=>ALBY[pid].n.toLowerCase()),waste=Object.keys(y.waste);
   return h('div',{class:'alm-cierre'+(y.lost?' bad':'')},
     h('b',null,'Cierre del '+longISO(y.d)+(y.ev?' · '+({grupo:'grupo',lluvia:'lluvia',partido:'partido',tranquilo:'día tranquilo'})[y.ev]:'')),
@@ -9473,7 +9532,8 @@ function hoyCard(w,r){
   return h('div',{class:'alm-hoy'},
     h('b',null,'Hoy esperas unos '+t.n+' clientes'),t.ev?h('p',{class:'ev'},tile(EV_IC[t.ev],'xs'),SUCESOS[t.ev]):null,
     h('div',{class:'alm-pedidos'},Object.keys(cnt).map(id=>h('span',{class:'pill'},tile(SHBY[id].ic,'xs'),cnt[id]+' × '+SHBY[id].n))),
-    shortList.length?h('p',{class:'ko'},'Con lo que tienes no llega para: '+shortList.map(pid=>ALBY[pid].n.toLowerCase()).join(', ')+'. Haz el pedido: llega el '+longISO(nextSchoolD(todayISO()))+'.'):h('p',{class:'ok'},'Tienes de todo para hoy.'));
+    shortList.length?h('p',{class:'ko'},'Con lo que tienes no llega para: '+shortList.map(pid=>ALBY[pid].n.toLowerCase()).join(', ')+'. Haz el pedido: llega el '+longISO(nextSchoolD(todayISO()))+'.'):h('p',{class:'ok'},'Tienes de todo para hoy.'),
+    h('button',{class:'btn primary',type:'button',style:'margin-top:10px',onclick:()=>go({name:'cafe',g:'almacen',sub:'pedido'},true)},'🛒 Hacer el pedido de mañana'));
 }
 /* lo que se enseña en el almacén: lo que usa mi carta, lo que tengo y lo básico */
 function almUsed(w,r){const u=new Set(['servilletas']);almCarta(w).forEach(id=>(RECETA[id]||[]).forEach(p=>u.add(p)));ALM.forEach(x=>{if(!x.nw||r.stock[x.id]>0)u.add(x.id);});return u;}
@@ -9485,9 +9545,33 @@ function stockList(w,r){
       h('div',{class:'si-h'},h('b',null,x.n),h('small',null,x.pk)),
       h('small',null,fmtStock(x,q)),
       L.filter(l=>l.exp).length?h('div',{class:'lots'},L.filter(l=>l.exp).map(l=>h('span',{class:'pill'+(l.exp<=t?' warn':'')},l.q+' '+x.u+' · '+(l.exp<=t?'caduca hoy':'caduca el '+fmtDMiso(l.exp))))):null,
+      L.some(l=>l.fz)?h('div',{class:'lots'},h('span',{class:'pill'},'❄️ '+L.filter(l=>l.fz).reduce((a,l)=>a+l.q,0)+' '+x.u+' en el congelador: no caducan')):null,
       soon?h('small',{class:'warn-t'},'Úsalo hoy: mañana se tira.'):null));}));
 }
+/* ayuda para el pedido: 0 = te digo cuánto pedir · 1 = te digo cuánto necesitas, la ayuda se pide · 2 = lo calculas tú.
+   Nivel Fácil: siempre 0. Reto: siempre 2. Normal: 0 en el 1.er trimestre, 1 en el 2.º y 2 en el 3.º */
+const ALM_SG={raciones:'ración',porciones:'porción',panes:'pan','tés':'té','sándwiches':'sándwich',yogures:'yogur',bols:'bol'};
+const almU=(n,u)=>n===1?'1 '+(ALM_SG[u]||u.replace(/s$/,'')):n+' '+u;
+function almGuide(lv){if(lv==='facil')return 0;if(lv==='reto')return 2;const t=todayISO();return t>=triOpen(3)?2:t>=triOpen(2)?1:0;}
+const ALM_GN=['te digo cuánto pedir','te digo cuánto necesitas','calculas tú el pedido'];
+function almPlan(w,name,r){
+  const t=todayISO(),nx=nextSchoolD(t),lv=r.lv,dmN=demandOf(name,nx,w,lv);
+  const need=dm=>{const n={};dm.list.forEach(id=>(RECETA[id]||[]).concat(['servilletas']).forEach(p=>{n[p]=(n[p]||0)+1;}));return n;};
+  const nT=need(r.today),nN=need(dmN),inc={};
+  /* lo pedido que todavía no está en el almacén (llega mañana o espera a que lo recibas) */
+  Object.keys(w.ord).forEach(od=>{const arr=ordArrive(od),rc=w.rec[od],inSt=lv==='facil'?arr<=t:!!(rc&&rc.d);if(inSt)return;
+    Object.keys(w.ord[od]||{}).forEach(p=>{if(ALBY[p])inc[p]=(inc[p]||0)+(w.ord[od][p]||0)*ALBY[p].r;});});
+  const plan={};
+  ALM.forEach(x=>{
+    /* hoy se gasta primero lo más antiguo; lo que caduca antes de mañana no cuenta */
+    let c=nT[x.id]||0,left=0;
+    (r.lots[x.id]||[]).filter(l=>l.q>0).sort((a,b)=>a.in<b.in?-1:a.in>b.in?1:0).forEach(l=>{const u=Math.min(c,l.q);c-=u;const rest=l.q-u;if(rest>0&&!(l.exp&&l.exp<nx))left+=rest;});
+    const want=nN[x.id]||0,have=left+(inc[x.id]||0),miss=Math.max(0,Math.ceil(want*1.15)-have);
+    plan[x.id]={left,want,inc:inc[x.id]||0,packs:miss>0?Math.ceil(miss/x.r):0};});
+  return{plan,next:nx,n:dmN.n,ev:dmN.ev};
+}
 function pedidoForm(w,r){
+  if(!pedidoForm.alt)return pedidoGuia(w,r);
   const t=todayISO(),o=w.ord[t]||{},cart={};
   const lbl=h('b',null),btn=h('button',{class:'btn primary',type:'button'},'Enviar el pedido');
   const upd=()=>{const tot=Object.keys(cart).reduce((a,pid)=>a+cart[pid]*ALBY[pid].p,0),bal=tipsNow();lbl.textContent='Total: '+tot+' propinas'+(tot>bal?' (no te llega: tienes '+bal+')':'');btn.disabled=!tot||tot>bal||null;};
@@ -9502,6 +9586,39 @@ function pedidoForm(w,r){
     toast('¡Pedido enviado! Llega el '+longISO(ordArrive(t))+'.');tipChipBump(0);go({name:'cafe',g:'almacen',sub:'hoy'},true);});
   upd();
   return h('div',null,h('p',{class:'note'},'Mira lo que te queda y lo que piden tus clientes. Lo que pidas hoy llega el '+longISO(ordArrive(t))+'.'),h('div',{class:'ped'},rows),rest.length?h('details',{class:'utc'},h('summary',null,'Más productos del proveedor ('+rest.length+')'),h('p',{class:'note'},'Son para cosas que todavía no tienes en tu carta.'),h('div',{class:'ped'},rest.map(mk))):null,h('div',{class:'actions ped-tot'},lbl,btn));
+}
+function pedidoGuia(w,r){
+  const t=todayISO(),o=w.ord[t]||{},cart={},name=store.last,g=almGuide(r.lv),P=almPlan(w,name,r);
+  let help=g===0;
+  const lbl=h('b',null),btn=h('button',{class:'btn primary',type:'button'},'Enviar el pedido');
+  const upd=()=>{const tot=Object.keys(cart).reduce((a,pid)=>a+cart[pid]*ALBY[pid].p,0),bal=tipsNow();lbl.textContent='Total: '+tot+' propinas'+(tot>bal?' (no te llega: tienes '+bal+'. Quita algo)':'');btn.disabled=!tot||tot>bal||null;};
+  const u=almUsed(w,r),sets={},recs=[];
+  const mk=x=>{cart[x.id]=0;const n=h('b',{class:'qty'},'0'),pl=P.plan[x.id];
+    const set=v=>{cart[x.id]=Math.max(0,Math.min(9,v));n.textContent=String(cart[x.id]);upd();};sets[x.id]=set;
+    const info=g<2?h('div',{class:'ped-n'},h('span',null,'Te queda para mañana: '+almU(pl.left,x.u)),h('span',null,'Mañana necesitas: '+(pl.want>1?'unos '+almU(pl.want,x.u):pl.want?almU(1,x.u):'nada')),pl.inc?h('span',null,'Ya pedido: '+almU(pl.inc,x.u)):null)
+      :h('div',{class:'ped-n'},h('span',null,'Tienes: '+r.stock[x.id]+' '+x.u),pl.inc?h('span',null,'Ya pedido: '+pl.inc+' '+x.u):null);
+    const rec=h('span',{class:'ped-rec'+(pl.packs?'':' ok'),hidden:!help||null},pl.packs?'👉 Pide '+pl.packs+(pl.packs===1?' ':' × ')+x.pk.toLowerCase():'✓ Tienes bastante');recs.push(rec);
+    return h('div',{class:'ped-row'+(help&&pl.packs?' need':'')},tile(x.ic,'sm'),h('div',{class:'ped-t'},h('b',null,x.n),h('small',null,x.pk+' · '+x.p+' propinas · cada uno da para '+x.r+' '+x.u),info,rec,o[x.id]?h('small',{class:'ok'},'Ya pedido hoy: '+o[x.id]):null),
+      h('div',{class:'ped-q'},h('button',{class:'btn ghost sm',type:'button','aria-label':'Uno menos de '+x.n,onclick:()=>set(cart[x.id]-1)},'−'),n,h('button',{class:'btn ghost sm',type:'button','aria-label':'Uno más de '+x.n,onclick:()=>set(cart[x.id]+1)},'+')));};
+  const fill=()=>{ALM.forEach(x=>{if(sets[x.id])sets[x.id](P.plan[x.id].packs);});};
+  const list=ALM.filter(x=>u.has(x.id)),needL=list.filter(x=>P.plan[x.id].want>0||P.plan[x.id].packs>0),idle=list.filter(x=>!(P.plan[x.id].want>0||P.plan[x.id].packs>0)),rest=ALM.filter(x=>!u.has(x.id));
+  needL.sort((a,b)=>(P.plan[b.id].packs>0)-(P.plan[a.id].packs>0));
+  const rows=(g<2?needL:list).map(mk);
+  const idleRows=g<2&&idle.length?h('details',{class:'utc'},h('summary',null,'Lo que mañana no se gasta ('+idle.length+')'),h('div',{class:'ped'},idle.map(mk))):null;
+  const nPk=list.filter(x=>P.plan[x.id].packs>0).length;
+  const helpBtn=g===1?h('button',{class:'btn ghost',type:'button',onclick:()=>{help=true;recs.forEach(e=>{e.hidden=false;});fill();helpBtn.remove();}},'💡 Ver la ayuda'):null;
+  const head=h('div',{class:'alm-guia'},
+    h('b',null,'Mañana, '+longISO(P.next)+', vienen unos '+P.n+' clientes.'),
+    g===0?h('p',null,nPk?'Ya te he puesto lo que tienes que pedir ('+nPk+(nPk===1?' producto':' productos')+'). Revísalo y toca «Enviar el pedido».':'Tienes de todo para mañana. Hoy no hace falta pedir nada.')
+      :g===1?h('p',null,'Mira cuánto te queda y cuánto necesitas. Pide lo que falte. Si te lías, toca «Ver la ayuda».')
+      :h('p',null,'Calcula tú cuánto pedir: mira lo que tienes y piensa en lo que gastan tus clientes.'),
+    helpBtn);
+  btn.addEventListener('click',()=>{const tot=Object.keys(cart).reduce((a,pid)=>a+cart[pid]*ALBY[pid].p,0);if(!tot||tot>tipsNow())return;
+    const cur=w.ord[t]||(w.ord[t]={});Object.keys(cart).forEach(pid=>{if(cart[pid])cur[pid]=(cur[pid]||0)+cart[pid];});save();
+    toast('¡Pedido enviado! Llega el '+longISO(ordArrive(t))+'.');tipChipBump(0);go({name:'cafe',g:'almacen',sub:'hoy'},true);});
+  if(g===0)fill();
+  upd();
+  return h('div',null,head,h('div',{class:'ped'},rows),idleRows,rest.length?h('details',{class:'utc'},h('summary',null,'Más productos del proveedor ('+rest.length+')'),h('p',{class:'note'},'Son para cosas que todavía no tienes en tu carta.'),h('div',{class:'ped'},rest.map(mk))):null,h('div',{class:'actions ped-tot'},lbl,btn));
 }
 function recibirForm(w,r,name){
   if(!r.pend.length)return h('p',{class:'note'},'No hay mercancía esperando. Cuando llegue un pedido, la comprobarás aquí con su albarán.');
@@ -9530,7 +9647,7 @@ function almacenView(w){
   const subs=[['hoy','Hoy'],['stock','Mi almacén'],['pedido','Hacer el pedido']].concat(r.lv==='facil'?[]:[['recibir','Recibir'+(r.pend.length?' ('+r.pend.length+')':'')]]);
   const sub=subs.find(z=>z[0]===view.sub)?view.sub:'hoy';
   const seg=h('div',{class:'seg sub',role:'group','aria-label':'Almacén'},subs.map(([k,l])=>h('button',{type:'button',class:(k===sub?'cur':'')+(k==='recibir'&&r.pend.length?' alert':''),'aria-pressed':String(k===sub),onclick:()=>go({name:'cafe',g:'almacen',sub:k},true)},l)));
-  const lvTxt='Nivel '+ALM_LV[r.lv]+(r.fase===0?'':r.fase===1?' · este trimestre solo caducan el pan y la bollería':' · caducan todos los productos frescos');
+  const lvTxt='Nivel '+ALM_LV[r.lv]+' · '+ALM_GN[almGuide(r.lv)]+(r.fase===0?'':r.fase===1?' · este trimestre solo caducan el pan y la bollería':' · caducan todos los productos frescos');
   return h('div',null,h('p',{class:'note'},lvTxt+'. Lo primero que entra es lo primero que sale.'),seg,
     sub==='hoy'?h('div',{class:'alm-grid'},cierreCard(w,r),hoyCard(w,r)):sub==='stock'?stockList(w,r):sub==='pedido'?pedidoForm(w,r):recibirForm(w,r,name));
 }
@@ -9638,7 +9755,7 @@ function doBuy(it){
   const r=buyItem(it);if(!r)return;
   go({name:'cafe',g:it.g,sub:it.sub,just:it.id},true);
   if(r.badges.length)setTimeout(fanfare,350);
-  toast('¡Comprado! '+it.n+(r.badges.length?' · ¡Nueva insignia: '+r.badges[0].n+'!':''));
+  toast('¡Comprado! '+it.n+(r.badges.length?' · ¡Nueva insignia: '+r.badges[0].n+'!':'')+(r.gift&&r.gift.length?' · En tu almacén tienes de regalo 5 paquetes de: '+r.gift.map(p=>ALBY[p].n.toLowerCase()).join(', ')+'.':''));
   tipChipBump(0);
 }
 VIEWS.cafe=()=>{
@@ -10471,6 +10588,7 @@ function mergeWins(A,B){
   A.ord=ob(A.ord);Object.keys(ob(B.ord)).forEach(k=>{const y=ob(B.ord[k]),x=A.ord[k]||(A.ord[k]={});Object.keys(y).forEach(p=>{x[p]=mx(x[p],y[p]);});});
   A.rec=ob(A.rec);Object.keys(ob(B.rec)).forEach(k=>{const y=ob(B.rec[k]),x=A.rec[k];if(!x||!x.d||(y.d&&y.d<x.d))A.rec[k]=y;});
   if(B.alS&&(!A.alS||B.alS<A.alS))A.alS=B.alS;
+  A.alG=ob(A.alG);Object.keys(ob(B.alG)).forEach(k=>{const y=B.alG[k];if(y&&(!A.alG[k]||y<A.alG[k]))A.alG[k]=y;});
   const ad=ob(A.day),bd=ob(B.day);
   A.day=(bd.d||'')>(ad.d||'')?{d:bd.d,p:bd.p||0}:(bd.d&&bd.d===ad.d)?{d:ad.d,p:mx(ad.p,bd.p)}:(ad.d?ad:{d:'',p:0});
   return A;
