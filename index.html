@@ -1208,6 +1208,8 @@ input.note-in{width:100%}
 .iso-sw,.iso-ops{display:flex;flex-wrap:wrap;gap:6px}
 .iso-dot{width:34px;height:34px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2px #aab7b8;cursor:pointer}.iso-dot.on{box-shadow:0 0 0 3px #1F618D}
 .iso-op{padding:6px 10px;border-radius:999px;border:2px solid #d5dbe1;background:#fff;font:inherit;font-size:15px;cursor:pointer}.iso-op.on{border-color:#1F618D;background:#D6EAF8;font-weight:700}.iso-op.lock{opacity:.6}
+/* modo oscuro del ordenador: los recuadros blancos llevan siempre letra oscura */
+.iso-bill span,.iso-op,.iso-dlg,.w3-hl li,.pg-det{color:#17202A}
 @media (max-width:560px){.iso-part{grid-template-columns:1fr}}
 .iso-side{width:100%;box-sizing:border-box;justify-self:stretch}
 .rt-pad.iso-pad{display:grid;grid-template-columns:repeat(2,48px);grid-template-rows:repeat(2,44px);gap:6px}
@@ -8197,7 +8199,7 @@ function retroScene(w){
   }
   function walk(a,dt){
     if(!a.path.length)return true;
-    const n=a.path[0],sp=dt*(w3on?0.0027:0.0042),dx=n.i-a.fi,dy=n.j-a.fj;
+    if(w3on&&a.spf===undefined)a.spf=a===me?1:.85+Math.random()*.25;const n=a.path[0],sp=dt*(w3on?0.0019*(a.spf||1):0.0042),dx=n.i-a.fi,dy=n.j-a.fj;
     if(Math.abs(dx)>.001||Math.abs(dy)>.001){a.back=dx<0||dy<0;a.flip=dy>0||dx<0?(dy>0||(dx<0&&false)):false;a.flip=(dy>.001)||(dx<-.001);}
     if(Math.abs(dx)<=sp&&Math.abs(dy)<=sp){a.fi=n.i;a.fj=n.j;a.i=n.i;a.j=n.j;a.path.shift();return !a.path.length;}
     a.fi+=Math.sign(dx)*Math.min(sp,Math.abs(dx));a.fj+=Math.sign(dy)*Math.min(sp,Math.abs(dy));return false;
@@ -8932,7 +8934,10 @@ function w3Anim(o,s){
   const k=1-Math.exp(-dt/85),nx=o.px+(s.x-o.px)*k,nz=o.pz+(s.z-o.pz)*k,dx=nx-o.px,dz=nz-o.pz,d=Math.hypot(dx,dz);o.px=nx;o.pz=nz;
   const sp=d/dt;o.vs=(o.vs||0)+(sp-(o.vs||0))*Math.min(1,dt/120);
   let wT=s.walker?1:Math.min(1,o.vs/.0016);if(s.sit)wT=0;o.w+=(wT-o.w)*Math.min(1,dt/(wT>o.w?140:220));const w=o.w;
-  o.ph+=(s.walker?s.wsp*dt:d)*Math.PI*2/1.25;const ph=o.ph;
+  if(!o.vr){const R=()=>Math.random();o.vr={st:.92+R()*.2,arm:.75+R()*.45,lag:.3+R()*.25,lean:R()*.04,bob:.8+R()*.4,sw:.7+R()*.6};}
+  const V=o.vr,mps=Math.max(.6,Math.min(2.4,(s.walker?s.wsp:o.vs)*1000));
+  /* zancada más larga cuanto más deprisa: así el ritmo de pasos es el de una persona (1,7-2 pasos por segundo) */
+  o.ph+=(s.walker?s.wsp*dt:d)*Math.PI*2/((.95+.42*mps)*V.st);const ph=o.ph;
   /* hacia dónde mira */
   let yaw=o.g.rotation.y;
   if(s.yawT!=null)o.yawT=s.yawT;else if(d>.0004)o.yawT=Math.atan2(dx,dz);
@@ -8942,19 +8947,19 @@ function w3Anim(o,s){
   o.g.position.set(o.px,sa*((s.bar?.2:-.12)+(o.hipD||0)),o.pz);
   const sn=Math.sin(ph),cs=Math.cos(ph),t=now/1000+o.seed;
   /* piernas */
-  const A=.42*w;
+  const A=(.26+.07*mps)*w;
   const lL=-A*sn,lR=A*sn,kneeL=w*(.06+.72*Math.pow(Math.max(0,cs),1.6)),kneeR=w*(.06+.72*Math.pow(Math.max(0,-cs),1.6));
   o.lL.rotation.x=lL*(1-sa)-1.45*sa;o.lR.rotation.x=lR*(1-sa)-1.45*sa;
   o.kL.rotation.x=kneeL*(1-sa)+1.45*sa;o.kR.rotation.x=kneeR*(1-sa)+1.45*sa;
   /* cuerpo: sube y baja al andar, se mece un poco y respira en reposo */
   const idle=(1-w)*(1-sa);
-  o.hm.position.y=w*.016*(Math.abs(cs)-.6);
-  o.hm.rotation.z=w*.035*sn+idle*.018*Math.sin(t*.45);
+  o.hm.position.y=w*.014*V.bob*(Math.abs(cs)-.6);
+  o.hm.rotation.z=w*.025*V.sw*Math.sin(ph-.4)+idle*.018*Math.sin(t*.45);
   o.hm.position.x=idle*.012*Math.sin(t*.45);
-  o.up.rotation.y=-w*.13*sn;o.up.rotation.z=-w*.03*sn-o.hm.rotation.z*.6+(o.turn||0)*-.08*w;
-  o.up.rotation.x=w*.07+sa*.05+idle*.012*Math.sin(t*1.6)+(s.work?.12:0)*(1-w);
+  o.up.rotation.y=-w*.09*Math.sin(ph-.25);o.up.rotation.z=-w*.02*Math.sin(ph-.5)-o.hm.rotation.z*.6+(o.turn||0)*-.08*w;
+  o.up.rotation.x=w*(.04+V.lean)+sa*.05+idle*.012*Math.sin(t*1.6)+(s.work?.12:0)*(1-w);
   /* brazos */
-  const B=.5*w;let aL=B*sn*(1-sa),aR=-B*sn*(1-sa),eL=-.18-w*(.2+.18*Math.max(0,-sn)),eR=-.18-w*(.2+.18*Math.max(0,sn));
+  const B=(.2+.05*mps)*V.arm*w,sa1=Math.sin(ph-V.lag),sa2=Math.sin(ph-V.lag-.7);let aL=(B*sa1+w*.04)*(1-sa),aR=(-B*sa1+w*.04)*(1-sa),eL=-.2-w*(.12+.16*Math.max(0,-sa2)),eR=-.2-w*(.12+.16*Math.max(0,sa2));
   if(sa>0){aL-= .45*sa;aR-=.45*sa;eL-=.75*sa;eR-=.75*sa;}
   if(s.work&&w<.5){aL+=(-.35+.12*Math.sin(t*3.1))*(1-w*2);aR+=(-.45+.15*Math.sin(t*2.7+1))*(1-w*2);eL-=.7*(1-w*2);eR-=.8*(1-w*2);}
   if(s.carry){aR=-.55;eR=-1.25;}
@@ -8963,7 +8968,7 @@ function w3Anim(o,s){
   /* la cabeza mira alrededor de vez en cuando */
   if(now>(o.hT||0)){o.hT=now+2500+Math.random()*4000;o.hyT=(Math.random()-.5)*(s.sit?1.0:.8)*(w>.5?.4:1);o.hxT=(Math.random()-.4)*.18;}
   o.hy+=((o.hyT||0)-o.hy)*Math.min(1,dt/400);o.hx=(o.hx||0)+((o.hxT||0)-(o.hx||0))*Math.min(1,dt/500);
-  o.hd.rotation.y=o.hy-o.up.rotation.y*.7;o.hd.rotation.x=o.hx+w*.04*cs;
+  o.hd.rotation.y=o.hy-o.up.rotation.y*.7;o.hd.rotation.x=o.hx-o.up.rotation.x*.6+w*.015*Math.cos(2*ph-.6);
 }
 /* vista previa en 3D de «Diseña tu equipo» (con su propio renderizador pequeño) */
 let W3PV=null;
