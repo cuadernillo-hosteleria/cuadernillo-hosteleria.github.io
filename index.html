@@ -1540,8 +1540,11 @@ function unitFirst(u){
   if(!c||c.pl!==pl){const mp={};pl.slots.forEach(sl=>{const x=sl.sess;if(!x)return;[x.u,...(x.items||[]).map(i=>i.u)].forEach(id=>{if(id&&(!mp[id]||sl.date<mp[id]))mp[id]=sl.date;});});c=UF[m.id]={pl,mp};}
   return c.mp[u.uid]||null;
 }
-const unitOn=u=>triOn(u.tri.n)&&isoOpen(unitFirst(u));
-const sesOpen=(m,ses)=>triOn(sesTri(m,ses))&&isoOpen(ses.date);
+/* día a día (nov. 2026): cada sesión, y las fichas que saca, se abren el día que toca en el plan; las de días pasados siguen abiertas */
+const dayOpen=iso=>!wkGate()||!iso||iso<=todayISO();
+const unitOn=u=>triOn(u.tri.n)&&dayOpen(unitFirst(u));
+const sesOpen=(m,ses)=>triOn(sesTri(m,ses))&&dayOpen(ses.date);
+const sesLock=ses=>h('button',{class:'btn ghost',type:'button',disabled:true,'aria-label':'Cerrada. Se abre el '+longISO(ses.date)},gl('lock'),'Se abre el '+longISO(ses.date));
 function simLocked(sm){const us=UNITS.filter(u=>sm.mods.includes(u.mod.id)&&sm.units.includes(u.key));return us.length>0&&us.every(u=>!unitOn(u));}
 
 /* ================= utilidades ================= */
@@ -6287,7 +6290,7 @@ function modCard(m){
       h('div',{class:'mc-line'},h('span',null,TT.W[m.id].length+' horas a la semana'),h('span',null,'Sesiones hechas: '+dn+' de '+ss.length),h('span',null,'Actividades: '+P.d+' de '+P.t)),
       nx?h('p',{class:'sub',style:'margin:8px 0 0;font-weight:700'},(st==='doing'?'Sigue con: ':late?'Atrasada: ':'Te toca: ')+whenShort(nx)+' · '+nx.title):null,
       h('div',{class:'actions',style:'margin-top:12px'},
-        nx?h('button',{class:'btn primary',type:'button',onclick:()=>go({name:'session',mod:m.id,sid:nx.id})},gl('play'),sesLabelBtn(st)):null,
+        nx?(sesOpen(m,nx)?h('button',{class:'btn primary',type:'button',onclick:()=>go({name:'session',mod:m.id,sid:nx.id})},gl('play'),sesLabelBtn(st)):sesLock(nx)):null,
         h('button',{class:'btn ghost',type:'button',onclick:()=>go({name:'mod',mod:m.id,tab:'plan'})},'Abrir el módulo'))));
 }
 /* lo que toca hoy (o el próximo día de clase) según el horario del grupo */
@@ -6313,7 +6316,7 @@ function dayRows(iso){
       h('div',{class:'dr-t'},h('b',null,perLabel(sl.per)),h('small',null,TT.PER[sl.per][0]+' - '+TT.PER[sl.per][1]),sl.sh?h('small',{class:'bea'},'con '+TT.BEA[1]):null),
       tile(m.ic,'sm'),
       h('div',{class:'dr-b'},body),
-      ses?h('button',{class:'btn'+(st==='done'?' ghost':' primary')+' sm',type:'button',onclick:()=>go({name:'session',mod:m.id,sid:ses.id})},gl(st==='done'?'redo':'play'),sesLabelBtn(st)):null,
+      ses?(sesOpen(m,ses)?h('button',{class:'btn'+(st==='done'?' ghost':' primary')+' sm',type:'button',onclick:()=>go({name:'session',mod:m.id,sid:ses.id})},gl(st==='done'?'redo':'play'),sesLabelBtn(st)):h('span',{class:'pill'},gl('lock'),'Se abre ese día')):null,
       now?h('span',{class:'pill warn'},'Ahora'):null);
   });
 }
@@ -6416,7 +6419,7 @@ function sessCard(m,ses,nx){
     h('div',{class:'agenda','aria-label':'Agenda de la sesión'},BLOQUES.map(b=>h('span',{class:'tile'+(rec.b&&rec.b[b.k]?' on':''),title:b.n,'aria-label':b.n},ic(b.ic)))),
     h('ul',null,ses.items.map((it,idx)=>h('li',{class:taskDone(ses.id,idx,it)?'done':''},it.title+' · '+it.mins+' min'+(it.rep?' (repaso)':'')))),
     h('div',{class:'actions',style:'margin-top:4px'},
-      h('button',{class:'btn'+(st==='done'?' ghost':' primary'),type:'button',onclick:()=>go({name:'session',mod:m.id,sid:ses.id})},gl(st==='done'?'redo':'play'),sesLabelBtn(st))));
+      sesOpen(m,ses)?h('button',{class:'btn'+(st==='done'?' ghost':' primary'),type:'button',onclick:()=>go({name:'session',mod:m.id,sid:ses.id})},gl(st==='done'?'redo':'play'),sesLabelBtn(st)):sesLock(ses)));
 }
 
 /* --- pestaña: fichas --- */
@@ -6441,7 +6444,7 @@ function tabFichas(m){
   if(dias.length)groups.push({t:'Nuestra Cafetería',s:'Días de centro',us:dias});
   const card=u=>{
     const st=unitStats(u),dn=st.pd===st.np,gs=gameStars(u),has=unitSeen(u),rv=st.ex+[1,2,3,4].filter(k=>gameRec(u.uid,k).ex).length;
-    if(!unitOn(u)){const fd=unitFirst(u);return h('div',{class:'ucard ulock','aria-label':u.title+', cerrada'},tile(u.ic),h('span',{class:'lab'+(u.kind==='aae'?'':' sun')},unitLabel(u)),h('h3',null,u.title),h('span',{class:'ulock-t'},gl('lock'),fd?'Se abre el '+fmtDMiso(monOf(fd)):'Cerrada'));}
+    if(!unitOn(u)){const fd=unitFirst(u);return h('div',{class:'ucard ulock','aria-label':u.title+', cerrada'},tile(u.ic),h('span',{class:'lab'+(u.kind==='aae'?'':' sun')},unitLabel(u)),h('h3',null,u.title),h('span',{class:'ulock-t'},gl('lock'),fd?'Se abre el '+fmtDMiso(fd):'Cerrada'));}
     return h('button',{class:'ucard'+(dn?' done':'')+(rv?' rev':''),type:'button',onclick:()=>go({name:'unit',unit:u.uid,page:0})},
       tile(u.ic),h('span',{class:'lab'+(u.kind==='aae'?'':' sun')},unitLabel(u)),h('h3',null,u.title),
       h('span',{class:'dots','aria-label':st.pd+' de '+st.np+' páginas hechas, '+gs+' estrellas de 12'},
@@ -6823,7 +6826,7 @@ function finishSession(m,ses,rec){
   rec.b.eval=1;rec.done=Date.now();save();
   const today=((S().time[m.id]||{})[dkey()])||0,nx=nextSession(m);
   const acts=[['Volver a mi plan',()=>go({name:'mod',mod:m.id,tab:'plan',week:ses.w}),!nx]];
-  if(nx)acts.unshift(['Siguiente sesión',()=>go({name:'session',mod:m.id,sid:nx.id}),true]);
+  if(nx&&sesOpen(m,nx))acts.unshift(['Siguiente sesión',()=>go({name:'session',mod:m.id,sid:nx.id}),true]);
   modal({ic:'estrella',title:'¡Sesión terminada!',text:'Hoy llevas '+fmtDur(today)+' de trabajo en este módulo. ¡Buen trabajo!',actions:acts});
 }
 function blkEval(C){
