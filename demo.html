@@ -8069,9 +8069,11 @@ function retroScene(w){
       const btns=t.who?[]:[h('button',{type:'button',class:'btn primary sm',onclick:()=>doMe(t)},'Lo hago yo'),...staff.filter(s=>canDo(s,t.type)).map(s=>h('button',{type:'button',class:'btn ghost sm',onclick:()=>assign(t,s)},'→ '+s.n))];
       return h('div',{class:'iso-task',role:'listitem'},tile(ICONS[ic0]?ic0:'estrella','sm'),h('div',{class:'iso-tt'},h('b',null,lab),h('span',null,taskWhere(t)+(t.type==='preparar'||t.type==='llevar'?': '+t.ref.want.map(nm).join(', '):''))),who,h('div',{class:'iso-tb'},btns));}));
   }
+  /* en la franja amarilla de la barra (la del local grande va de (1,5) a (19,6)); antes se miraba la fila 4 del local antiguo y al llegar no pasaba nada */
+  const atBar=()=>{const z=M.strip;return z?me.i>=z[0]&&me.i<=z[2]&&me.j>=z[1]&&me.j<=z[3]:(me.j===4&&me.i>=1&&me.i<=11);};
   function targetOf(t){if(t.type==='telefono')return M.recep||{i:10,j:M.F-1};if(t.type==='preparar')return M.prep;const tb=t.ref.tbl||t.ref;return{i:tb.i,j:tb.j};}
   function doMe(t){if(!gate.ok){lockSay();return;}if(me.job&&me.job!==t){me.job.who=null;}tasks.forEach(q=>{if(q.who===me)q.who=null;});t.who=me;me.job=t;if(W3&&w3on){const g=targetOf(t);W3.face(g.i,g.j);}if(t.ref&&t.ref.members)t.ref.me=true;else if(t.ref&&t.ref.party)t.ref.party.me=true;hideChoice();drawTasks();
-    const tg=targetOf(t);const p=t.type==='preparar'?(me.j===4&&me.i>=1&&me.i<=11?[]:rtPath(M,{i:me.i,j:me.j},tg)):nearTo(me,tg);
+    const tg=targetOf(t);const p=t.type==='preparar'?(atBar()?[]:rtPath(M,{i:me.i,j:me.j},tg)):nearTo(me,tg);
     if(p&&p.length){me.path=p;say('Vas a '+taskWhere(t)+'.');}else if(p){arrive();}else say('No puedes llegar. Prueba a tocar el suelo cerca.');}
   function assign(t,s,auto){t.who=s;s.job=t;s.t0=performance.now();drawTasks();if(!auto){say(s.n+': «'+TK[t.type][0]+'». ¡Lo hace en un momento!');speak(s.n+', '+TK[t.type][0].toLowerCase());}
     if(s.role==='sala'){const p=nearTo(s,targetOf(t));s.path=p||[];if(!p)s.ready=true;}else s.path=[];}
@@ -8248,7 +8250,7 @@ function retroScene(w){
   function arrive(){
     const t=me.job;
     if(t){const tg=targetOf(t);
-      if(t.type==='preparar'){if(me.j===4&&me.i>=1&&me.i<=11){gamePrep(t.ref,t);return;}}
+      if(t.type==='preparar'){if(atBar()){gamePrep(t.ref,t);return;}}
       else if(t.type==='telefono'){if(adj(me,tg)||(me.i===tg.i&&me.j===tg.j)){gamePhone(t);return;}}
       else if(adj(me,tg)||t.ref.tbl&&t.ref.tbl.seats.some(s=>adj(s,me))||t.ref.seats&&t.ref.seats.some(s=>adj(s,me))){
         if(t.type==='nota'){gameNota(t.ref,t);return;}
@@ -8260,7 +8262,7 @@ function retroScene(w){
       }
     }
     /* sin tarea: si está en la franja de la barra y hay pedidos, prepara el primero */
-    if(me.j===4&&me.i>=1&&me.i<=11){const pt=tasks.find(q=>q.type==='preparar'&&!q.who);if(pt){pt.who=me;me.job=pt;drawTasks();gamePrep(pt.ref,pt);return;}}
+    if(atBar()){const pt=tasks.find(q=>q.type==='preparar'&&!q.who);if(pt){pt.who=me;me.job=pt;drawTasks();gamePrep(pt.ref,pt);return;}}
     const near=tasks.find(q=>!q.who&&q.type!=='preparar'&&q.type!=='telefono'&&adj(me,targetOf(q)));if(near){near.who=me;me.job=near;drawTasks();arrive();}
   }
   /* empleados trabajando solos */
