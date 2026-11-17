@@ -21,6 +21,53 @@
 .live-lab{font:600 1rem var(--f-body);color:var(--ink-2)}
 .sum-live{display:grid;justify-items:center}
 @media (prefers-color-scheme:dark){.coma-n .ce{background:#1d3550}.coma-n .cc{background:#4a2a10}.coma .ce,.coma-tip .ce,.pay-grp.ce .pay-lab{color:#8fc0f5}.coma .cc,.coma-tip .cc,.pay-grp.cc .pay-lab{color:#f5b37a}}
+/* v17: el cambio paso a paso */
+:root{--sb-ce:#1d5fa8;--sb-cc:#b4500b;--sb-ce-s:#dceafa;--sb-cc-s:#ffe6cf;--sb-pre:#9fb3c8;--sb-ok:#1e7b34;--sb-ok-s:#e3f5e6}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--sb-ce:#8fc0f5;--sb-cc:#f5b37a;--sb-ce-s:#1d3550;--sb-cc-s:#4a2a10;--sb-pre:#4f6274;--sb-ok:#8fdc9f;--sb-ok-s:#173a22}}
+:root[data-theme="dark"]{--sb-ce:#8fc0f5;--sb-cc:#f5b37a;--sb-ce-s:#1d3550;--sb-cc-s:#4a2a10;--sb-pre:#4f6274;--sb-ok:#8fdc9f;--sb-ok-s:#173a22}
+.sb-demo{text-align:center;font:600 1.15rem/1.3 var(--f-body);margin:0 0 8px}
+.sb-head{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:10px 28px}
+.sb-hc{display:grid;justify-items:center;gap:4px}
+.sb-path{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px;margin:10px auto;padding:10px;border:2px solid var(--line);border-radius:var(--r-s);background:var(--surface-2);max-width:100%}
+.sb-stop{display:grid;justify-items:center;gap:2px;min-width:72px}
+.sb-st{font:600 .9rem var(--f-body);color:var(--ink-2)}
+.sb-pr{font:700 1.6rem/1.1 var(--f-display);font-variant-numeric:tabular-nums}
+.sb-pr .ce{color:var(--sb-ce)}.sb-pr .cc{color:var(--sb-cc)}
+.sb-stop .bill svg{width:84px;height:auto}.sb-stop .coin{width:52px;height:52px}
+.sb-jump{display:grid;justify-items:center;gap:0}
+.sb-jv{font:700 1.05rem var(--f-body);padding:2px 8px;border-radius:999px;border:2px dashed currentColor}
+.sb-jump.cc{color:var(--sb-cc)}.sb-jump.ce{color:var(--sb-ce)}
+.sb-arr{font:700 1.8rem/1 var(--f-display)}
+.sb-steps{display:grid;gap:12px;margin-top:8px}
+.sb-step{border:3px solid var(--line);border-radius:var(--r-s);padding:12px;background:var(--surface)}
+.sb-step.now{border-color:var(--acc,var(--brand))}
+.sb-step.ok{border-color:var(--sb-ok)}
+.sb-sh{display:flex;align-items:center;gap:10px}
+.sb-sh h3{margin:0;font:700 1.4rem/1.2 var(--f-display)}
+.sb-n{flex:none;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:var(--ink);color:var(--surface);font:700 1.3rem var(--f-display)}
+.sb-pic{display:inline-grid;width:34px;height:34px;color:var(--ink)}.sb-pic svg{width:100%;height:100%}
+.sb-sub{font:600 1.25rem/1.35 var(--f-body);margin:8px 0}
+.sb-barw{display:grid;gap:2px;margin:6px 0}
+.sb-bar{display:flex;flex-wrap:wrap;gap:4px}
+.sb-cell{flex:1 1 34px;min-width:34px;max-width:64px;height:46px;display:grid;place-items:center;border:2px dashed var(--ink-2);border-radius:8px;font:700 .85rem var(--f-body);font-style:normal;color:var(--ink-2)}
+.sb-cell.pre{background:var(--sb-pre);border-style:solid;border-color:var(--sb-pre)}
+.sb-bar.cc .sb-cell.add{background:var(--sb-cc-s);border:3px solid var(--sb-cc);color:var(--sb-cc)}
+.sb-bar.ce .sb-cell.add{background:var(--sb-ce-s);border:3px solid var(--sb-ce);color:var(--sb-ce)}
+.sb-ends{display:flex;justify-content:space-between;font:700 1.1rem var(--f-body)}
+.sb-note{margin:2px 0 8px;color:var(--ink-2);font-size:1rem}
+.sb-pay button.sb-hint{outline:4px solid var(--sb-ok);outline-offset:3px;border-radius:50%;animation:sbPulse 1s ease-in-out infinite}
+@keyframes sbPulse{50%{transform:scale(1.08)}}
+@media (prefers-reduced-motion:reduce){.sb-pay button.sb-hint{animation:none}}
+.sb-tray{min-height:64px;margin-top:8px}
+.sb-live{text-align:center;font:600 1.1rem var(--f-body);margin:6px 0 0;min-height:1.4em}
+.sb-okline{display:flex;align-items:center;gap:8px;justify-content:center;font:700 1.2rem var(--f-body);color:var(--sb-ok);background:var(--sb-ok-s);border-radius:var(--r-s);padding:8px;margin:8px 0 0}
+.sb-final{display:grid;justify-items:center;gap:4px;margin-top:10px;padding:10px;border-radius:var(--r-s);background:var(--sb-ok-s)}
+.sb-ft{font:700 1.3rem var(--f-display)}
+.sb-fs{margin:0;font:600 1.05rem var(--f-body);text-align:center}
+.sb-tipbox{margin:6px 0 10px}
+.sb-tipt{display:flex;align-items:center;justify-content:center;gap:8px;margin:0;font:600 1.05rem/1.3 var(--f-body);text-align:center}
+.sb-tipbox .sb-path{margin:6px auto 0;padding:6px}
+.sb-tipbox .sb-pr{font-size:1.25rem}
 </style></head><body>
 <meta name="claude:viewport-fit-sides" content="cover">
 <title>Cuadernillos de Hostelería</title>
@@ -4342,6 +4389,15 @@ sim({id:'cafeteria',mods:['a4e','apb','sbr'],ic:'taza',n:'Nuestra Cafetería',d:
     return r;}});
 
 /* ---------- utilidades del catálogo ---------- */
+/* v17: «El cambio paso a paso» (las rondas y el dibujo van al final) */
+sim({id:'c_subir',mods:['sbr'],ic:'euro',n:'El cambio paso a paso',d:'Primero subo hasta el euro. Después subo hasta el billete. Junto las monedas.',units:['4.3','4.4','R4','5.3'],
+  g:l=>{const r=[subirRound(l,true)];for(let i=0;i<(l===1?4:5);i++)r.push(subirRound(l));
+    if(l===3)r.push(cajaRound(3,'change'));
+    return r;}});
+const SUBIR_G=SIMS.find(s=>s.id==='c_subir').g;
+/* que salga justo después de «Caja y cambio» */
+(()=>{const i=SIMS.findIndex(s=>s.id==='c_subir'),j=SIMS.findIndex(s=>s.id==='c_caja');if(i>0&&j>=0&&i!==j+1){const[o]=SIMS.splice(i,1);SIMS.splice(j+1,0,o);}})();
+
 const SBY={};SIMS.forEach(s=>{SBY[s.id]=s;});
 const simsOf=mid=>SIMS.filter(s=>s.mods.includes(mid)&&!(typeof simLocked==='function'&&simLocked(s)));
 function simRec(id,l){const g=S().sim[id]||{};return g[l]||{s:0,p:0};}
@@ -4382,7 +4438,7 @@ function skillOf(r){
     case 'completar':case 'sopa':return 'esr';
     case 'unir':return 'rel';
     case 'ordenar':case 'sort':case 'fifo':return 'ord';
-    case 'num':case 'caja':return 'cal';
+    case 'num':case 'caja':case 'subir':return 'cal';
     case 'memory':case 'kim':return 'mem';
     case 'intruso':case 'find':case 'missing':return 'obs';
     case 'pedido':return r.voice?'esc':'ate';
@@ -6801,6 +6857,7 @@ function tabEntrenar(m){
     tcard('puzzle','Parejas de memoria','Encuentra cada dibujo con su nombre.',T('mem')),
     tcard('lupa','Sopa de letras','Busca las palabras del módulo.',T('sopa'))];
   if(hasNums(m))cards.push(m.n>=4?tcard('calculadora','Cuentas y problemas','Cuentas y problemas como los de las fichas.',T('cuentas')):tcard('euro','Cuentas y dinero','Sumas, cambio y monedas de hostelería.',T('cuentas')));
+  if(m.n<4)cards.push(tcard('euro','El cambio paso a paso','Sube hasta el euro y después hasta el billete.',T('subir')));
   cards.push(tcard('estrella','Reto del módulo','Preguntas mezcladas de todas las fichas.',T('mix')));
   const fun=[
     tcard('puzzle','Bingo de pictogramas','Escucha la palabra y toca su dibujo en tu cartón.',T('bingo')),
@@ -6994,6 +7051,7 @@ const TRAIN_INFO={
   oye:['Escucha la frase','Oye la frase y toca el dibujo del que habla.'],
   pide:['Pedidos por voz','Escucha al cliente y apunta lo que pide.'],
   micafe:['Las cuentas de mi cafetería','Cobra con los productos de tu carta.'],
+  subir:['El cambio paso a paso','Primero subo hasta el euro. Después subo hasta el billete.'],
   reto:['Reto del día','Un poco de todo para ganar la propina del día.']
 };
 function trainSet(m,mode,units,n){
@@ -7008,6 +7066,7 @@ function trainSet(m,mode,units,n){
   else if(mode==='oye')r=canSpeak?oyeRounds(units,8):trainRounds(units,8);   /* sin voz en el dispositivo, preguntas normales */
   else if(mode==='pide')r=pideRounds(m,5);
   else if(mode==='micafe')r=cafeRounds(8);
+  else if(mode==='subir')r=subirTrain();
   else if(mode==='reto')r=retoRounds(m);
   else r=trainRounds(modUnits(m),14);
   const MORE={srs:[6,n||12],mem:[1,3],sopa:[1,2],bingo:[2,3],kim:[3,5],falta:[3,6],oye:[4,8]};
@@ -11995,6 +12054,157 @@ B.coins=(c,lv)=>{
   const vals=[0.1,0.2,0.5,1,2],row=Array.from({length:rint(3,5)},()=>choice(vals)).sort((a,b)=>b-a),tot=Math.round(row.reduce((a,v)=>a+v,0)*100)/100,o=numOpts(tot,3,0.1,fm2);
   return rd('num','¿Cuánto dinero hay?',{money:row,opts:o.opts,ans:o.ans},c.fid('n','monedas'+row.join()));
 };
+
+/* ===== v17: devolver el cambio «subiendo» (método de completar): primero hasta el euro, después hasta el billete ===== */
+const r2=v=>Math.round(v*100)/100;
+function subirPlan(cost,paid){const up=Math.ceil(cost-1e-9);return{up,a:r2(up-cost),b:r2(paid-up),t:r2(paid-cost)};}
+const ctTxt=v=>Math.round(v*100)+' céntimos';
+const euTxt=v=>v===1?'1 euro':fmNum(v)+' euros';
+/* pictograma de escalera (paso a paso) */
+const STAIR_SVG='<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M4 42h10v-10h10v-10h10v-10h10" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="M30 8l8-4 0 0" fill="none" stroke="currentColor" stroke-width="0"/></svg>';
+/* el camino: 3,50 €  → 4 €  → 10 €  (con lo que falta en cada salto, o «?») */
+function subirCamino(cost,paid,a,b){
+  const pl=subirPlan(cost,paid);
+  const stop=(cls,top,el)=>h('div',{class:'sb-stop '+cls},h('span',{class:'sb-st'},top),el);
+  const jump=(cls,v)=>h('div',{class:'sb-jump '+cls},h('span',{class:'sb-jv'},v==null?'?':'+ '+(cls==='cc'?ctTxt(v):euTxt(v))),h('span',{class:'sb-arr','aria-hidden':'true'},'→'));
+  const kids=[stop('st0','Cuesta',h('b',{class:'sb-pr'},h('span',{class:'ce'},String(Math.floor(cost+1e-9))),h('span',{class:'cc'},','+String(Math.round(cost*100)%100).padStart(2,'0')),' €'))];
+  if(pl.a>0)kids.push(jump('cc',a),stop('st1','Euro',h('b',{class:'sb-pr'},pl.up+' €')));
+  if(pl.b>0)kids.push(jump('ce',b),stop('st2','Paga con',moneyEl(paid)));
+  return h('div',{class:'sb-path',role:'img','aria-label':'Camino: de '+eur(cost)+(pl.a>0?' a '+pl.up+' €':'')+' y a '+paid+' €'},kids);
+}
+/* reparto con las monedas más grandes que caben (para «Mira cómo se hace») */
+function greedy(v,vals){const out=[];let c=Math.round(v*100);vals.slice().sort((x,y)=>y-x).forEach(m=>{const k=Math.round(m*100);while(c>=k){out.push(m);c-=k;}});return out;}
+
+RENDER.subir=(b,p,x)=>{
+  x.items(1);
+  const pl=subirPlan(p.cost,p.paid),demo=!!p.demo;let cam,done=false;
+  const camBox=h('div');const setCam=(a,bb)=>{cam=subirCamino(p.cost,p.paid,a,bb);camBox.replaceChildren(cam);};
+  const head=h('div',{class:'sb-head'},
+    h('div',{class:'sb-hc'},h('span',{class:'big-msg',style:'margin:0'},'Cuesta'),comaEl(p.cost,true,'Cuesta '+eurPal(p.cost))),
+    h('div',{class:'sb-hc'},h('span',{class:'big-msg',style:'margin:0'},'Paga con'),moneyEl(p.paid)));
+  setCam(null,null);
+  const steps=h('div',{class:'sb-steps'});
+  b.append(head,camBox,steps);
+  if(demo)b.prepend(h('p',{class:'sb-demo'},'Mira cómo se hace. Toca ',h('b',null,'Mira'),' en cada paso.'));
+  let A=null,Bv=null;
+  /* --- un paso de subir: barra de cuadros que se llena con monedas --- */
+  function stepFill(n,title,sub,from,to,amt,unit,coins,onOk){
+    const cents=unit<1,cellsN=cents?10:Math.round(amt),pre=cents?Math.round((from-Math.floor(from+1e-9))*10):0;
+    const cells=[];for(let i=0;i<cellsN;i++){const filled=cents&&i<pre;cells.push(h('i',{class:'sb-cell'+(filled?' pre':''),'aria-hidden':'true'},filled?'':cents?'10c':String(Math.round(from)+i+1)));}
+    const need=Math.round(amt*100);let tray=[],have=0;
+    const bar=h('div',{class:'sb-bar '+(cents?'cc':'ce')},cells);
+    const ends=h('div',{class:'sb-ends'},h('span',null,cents?Math.floor(from+1e-9)+' €':eur(from).replace(',00','')),h('span',null,to+' €'));
+    const live=h('p',{class:'sb-live','aria-live':'polite'}),msg=h('p',{class:'msg-line bad',hidden:true,role:'alert'});
+    const tr=h('div',{class:'tray sb-tray','aria-label':'Monedas que pongo'});
+    const card=h('div',{class:'sb-step now'},
+      h('div',{class:'sb-sh'},h('span',{class:'sb-n'},String(n)),h('span',{class:'sb-pic',html:STAIR_SVG}),h('h3',null,title),spk(title+'. '+sub+(demo?'':' ¿Cuánto falta?'),'sm')),
+      h('p',{class:'sb-sub'},sub,demo?null:h('b',null,' ¿Cuánto falta?')),
+      h('div',{class:'sb-barw'},bar,ends),cents?h('p',{class:'sb-note'},'1 euro = 100 céntimos. Cada cuadro = 10 céntimos. Lo gris ya está en el precio.'):h('p',{class:'sb-note'},'Cada cuadro = 1 euro.'));
+    function paint(){
+      let k=0;const unitC=cents?10:100;
+      tray.forEach(v=>{const nC=Math.round(v*100)/unitC;for(let j=0;j<nC;j++){const c=cells[(cents?pre:0)+k];if(c)c.classList.add('add');k++;}});
+      cells.forEach((c,i)=>{const idx=i-(cents?pre:0);if(idx>=k&&c.classList.contains('add'))c.classList.remove('add');});
+      tr.replaceChildren(...tray.map((v,i)=>h('button',{class:'tr-it',type:'button','aria-label':'Quitar '+(v<1?ctTxt(v):euTxt(v)),disabled:demo||have===need,onclick:()=>{tray.splice(i,1);have=Math.round(tray.reduce((s,z)=>s+z*100,0));paint();}},moneyEl(v))));
+      if(!tray.length)tr.append(h('span',{class:'muted'},demo?'Aquí van las monedas':'Toca las monedas para ponerlas aquí'));
+      live.textContent=have?'Pongo '+(cents?have+' céntimos':euTxt(have/100))+'. Llego a '+eur(r2(from+have/100)).replace(',00','')+'.':'';
+    }
+    let btns=null;
+    const add=v=>{
+      const k=Math.round(v*100);
+      if(have+k>need){bad();shake(tr);x.err(n,'Cambio paso '+n+': de '+eur(from)+' a '+to+' €');msg.hidden=false;msg.textContent='Te pasas de '+to+' €. Prueba con una moneda más pequeña.';hintBtn();return;}
+      tray.push(v);have+=k;msg.hidden=true;paint();
+      if(have===need)ok();
+    };
+    function hintBtn(){if(!btns)return;const fit=coins.filter(v=>Math.round(v*100)<=need-have).sort((a,c)=>c-a)[0];btns.querySelectorAll('button').forEach(bt=>bt.classList.toggle('sb-hint',+bt.dataset.v===fit));}
+    function ok(){
+      if(btns)btns.querySelectorAll('button').forEach(k=>{k.disabled=true;k.classList.remove('sb-hint');});
+      tr.querySelectorAll('button').forEach(k=>{k.disabled=true;});
+      card.classList.add('ok');good();
+      const t='¡Llego a '+to+' €! Faltan '+(cents?ctTxt(amt):euTxt(amt))+'.';
+      card.append(h('p',{class:'sb-okline'},gl('check'),t));
+      if(demo)speak(t);
+      setTimeout(()=>onOk(tray.slice()),demo?1400:700);
+    }
+    if(demo){
+      const mira=h('button',{class:'btn primary',type:'button',onclick:()=>{mira.disabled=true;speak(title+'. '+sub);
+        const seq=greedy(amt,coins);let i=0;const tick=()=>{if(i<seq.length){add(seq[i++]);if(i<seq.length)setTimeout(tick,900);}};setTimeout(tick,900);}},gl('next'),'Mira');
+      card.append(tr,live,h('div',{class:'actions',style:'justify-content:center'},mira));
+    }else{
+      btns=h('div',{class:'pay sb-pay'},coins.map(v=>{const bt=h('button',{type:'button','data-v':v,'aria-label':v<1?ctTxt(v):euTxt(v)},moneyEl(v));bt.addEventListener('click',()=>add(v));return bt;}));
+      card.append(h('div',{class:'pay-grp '+(cents?'cc':'ce')},h('span',{class:'pay-lab'},cents?'Céntimos':'Euros'),btns),tr,live,msg);
+    }
+    paint();steps.append(card);
+    try{card.scrollIntoView({block:'nearest',behavior:'smooth'});}catch(e){}
+  }
+  function step1(){
+    if(pl.a<=0){A=[];steps.append(h('div',{class:'sb-step ok'},h('div',{class:'sb-sh'},h('span',{class:'sb-n'},'1'),h('h3',null,eur(p.cost).replace(',00','')+' ya es un euro justo')),h('p',{class:'sb-okline'},gl('check'),'No faltan céntimos.')));step2();return;}
+    stepFill(1,'Subo hasta el euro','De '+eur(p.cost)+' a '+pl.up+' €.',p.cost,pl.up,pl.a,0.1,[0.1,0.2,0.5],tr=>{A=tr;setCam(pl.a,null);step2();});
+  }
+  function step2(){
+    const isBill=p.paid>=5;
+    const coins=[1,2,5,10].filter(v=>v<=pl.b||v===1);
+    stepFill(2,isBill?'Subo hasta el billete':'Subo hasta lo que paga','De '+pl.up+' € a '+p.paid+' €.',pl.up,p.paid,pl.b,1,coins,tr=>{Bv=tr;setCam(pl.a>0?pl.a:null,pl.b);step3();});
+  }
+  function step3(){
+    const parts=[pl.a>0?ctTxt(pl.a):null,euTxt(pl.b)].filter(Boolean);
+    const tray=h('div',{class:'tray sb-tray all'},[...Bv,...A].map(moneyEl));
+    const sub=parts.join(' y ')+'.';
+    const card=h('div',{class:'sb-step now'},
+      h('div',{class:'sb-sh'},h('span',{class:'sb-n'},'3'),h('span',{class:'sb-pic',html:STAIR_SVG}),h('h3',null,'Junto el cambio'),spk('Junto el cambio. '+sub+(demo?'':' ¿Cuánto es?'),'sm')),
+      h('p',{class:'sb-sub'},sub,demo?null:h('b',null,' ¿Cuánto es?')),tray);
+    steps.append(card);try{card.scrollIntoView({block:'nearest',behavior:'smooth'});}catch(e){}
+    const fin=()=>{
+      card.classList.add('ok');
+      const say='Le doy '+eurPal(pl.t)+'.';
+      const box=h('div',{class:'sb-final'},h('span',{class:'sb-ft'},'El cambio es'),comaEl(pl.t,false,say),h('p',{class:'sb-fs'},'Cuesta '+eur(p.cost)+'. Paga con '+p.paid+' €. Le doy '+eur(pl.t)+'.'));
+      card.append(box);try{box.scrollIntoView({block:'nearest',behavior:'smooth'});}catch(e){}
+      if(demo){speak('El cambio es '+eurPal(pl.t)+'.');const ok=h('button',{class:'btn primary',type:'button',onclick:()=>{ok.disabled=true;x.finish();}},gl('check'),'¡Lo he entendido!');card.append(h('div',{class:'actions',style:'justify-content:center'},ok));}
+      else x.finish();
+    };
+    if(demo){const mira=h('button',{class:'btn primary',type:'button',onclick:()=>{mira.remove();fin();}},gl('next'),'Mira');card.append(h('div',{class:'actions',style:'justify-content:center'},mira));return;}
+    /* opciones: la buena, un euro más, un euro menos y el error de la coma (50 céntimos → 0,05) */
+    const cand=[pl.t,r2(pl.t+1),r2(pl.t-1),r2(pl.b+pl.a/10),r2(pl.t+0.5)].filter((v,i,z)=>v>0&&z.indexOf(v)===i);
+    const opts=shuf([pl.t,...pickN(cand.slice(1),2)]);
+    const row=h('div',{class:'numopts'});
+    opts.forEach(v=>{const bt=h('button',{class:'opt',type:'button','data-ok':v===pl.t?'1':null},eur(v));
+      bt.addEventListener('click',()=>{if(v===pl.t){bt.classList.add('sel');row.querySelectorAll('button').forEach(k=>k.disabled=true);fin();}
+        else{bt.classList.add('x');bt.disabled=true;shake(row);bad();x.err(3,'Juntar el cambio: '+sub);}});
+      row.append(bt);});
+    card.append(row);
+  }
+  step1();
+};
+
+/* las rondas del juego «El cambio paso a paso» */
+function subirRound(l,demo){
+  let cost,paid;
+  if(demo){[cost,paid]=l===1?[3.5,10]:l===2?[2.7,5]:[7.4,20];}
+  else{
+    const cts=l===1?[50]:l===2?[50,20,70,30,80]:[10,20,30,40,60,70,80,90];
+    const pays=l===1?[5,10]:l===2?[5,10,20]:[10,20];
+    let g=0;do{cost=r2(rint(1,l===1?8:l===2?9:17)+choice(cts)/100);paid=choice(pays);}while((paid<Math.ceil(cost)+1)&&g++<40);
+    if(paid<Math.ceil(cost)+1)paid=20;
+  }
+  return rd('subir',demo?'Mira cómo se da el cambio paso a paso.':'Da el cambio paso a paso.',{cost,paid,demo:!!demo,big:'Cambio: cuesta '+eur(cost)+', paga con '+paid+' €'},'csubir#'+(demo?'d':'')+cost+':'+paid);
+}
+/* pista del camino también en «Caja y cambio» y en las cuentas de cambio de las fichas */
+const RC0=RENDER.caja;
+RENDER.caja=(b,p,x)=>{
+  RC0(b,p,x);
+  if(p.mode!=='change'||!hasCts(p.cost))return;
+  const tip=b.querySelector('.coma-tip');
+  const box=h('div',{class:'sb-tipbox'},h('p',{class:'sb-tipt'},h('span',{class:'sb-pic',html:STAIR_SVG}),'Paso a paso: 1. Sube hasta el euro. 2. Sube hasta el billete. 3. Junta las monedas.'),subirCamino(p.cost,p.paid,null,null));
+  if(tip)tip.replaceWith(box);else{const pw=b.querySelector('.pay-wrap');if(pw)pw.before(box);}
+};
+const RN0=RENDER.num;
+RENDER.num=(b,p,x)=>{RN0(b,p,x);if(p.camino){const o=b.querySelector('.numopts');if(o)o.before(h('div',{class:'sb-tipbox'},h('p',{class:'sb-tipt'},h('span',{class:'sb-pic',html:STAIR_SVG}),'Sube hasta el euro y después hasta el billete.'),subirCamino(p.camino[0],p.camino[1],null,null)));}};
+const B_change0=B.change;
+B.change=(c,lv)=>{const r=B_change0(c,lv);try{const ch=parseFloat(String(r.opts[r.ans]).replace(/[^\d,]/g,'').replace(',','.')),paid=r.money[0],cost=r2(paid-ch);if(hasCts(cost))r.camino=[cost,paid];}catch(e){}return r;};
+
+/* «El cambio paso a paso» va sin preguntas extra del banco: solo el método */
+if(SBY.c_subir&&SUBIR_G)SBY.c_subir.g=SUBIR_G;
+/* Entrenar: «El cambio paso a paso» siempre abierto (ejemplo + de más fácil a más difícil) */
+function subirTrain(){return [subirRound(1,true),subirRound(1),subirRound(1),subirRound(1),subirRound(2),subirRound(2),subirRound(2),subirRound(3)];}
 
 render();
 
