@@ -482,6 +482,9 @@ h2.sec{font:600 1.45rem/1.2 var(--f-display);margin:30px 0 12px}
 .msg-line{margin:12px 0 0;font-weight:700;font-size:1.1rem;color:var(--ok-ink);background:var(--ok);border-radius:var(--r-s);padding:10px 14px}
 .msg-line.bad{color:var(--bad-ink);background:var(--bad)}
 .fifo-msg{text-align:center}
+.mem.fija,.ucell.fija{outline:4px solid var(--sun-ink);outline-offset:3px}
+.go-on{position:sticky;bottom:10px;z-index:4;text-align:center;box-shadow:0 4px 14px rgba(0,0,0,.18)}
+.go-on.nudge{background:var(--sun-soft);color:var(--ink);outline:3px solid var(--sun-ink)}
 .fifo-wait .prod:not(.sel):not(.x){animation:fifoPulse 1.4s ease-in-out infinite}
 @keyframes fifoPulse{50%{box-shadow:0 0 0 6px #f5b041}}
 @media (prefers-reduced-motion:reduce){.fifo-wait .prod:not(.sel):not(.x){animation:none;outline:4px dashed #f5b041}}
@@ -1922,7 +1925,24 @@ function tone(freqs,dur){
       g.gain.setValueAtTime(0,t0+i*dur);g.gain.linearRampToValueAtTime(.16,t0+i*dur+.02);g.gain.exponentialRampToValueAtTime(.0001,t0+(i+1)*dur+.05);
       o.connect(g);g.connect(actx.destination);o.start(t0+i*dur);o.stop(t0+(i+1)*dur+.06);});}catch(e){}
 }
-const good=()=>tone([660,880]),bad=()=>tone([200],.2),cheer=()=>tone([523,659,784,1047],.13);
+let GO_LAST=null;
+function goOn(){const el=GO_LAST;if(!el||!el.isConnected||!el.__go)return;const g=el.__go;
+  setTimeout(()=>{if(g.isFin()||g.n<2||el.querySelector('.fifo-msg:not([hidden])'))return;g.done++;g.nudges=0;g.show(false);},40);}
+function goReg(host,isFin){
+  const g={n:0,done:0,t:0,el:null,nudges:0,isFin,
+    text(idle){const left=g.n-g.done;return (idle?'Todavía no has terminado.':'¡Bien! Sigue.')+(left>0?(left===1?' Te queda 1.':' Te quedan '+left+'.'):'');},
+    show(idle){
+      if(!g.el||!g.el.isConnected){g.el=h('p',{class:'msg-line go-on','aria-live':'polite'});host.append(g.el);}
+      g.el.textContent=g.text(idle);g.el.hidden=false;g.el.classList.toggle('nudge',!!idle);
+      if(idle){g.nudges++;try{speak(g.el.textContent);}catch(e){}}
+      g.arm();},
+    arm(){clearTimeout(g.t);if(g.nudges>=2)return;g.t=setTimeout(()=>{if(host.isConnected&&!g.isFin()&&g.done>0)g.show(true);},10000);},
+    end(){clearTimeout(g.t);if(g.el)g.el.hidden=true;}};
+  return g;
+}
+['click','pointerdown','input','keydown'].forEach(ev=>document.addEventListener(ev,e=>{const t=e.target;GO_LAST=t&&t.closest?t.closest('[data-goon]'):null;
+  if(GO_LAST&&GO_LAST.__go&&GO_LAST.__go.done>0&&!GO_LAST.__go.isFin())GO_LAST.__go.arm();},true));
+const good=()=>{tone([660,880]);goOn();},bad=()=>tone([200],.2),cheer=()=>tone([523,659,784,1047],.13);
 /* ================= voz de las locuciones =================
    La app no lleva voz propia: usa la voz en español que tenga el dispositivo. Aquí se elige la mejor (o la que fije el profe en Ajustes)
    y se prepara el texto para que se lea bien: símbolos, unidades y palabras raras. */
@@ -2693,7 +2713,7 @@ function partCard(u,pi,j,p,hooks){
     card.append(h('header',{class:'part-head'},spk(p.ins),h('h2',{class:'ins'},p.ins),tag,redo,h('span',{class:'stat','aria-label':solvedNow?'Hecho':'Sin hacer'},gl('check'))));
     const body=h('div',{class:'part-body'});card.append(body);
     if(!R){body.append(h('p',{class:'muted'},'Esta actividad está en el cuadernillo impreso.'));return;}
-    const run={n:0,miss:{},anon:0,fin:false};
+    const run={n:0,miss:{},anon:0,fin:false};card.dataset.goon='1';card.__go=goReg(card,()=>run.fin||solvedNow);
     const missed=()=>Math.min(run.n,Object.keys(run.miss).length+run.anon);
     function panel(cls,title,text,btns){
       const el=h('div',{class:'retry '+cls,role:'status'},h('strong',null,title),text?h('p',null,text):null,h('div',{class:'actions',style:'margin-top:8px'},btns));
@@ -2733,7 +2753,7 @@ function partCard(u,pi,j,p,hooks){
     }
     const x={
       solved:solvedNow,
-      items(n){run.n=n;},
+      items(n){run.n=n;card.__go.n=n;},
       err(key,label){
         st.errs[id]=(st.errs[id]||0)+1;
         if(key==null)run.anon++;else run.miss[key]=(run.miss[key]||0)+1;
@@ -2744,7 +2764,7 @@ function partCard(u,pi,j,p,hooks){
       set(v){st.data[id]=v;save();},
       finish(){
         if(solvedNow||run.fin)return;
-        run.fin=true;settle();
+        run.fin=true;card.__go.end();settle();
       }
     };
     R(body,p,x);
@@ -2825,22 +2845,22 @@ RENDER.unir=(b,p,x)=>{
   }
   function match(k,silent){
     order++;matched++;
-    [L[k],Rr[k]].forEach(el=>{el.classList.remove('sel');el.classList.add('m');el.style.setProperty('--mc','var(--m'+((order-1)%6+1)+')');el.dataset.n=order;el.disabled=true;});
+    [L[k],Rr[k]].forEach(el=>{el.classList.remove('sel','fija');el.classList.add('m');el.style.setProperty('--mc','var(--m'+((order-1)%6+1)+')');el.dataset.n=order;el.disabled=true;});
     if(!silent){good();speak(p.items[k][1]);}
     if(matched===n)x.finish();
   }
   function pick(side,i,el){
     if(el.classList.contains('m'))return;
     if(!sel){sel={side,i,el};el.classList.add('sel');return;}
-    if(sel.side===side){sel.el.classList.remove('sel');if(sel.i===i){sel=null;return;}sel={side,i,el};el.classList.add('sel');return;}
-    const li=side==='L'?i:sel.i,ri=side==='R'?i:sel.i,prev=sel.el;sel=null;
+    if(sel.side===side){sel.el.classList.remove('sel','fija');if(sel.i===i){sel=null;return;}sel={side,i,el};el.classList.add('sel');return;}
+    const li=side==='L'?i:sel.i,ri=side==='R'?i:sel.i,prev=sel.el,keep=sel;sel=null;
     if(li===ri){prev.classList.remove('sel');match(li);}
-    else{prev.classList.remove('sel');[prev,el].forEach(c=>{c.classList.add('oops');shake(c);setTimeout(()=>c.classList.remove('oops'),1400);});bad();x.err(li,p.items[li][1]+(p.items[li][2]?' ('+p.items[li][2]+')':''));}
+    else{el.classList.add('oops');shake(el);setTimeout(()=>el.classList.remove('oops'),1400);sel=keep;prev.classList.add('sel','fija');bad();x.err(li,p.items[li][1]+(p.items[li][2]?' ('+p.items[li][2]+')':''));}
   }
   L.forEach((e,i)=>{e.dataset.pair=i;Rr[i].dataset.pair=i;});
   if(x.solved)for(let k=0;k<n;k++)match(k,true);
   b.append(grid);
-  if(!x.solved&&!p.nohint)b.append(h('p',{class:'hint'},'Toca un dibujo y después su nombre.'));
+  if(!x.solved&&!p.nohint)b.append(h('p',{class:'hint'},'Toca un dibujo y después su nombre. Si fallas, el primero se queda marcado: busca su pareja.'));
 };
 
 /* ---- escribir con ayuda: nombrar, completar y números ---- */
@@ -3632,13 +3652,13 @@ RENDER.memory=(b,p,x)=>{
       bt.classList.add('open');open.push([bt,c]);if(c.t==='n')speak(c.name);
       if(open.length===2){
         const[a,c2]=[open[0],open[1]];
-        if(a[1].i===c2[1].i&&a[1].t!==c2[1].t){a[0].classList.add('done');c2[0].classList.add('done');open=[];good();if(--left===0)x.finish();}
-        else{lock=true;miss++;if(miss%2===0)x.err(null,'Parejas de memoria');bad();a[0].classList.add('oops');c2[0].classList.add('oops');setTimeout(()=>{a[0].classList.remove('open','oops');c2[0].classList.remove('open','oops');open=[];lock=false;},1000);}
+        if(a[1].i===c2[1].i&&a[1].t!==c2[1].t){a[0].classList.remove('fija');a[0].classList.add('done');c2[0].classList.add('done');open=[];good();if(--left===0)x.finish();}
+        else{lock=true;miss++;if(miss%2===0)x.err(null,'Parejas de memoria');bad();a[0].classList.add('fija');c2[0].classList.add('oops');setTimeout(()=>{c2[0].classList.remove('open','oops');open=[a];lock=false;},1000);}
       }
     });
     grid.append(bt);
   });
-  b.append(grid,h('p',{class:'hint'},'Da la vuelta a dos cartas: un dibujo y su nombre.'));
+  b.append(grid,h('p',{class:'hint'},'Da la vuelta a dos cartas: un dibujo y su nombre. Si fallas, la primera se queda abierta: busca su pareja.'));
 };
 
 /* ================= hechos de cada ficha: de aquí salen los juegos y el entrenamiento ================= */
@@ -3948,9 +3968,9 @@ function vRun(cfg){
     shutUp();body.replaceChildren();
     const q=h('section',{class:'gq k-'+r.k}),rb=h('div',{class:'part-body'});
     q.append(h('div',{class:'gprompt'},spk(r.ins),h('h2',null,r.ins)),rb);body.append(q);
-    let rerr=0,fin=false,st;
-    const x={solved:false,items(){},err(key,label){errs++;rerr++;try{failLog(fkey(r,cfg.ctx,key),label||reviewOf(r).label);}catch(e){}},get:d=>st===undefined?d:st,set:v=>{st=v;},finish(){
-      if(fin)return;fin=true;
+    let rerr=0,fin=false,st;q.dataset.goon='1';q.__go=goReg(q,()=>fin);
+    const x={solved:false,items(n){q.__go.n=n;},err(key,label){errs++;rerr++;try{failLog(fkey(r,cfg.ctx,key),label||reviewOf(r).label);}catch(e){}},get:d=>st===undefined?d:st,set:v=>{st=v;},finish(){
+      if(fin)return;fin=true;q.__go.end();
       if(r.fid)try{srsUpd(r.fid,rerr===0);}catch(e){}
       if(!rerr)hits++;else missed.push(reviewOf(r));
       dots[i].classList.remove('now');dots[i].classList.add(rerr?'slip':'ok');
