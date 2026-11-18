@@ -481,6 +481,10 @@ h2.sec{font:600 1.45rem/1.2 var(--f-display);margin:30px 0 12px}
 .big-msg{font:600 1.5rem/1.3 var(--f-display);text-align:center;margin:4px 0 14px}
 .msg-line{margin:12px 0 0;font-weight:700;font-size:1.1rem;color:var(--ok-ink);background:var(--ok);border-radius:var(--r-s);padding:10px 14px}
 .msg-line.bad{color:var(--bad-ink);background:var(--bad)}
+.fifo-msg{text-align:center}
+.fifo-wait .prod:not(.sel):not(.x){animation:fifoPulse 1.4s ease-in-out infinite}
+@keyframes fifoPulse{50%{box-shadow:0 0 0 6px #f5b041}}
+@media (prefers-reduced-motion:reduce){.fifo-wait .prod:not(.sel):not(.x){animation:none;outline:4px dashed #f5b041}}
 
 /* dinero */
 .coin,.bill{display:inline-block;flex:none}
@@ -3554,24 +3558,30 @@ RENDER.fifo=(b,p,x)=>{
   const sorted=[...prods].sort((a,c)=>a.d-c.d);let next=0,left=prods.filter(o=>o.d<p.hoyD).length;
   x.items(mode==='first'?1:mode==='order'?prods.length:left);
   const row=h('div',{class:'shelf-row',style:'justify-content:center'});
+  const many=mode==='order'||(mode==='expired'&&left>1),fmsg=h('p',{class:'msg-line fifo-msg','aria-live':'polite',hidden:!many});
+  const quedan=k=>k===1?'Te queda 1.':'Te quedan '+k+'.';
+  const tell=(t,voice)=>{fmsg.textContent=t;fmsg.hidden=false;if(voice)speak(t);};
+  let idleT=0;const nudge=()=>{clearTimeout(idleT);row.classList.remove('fifo-wait');idleT=setTimeout(()=>{if(row.isConnected)row.classList.add('fifo-wait');},7000);};
+  if(mode==='order')tell('Toca los '+prods.length+', uno detrás de otro.');
+  else if(many)tell('Hay '+left+' caducados. Tócalos todos.');
   prods.forEach(o=>{
-    const bt=h('button',{class:'prod',type:'button','data-d':o.d},tile(o.icon,'sm'),h('span',null,o.name),h('span',{class:'tag-date'},'Caduca '+pad2(o.d)+'/'+p.mes));
+    const nm=h('span',null,o.name),bt=h('button',{class:'prod',type:'button','data-d':o.d},tile(o.icon,'sm'),nm,h('span',{class:'tag-date'},'Caduca '+pad2(o.d)+'/'+p.mes));
     bt.addEventListener('click',()=>{
       if(bt.classList.contains('sel')||bt.classList.contains('x'))return;
       if(mode==='first'){
         if(o.d===sorted[0].d){bt.classList.add('sel');row.querySelectorAll('button').forEach(k=>{k.disabled=true;});good();x.finish();}
         else{bt.classList.add('x');bt.disabled=true;shake(row);bad();x.err(0,'Gasto primero lo que caduca antes: '+sorted[0].name);}
       }else if(mode==='order'){
-        if(o.d===sorted[next].d){bt.classList.add('sel');bt.dataset.n=++next;bt.querySelector('span').textContent=next+'.º '+o.name;good();if(next===prods.length)x.finish();}
+        if(o.d===sorted[next].d){bt.classList.add('sel');bt.dataset.n=++next;nm.textContent=next+'.º '+o.name;good();if(next===prods.length){clearTimeout(idleT);row.classList.remove('fifo-wait');fmsg.hidden=true;x.finish();}else{tell('¡Bien! Ahora el que caduca después. '+quedan(prods.length-next),true);nudge();}}
         else{bt.classList.add('oops');setTimeout(()=>bt.classList.remove('oops'),1300);shake(bt);bad();x.err(next,'Orden de caducidad: '+sorted[next].name);}
       }else{
-        if(o.d<p.hoyD){bt.classList.add('sel');good();if(--left===0){row.querySelectorAll('button').forEach(k=>{k.disabled=true;});x.finish();}}
+        if(o.d<p.hoyD){bt.classList.add('sel');good();if(--left===0){clearTimeout(idleT);row.classList.remove('fifo-wait');fmsg.hidden=true;row.querySelectorAll('button').forEach(k=>{k.disabled=true;});x.finish();}else{tell('¡Bien! Hay más caducados. '+quedan(left),true);nudge();}}
         else{bt.classList.add('x');bt.disabled=true;shake(row);bad();x.err('n'+o.d,'No está caducado: '+o.name);}
       }
     });
     row.append(bt);
   });
-  b.append(h('div',{class:'scene-info'},h('span',null,mode==='expired'?'Hoy es '+pad2(p.hoyD)+'/'+p.mes:'Hoy es '+pad2(p.hoyD)+'/'+p.mes)),row);
+  b.append(h('div',{class:'scene-info'},h('span',null,'Hoy es '+pad2(p.hoyD)+'/'+p.mes)),row,fmsg);
 };
 
 /* --- diálogo: elijo lo que digo --- */
