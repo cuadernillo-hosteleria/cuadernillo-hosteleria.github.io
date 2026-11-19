@@ -1928,7 +1928,9 @@ function tone(freqs,dur){
       o.connect(g);g.connect(actx.destination);o.start(t0+i*dur);o.stop(t0+(i+1)*dur+.06);});}catch(e){}
 }
 let GO_LAST=null;
-function goOn(){const el=GO_LAST;if(!el||!el.isConnected||!el.__go)return;const g=el.__go;
+function goOn(){const el=GO_LAST;if(!el||!el.isConnected||!el.__go)return;
+  /* v17.3.2: en la sopa de letras no sale «Te quedan N» (agobia a los alumnos) */
+  if(el.querySelector('.sopa'))return;const g=el.__go;
   setTimeout(()=>{if(g.isFin()||g.n<2||el.querySelector('.fifo-msg:not([hidden])'))return;g.done++;g.nudges=0;g.show(false);},40);}
 function goReg(host,isFin){
   const g={n:0,done:0,t:0,el:null,nudges:0,isFin,
