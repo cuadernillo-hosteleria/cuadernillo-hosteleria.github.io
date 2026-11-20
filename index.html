@@ -9253,65 +9253,67 @@ function w3Preview(cv,L){
    Mirando al mar: a la derecha El Confital y La Isleta; al fondo, sobre el mar, Tenerife con el Teide.
    Las alturas van algo exageradas para que se vean bien en la pantalla. */
 const W3PANO_TF=[[-44,0],[-42,.5],[-39,1],[-36,1.3],[-33,1.5],[-31,2],[-29,2.6],[-27.5,3.5],[-26.5,3.8],[-25.3,4.9],[-24.6,5.6],[-24,5.7],[-23.4,5.5],[-22,4.2],[-20,3.2],[-17,2.5],[-14,2],[-11,1.7],[-9,1.9],[-7,1.5],[-5,1.3],[-3.5,.8],[-2,0]];
-const W3PANO_IS=[[18,0],[19,.45],[22,.6],[30,.7],[33,1],[36,1.6],[39,2.8],[42,4],[44,4.6],[46,4.2],[49,3],[52,3.3],[55,4],[57,3.6],[60,2.8],[64,3.9],[67,5.2],[69,5.6],[71,5],[74,3.6],[78,2.6],[82,3.2],[85,2.8],[90,1.8],[96,1.2],[104,.6],[110,0]];
-const W3PANO_HZ='#D5E6EE',W3PANO_SEA='#3A86BA';
+const W3PANO_IS0=[[18,0],[19,.45],[22,.6],[30,.7],[33,1],[36,1.6],[39,2.8],[42,4],[44,4.6],[46,4.2],[49,3],[52,3.3],[55,4],[57,3.6],[60,2.8],[64,3.9],[67,5.2],[69,5.6],[71,5],[74,3.6],[78,2.6],[82,3.2],[85,2.8],[90,1.8],[96,1.2],[104,.6],[110,0]];
+const W3PANO_HZ='#D5E6EE',W3PANO_SEA='#2F76AC';
 let W3PANO=null;
+const W3PANO_IS=[[14,0],[16,.6],[22,.9],[30,1.2],[36,2.4],[40,3.6],[44,5.5],[48,7.5],[52,6.6],[57,8.2],[62,9.8],[66,8.6],[72,6.2],[78,7.4],[84,9],[90,7.4],[98,5.2],[108,6.5],[118,4.6],[130,3.4],[145,2.4],[160,1.6],[175,.8],[190,0]];
 function w3Pano(T){
+  /* v17.10: la cafetería en La Bombilla (La Isleta), entre Las Canteras y El Confital.
+     Mirando al mar: Tenerife y el Teide al fondo; a la derecha El Confital y las montañas de La Isleta, muy cerca;
+     a la izquierda, al otro lado del agua, la playa de Las Canteras con su frente de edificios hasta el Auditorio. */
   if(W3PANO)return W3PANO;
   const w=2048,hh=1024,c=document.createElement('canvas');c.width=w;c.height=hh;const x=c.getContext('2d');
   const X=a=>(.75-a/360)*w,Y=e=>hh/2-e*hh/180;
-  /* lo que queda a la izquierda de -90° cae al otro borde del lienzo: se pinta otra vez desplazado */
   const both=f=>{f();x.save();x.translate(-w,0);f();x.restore();};
-  /* cielo y, por debajo del horizonte, la misma bruma que la escena */
   let g=x.createLinearGradient(0,0,0,hh/2);g.addColorStop(0,'#3C8BCB');g.addColorStop(.62,'#86C4EB');g.addColorStop(1,W3PANO_HZ);x.fillStyle=g;x.fillRect(0,0,w,hh/2+1);
   x.fillStyle=W3PANO_HZ;x.fillRect(0,hh/2,w,hh/2);
-  /* el mar por debajo del horizonte, del mismo azul que el agua de cerca (así no se nota el corte) */
-  {const XA=a=>(.75-a/360)*w,sx0=XA(110),sx1=XA(-90),sg=x.createLinearGradient(0,hh/2,0,Y(-2.2));sg.addColorStop(0,'#A8CFE0');sg.addColorStop(1,W3PANO_SEA);
-   x.fillStyle=sg;x.fillRect(sx0,hh/2,sx1-sx0,hh/2);
-   const e0=x.createLinearGradient(XA(110),0,XA(95),0);e0.addColorStop(0,W3PANO_HZ);e0.addColorStop(1,'rgba(213,230,238,0)');x.fillStyle=e0;x.fillRect(XA(110),hh/2+2,XA(95)-XA(110),hh/2);
-   const e1=x.createLinearGradient(XA(-78),0,XA(-90),0);e1.addColorStop(0,'rgba(213,230,238,0)');e1.addColorStop(1,W3PANO_HZ);x.fillStyle=e1;x.fillRect(XA(-78),hh/2+2,XA(-90)-XA(-78),hh/2);}
-  /* nubes suaves */
+  /* el mar por debajo del horizonte: delante y a la izquierda (la bahía de Las Canteras) */
+  {const sx0=X(110),sx1=X(-90),sg=x.createLinearGradient(0,hh/2,0,Y(-2.2));sg.addColorStop(0,'#A8CFE0');sg.addColorStop(1,W3PANO_SEA);
+   x.fillStyle=sg;x.fillRect(sx0,hh/2,sx1-sx0,hh/2);both(()=>{x.fillRect(X(-90),hh/2,X(-150)-X(-90),hh/2);});
+   const e0=x.createLinearGradient(X(110),0,X(95),0);e0.addColorStop(0,W3PANO_HZ);e0.addColorStop(1,'rgba(213,230,238,0)');x.fillStyle=e0;x.fillRect(X(110),hh/2+2,X(95)-X(110),hh/2);
+   both(()=>{const e1=x.createLinearGradient(X(-138),0,X(-150),0);e1.addColorStop(0,'rgba(213,230,238,0)');e1.addColorStop(1,W3PANO_HZ);x.fillStyle=e1;x.fillRect(X(-138),hh/2+2,X(-150)-X(-138),hh/2);});}
   for(let k=0;k<10;k++){const a=-180+k*36+(k*37)%13,e=7+(k*11)%14,cx=X(a),cy=Y(e),rx=60+(k*29)%70,ry=10+(k*7)%9;
-    for(let q=0;q<4;q++){const r=x.createRadialGradient(cx+q*rx*.35,cy-(q%2)*ry*.6,1,cx+q*rx*.35,cy-(q%2)*ry*.6,rx*.55);r.addColorStop(0,'rgba(255,255,255,.38)');r.addColorStop(1,'rgba(255,255,255,0)');x.fillStyle=r;x.save();x.translate(0,0);x.scale(1,1);x.beginPath();x.ellipse(cx+q*rx*.35,cy-(q%2)*ry*.6,rx*.55,ry*1.4,0,0,7);x.fill();x.restore();}}
+    for(let q=0;q<4;q++){const r=x.createRadialGradient(cx+q*rx*.35,cy-(q%2)*ry*.6,1,cx+q*rx*.35,cy-(q%2)*ry*.6,rx*.55);r.addColorStop(0,'rgba(255,255,255,.38)');r.addColorStop(1,'rgba(255,255,255,0)');x.fillStyle=r;x.beginPath();x.ellipse(cx+q*rx*.35,cy-(q%2)*ry*.6,rx*.55,ry*1.4,0,0,7);x.fill();}}
   const prof=(P,col,k)=>{x.fillStyle=col;x.beginPath();x.moveTo(X(P[0][0]),Y(0)+3);P.forEach(([a,e])=>x.lineTo(X(a),Y(e*(k||1))));x.lineTo(X(P[P.length-1][0]),Y(0)+3);x.closePath();x.fill();};
   const haze=(h0,al)=>{const q=x.createLinearGradient(0,Y(h0),0,Y(0)+2);q.addColorStop(0,'rgba(213,230,238,0)');q.addColorStop(1,'rgba(213,230,238,'+al+')');x.fillStyle=q;x.fillRect(0,Y(h0),w,Y(0)+2-Y(h0));};
-  /* a la izquierda, lejos: la costa norte de Gran Canaria */
-  both(()=>prof([[-112,0],[-108,1.2],[-102,2.1],[-96,1.6],[-90,2.6],[-84,1.9],[-76,1.2],[-68,.8],[-60,.3],[-56,0]],'#A9B9C6'));
-  /* detrás, tierra adentro: la ciudad y los riscos */
-  prof([[100,0],[112,1.5],[125,3.2],[140,4.6],[155,3.9],[170,5.4],[185,4.4],[200,5.8],[215,4.2],[232,4.9],[248,3],[262,1.8],[275,.6],[282,0]],'#B4A487');
-  for(let k=0;k<70;k++){const a=96+k*2.6,b=.4+((k*53)%23)/10,cw=1.4+(k%3)*.6;x.fillStyle=['#EFE6D6','#E7D2B3','#F4EEE4','#D9DEE2','#EBD9C1'][k%5];x.fillRect(X(a+cw),Y(b),X(a)-X(a+cw),Y(0)-Y(b)+2);
-    x.fillStyle='rgba(0,0,0,.08)';x.fillRect(X(a+cw),Y(b),(X(a)-X(a+cw))*.35,Y(0)-Y(b)+2);}
-  /* laderas con casas de colores (como los riscos de la ciudad) */
-  {const RC=['#E74C3C','#F4D03F','#5DADE2','#F5B7B1','#82E0AA','#F8C471','#FDFEFE','#BB8FCE','#F0B27A','#76D7C4'];let r=11;const RR=()=>(r=(r*16807)%2147483647)/2147483647;
-   const HL=[[100,0],[112,1.5],[125,3.2],[140,4.6],[155,3.9],[170,5.4],[185,4.4],[200,5.8],[215,4.2],[232,4.9],[248,3],[262,1.8],[275,.6],[282,0]];
-   const hAt=a=>{for(let k=1;k<HL.length;k++)if(a<=HL[k][0]){const [a0,e0]=HL[k-1],[a1,e1]=HL[k];return e0+(e1-e0)*(a-a0)/(a1-a0);}return 0;};
-   for(let k=0;k<900;k++){const a=110+RR()*160,top=hAt(a),e=.8+RR()*Math.max(0,top-1.1),cw=.35+RR()*.3,ch=.22+RR()*.18;
-     x.fillStyle=RC[Math.floor(RR()*RC.length)];x.fillRect(X(a+cw),Y(e+ch),X(a)-X(a+cw),Y(e)-Y(e+ch));
-     x.fillStyle='rgba(40,40,60,.25)';x.fillRect(X(a+cw*.6),Y(e+ch*.6),(X(a)-X(a+cw))*.18,(Y(e)-Y(e+ch))*.35);}}
-  /* Tenerife y el Teide, azulado por la distancia, con la cumbre clara */
+  let rs=11;const RR=()=>(rs=(rs*16807)%2147483647)/2147483647;
+  const RC=['#E74C3C','#F4D03F','#5DADE2','#F5B7B1','#82E0AA','#F8C471','#FDFEFE','#BB8FCE','#F0B27A','#76D7C4','#FDFEFE','#F2D7B6'];
+  /* a la izquierda, lejos: la costa norte de Gran Canaria, más allá de la ciudad */
+  both(()=>prof([[-100,0],[-96,1.4],[-90,2.4],[-84,1.8],[-76,1.1],[-68,.7],[-60,.3],[-56,0]],'#A9B9C6'));
+  /* detrás de Las Canteras: los riscos de la ciudad con casas de colores */
+  const HL=[[-178,0],[-172,1.4],[-164,2.6],[-155,2],[-146,3],[-136,2.4],[-126,2.8],[-116,2],[-106,1.4],[-96,.6],[-90,0]];
+  both(()=>{prof(HL,'#B4A487');
+    const hAt=a=>{for(let k=1;k<HL.length;k++)if(a<=HL[k][0]){const [a0,e0]=HL[k-1],[a1,e1]=HL[k];return e0+(e1-e0)*(a-a0)/(a1-a0);}return 0;};
+    let r2=17;const R2=()=>(r2=(r2*16807)%2147483647)/2147483647;
+    for(let k=0;k<500;k++){const a=-176+R2()*84,top=hAt(a),e=.5+R2()*Math.max(0,top-.8),cw=.3+R2()*.25,ch=.18+R2()*.14;
+      x.fillStyle=RC[Math.floor(R2()*RC.length)];x.fillRect(X(a+cw),Y(e+ch),X(a)-X(a+cw),Y(e)-Y(e+ch));}});
+  /* Tenerife y el Teide, al fondo */
   prof(W3PANO_TF,'#8FA6BC',1.3);
   x.save();x.beginPath();x.rect(0,0,w,Y(4.85*1.3));x.clip();prof(W3PANO_TF,'#EEF3F7',1.3);x.restore();
   x.fillStyle='rgba(120,140,160,.35)';x.beginPath();x.moveTo(X(-24),Y(7.41));x.lineTo(X(-22),Y(5.46));x.lineTo(X(-20),Y(4.16));x.lineTo(X(-17),Y(3.25));x.lineTo(X(-17),Y(0));x.lineTo(X(-24),Y(0));x.fill();
   haze(3,.75);
-  /* La Isleta (más cerca: más oscura y más color) y El Confital, la plataforma baja de roca */
-  prof(W3PANO_IS,'#9A7D66');
-  x.fillStyle='rgba(60,40,30,.18)';[[42,4],[55,4],[67,5.2]].forEach(([a,e])=>{x.beginPath();x.moveTo(X(a),Y(e));x.lineTo(X(a+4),Y(0));x.lineTo(X(a),Y(0));x.fill();});
-  x.fillStyle='#B7A48C';x.beginPath();x.moveTo(X(19),Y(0)+2);x.lineTo(X(19.5),Y(.45));x.lineTo(X(33),Y(.7));x.lineTo(X(34),Y(0)+2);x.fill();
-  x.fillStyle='rgba(255,255,255,.85)';x.fillRect(X(34),Y(.06),X(18.5)-X(34),3);
-  /* la arena de la playa que sigue hacia la derecha */
-  x.fillStyle='#D9AF63';x.fillRect(X(19),Y(.18),X(4)-X(19),Y(0)-Y(.18)+2);
-  /* el frente de edificios a lo largo de la playa: hacia la izquierda hasta el Auditorio, y hacia la derecha hasta La Puntilla */
-  {const BC=['#F4EEE2','#FFFFFF','#F2D7B6','#EADBC8','#F7E9C3','#E8A87C','#DCE3E8','#F6D8C9'];
-   const strip=(a0,a1,e0,e1,n)=>{for(let k=0;k<n;k++){const t=k/n,a=a0+(a1-a0)*t,cw=(a1-a0)/n*.9,e=(e0+(e1-e0)*t)*(.7+((k*37)%10)/22);
-     x.fillStyle=BC[k%BC.length];x.fillRect(Math.min(X(a),X(a+cw)),Y(e),Math.abs(X(a+cw)-X(a)),Y(0)-Y(e)+2);
-     x.fillStyle='rgba(70,90,110,.35)';for(let f=.25;f<e-.15;f+=.32)x.fillRect(Math.min(X(a),X(a+cw))+2,Y(f+.12),Math.abs(X(a+cw)-X(a))-4,2);}};
-   both(()=>strip(-118,-64,2.6,1.2,26));strip(42,104,1.2,2.8,24);
-   /* el Auditorio Alfredo Kraus: un bloque de piedra oscura con su torre, al final de la playa */
-   both(()=>{x.fillStyle='#7E6E62';x.fillRect(X(-58),Y(1.1),X(-64)-X(-58),Y(0)-Y(1.1)+2);x.fillRect(X(-59.2),Y(2),X(-60.6)-X(-59.2),Y(0)-Y(2)+2);
-   x.fillStyle='rgba(30,40,50,.5)';x.fillRect(X(-59),Y(.75),X(-63)-X(-59),Y(.45)-Y(.75));});}
-  /* grúas del puerto de La Luz, detrás de la ciudad, al pie de La Isleta */
-  x.strokeStyle='#6E7B85';x.lineWidth=2;[[97,1.9],[99.5,2.2],[102,1.8],[105,2.1]].forEach(([a,e])=>{x.beginPath();x.moveTo(X(a),Y(0));x.lineTo(X(a),Y(e));x.lineTo(X(a-1.6),Y(e));x.moveTo(X(a),Y(e));x.lineTo(X(a+.7),Y(e-.15));x.moveTo(X(a),Y(e*.7));x.lineTo(X(a-1.2),Y(e));x.stroke();});
-  haze(1.4,.5);
+  /* Las Canteras, al otro lado del agua: la arena y el frente de edificios, más grandes cuanto más cerca (a la izquierda) */
+  both(()=>{x.fillStyle='#D9AF63';x.beginPath();x.moveTo(X(-62),Y(.05));x.lineTo(X(-140),Y(.32));x.lineTo(X(-140),Y(0)+2);x.lineTo(X(-62),Y(0)+2);x.fill();
+    x.fillStyle='rgba(255,255,255,.8)';x.fillRect(X(-62),Y(0)-1,X(-140)-X(-62),2);
+    const BC=['#F4EEE2','#FFFFFF','#F3DDB0','#EADBC8','#E9C46A','#D9825B','#DCE3E8','#F6E7B8','#FFFFFF','#E7A07A'];
+    const n=46;for(let k=0;k<n;k++){const t=k/n,a=-64-76*t,cw=76/n*.92,b0=.06+.28*t,e=b0+(.6+1.9*t)*(.55+((k*37)%10)/16);
+      x.fillStyle=BC[k%BC.length];x.fillRect(X(a),Y(e),X(a-cw)-X(a),Y(b0)-Y(e));
+      x.fillStyle='rgba(70,90,110,.35)';for(let f=b0+.18;f<e-.1;f+=.18+.14*t)x.fillRect(X(a)+1,Y(f+.06),X(a-cw)-X(a)-2,Math.max(1,2*t+1));}
+    /* el Auditorio Alfredo Kraus, al final de la playa */
+    x.fillStyle='#7E6E62';x.fillRect(X(-58),Y(.8),X(-63)-X(-58),Y(0)-Y(.8)+2);x.fillRect(X(-59.4),Y(1.4),X(-60.6)-X(-59.4),Y(0)-Y(1.4)+2);});
+  /* El Confital: la plataforma baja de roca a la derecha, con la espuma */
+  x.fillStyle='#6B5A4C';x.beginPath();x.moveTo(X(14),Y(0)+2);x.lineTo(X(16),Y(.5));x.lineTo(X(30),Y(.9));x.lineTo(X(38),Y(1.3));x.lineTo(X(40),Y(0)+2);x.fill();
+  x.fillStyle='rgba(255,255,255,.9)';x.fillRect(X(40),Y(.08),X(13)-X(40),3);
+  /* las montañas de La Isleta, cerca y grandes, de piedra volcánica parda y rojiza */
+  prof(W3PANO_IS,'#7E6352');
+  x.fillStyle='rgba(150,70,45,.28)';[[44,5.5],[62,9.8],[84,9]].forEach(([a,e])=>{x.beginPath();x.moveTo(X(a-3),Y(e*.55));x.lineTo(X(a),Y(e));x.lineTo(X(a+3),Y(e*.6));x.lineTo(X(a+5),Y(0));x.lineTo(X(a-5),Y(0));x.fill();});
+  x.fillStyle='rgba(40,25,20,.2)';[[48,7.5],[66,8.5],[90,7.4],[108,6.5]].forEach(([a,e])=>{x.beginPath();x.moveTo(X(a),Y(e));x.lineTo(X(a+5),Y(0));x.lineTo(X(a),Y(0));x.fill();});
+  /* el barrio de La Isleta al pie de las montañas: casas bajas de colores con azoteas rojizas */
+  for(let k=0;k<700;k++){const a=58+RR()*150,e=RR()*Math.min(2.2,.4+(a-58)/40),cw=.5+RR()*.5,ch=.25+RR()*.3;
+    x.fillStyle=RR()<.3?'#C0644A':RC[Math.floor(RR()*RC.length)];x.fillRect(X(a+cw),Y(e+ch),X(a)-X(a+cw),Y(e)-Y(e+ch));}
+  /* grúas del puerto de La Luz, detrás, a la derecha */
+  x.strokeStyle='#6E7B85';x.lineWidth=2;[[150,2.6],[154,3],[158,2.4],[163,2.8]].forEach(([a,e])=>{x.beginPath();x.moveTo(X(a),Y(1));x.lineTo(X(a),Y(e));x.lineTo(X(a-2),Y(e));x.moveTo(X(a),Y(e));x.lineTo(X(a+.9),Y(e-.2));x.stroke();});
+  haze(1.4,.45);
   const t=new T.CanvasTexture(c);t.colorSpace=T.SRGBColorSpace;t.anisotropy=2;return W3PANO=t;
 }
 /* ===== v17.5: el paseo de Las Canteras y la ciudad, mejor hechos =====
@@ -9342,7 +9344,7 @@ function w3Paseo(T,W,J0,PZ){
   /* aceras a los lados del local, hasta los edificios */
   const t2=tx.clone();t2.repeat.set(75,1.5);t2.needsUpdate=true;
   [[X0,-.4],[W+.4,X1]].forEach(([a,b])=>{const m=new T.Mesh(new T.PlaneGeometry(b-a,3),w3Mat(T,{map:t2}));m.rotation.x=-Math.PI/2;m.position.set((a+b)/2,.004,J0-.05+1.5);G.add(m);});
-  const M=w3Merge(),S=[];for(let xs=X0+18;xs<X1;xs+=44)S.push(xs);
+  const M=w3Merge(),S=[];/* v17.10: abajo hay roca, sin escaleras */
   /* muro bajo y barandilla, cortados donde bajan las escaleras */
   let xa=X0;S.concat([X1+3]).forEach(xs=>{const xb=xs-1.6;if(xb>xa){M.box(xa,xb,0,.55,PZ,PZ+.4,'#F1EEE7');M.box(xa,xb,.98,1.04,PZ+.12,PZ+.26,'#B9C0C4');
       for(let q=xa+.2;q<xb;q+=2.2)M.box(q,q+.06,.55,1,PZ+.16,PZ+.22,'#B9C0C4');}xa=xs+1.6;});
@@ -9354,7 +9356,7 @@ function w3Paseo(T,W,J0,PZ){
     M.box(xs-.95,xs-.85,0,.42,PZ+1.15,PZ+1.5,'#4D5656');M.box(xs+.85,xs+.95,0,.42,PZ+1.15,PZ+1.5,'#4D5656');}
   /* casetas de hamacas en la arena, junto al muro */
   const HC=['#38BCD0','#E6CFA0','#FDFEFE'];
-  for(let xs=X0+30;xs<X1-20;xs+=26){if(S.some(q=>Math.abs(q-xs)<5))continue;const zb=PZ-1.2,zf=zb-2.2,y0=-3;
+  for(let xs=X0+30;xs<X0;xs+=26){if(S.some(q=>Math.abs(q-xs)<5))continue;const zb=PZ-1.2,zf=zb-2.2,y0=-3;
     for(let q=0;q<6;q++)M.box(xs+q*.5,xs+q*.5+.5,y0,y0+2.3,zf,zb,HC[q%3]);M.box(xs-.1,xs+3.1,y0+2.3,y0+2.45,zf-.15,zb+.05,'#FDFEFE');}
   G.add(M.mesh(new T.MeshStandardMaterial({vertexColors:true,roughness:.8,metalness:0,envMapIntensity:.9})));
   return G;
@@ -9373,15 +9375,15 @@ function w3City(T,W,H,J0){
     if(h>11)for(let f=2;f<=fl;f++){const y=f*3.1-.35;for(let q=x0+.6;q<x1-1.4;q+=3.2){D.box(q,q+2.4,y,y+.14,front<0?fz-.9:fz,front<0?fz:fz+.9,'#F4F6F6');D.box(q,q+2.4,y+.14,y+1,front<0?fz-.92:fz+.86,front<0?fz-.86:fz+.92,'#A9C6D6');}}
     /* azotea: pretil y depósitos de agua */
     D.box(x0,x1,h,h+.6,z0,z0+.2,c);D.box(x0,x1,h,h+.6,z1-.2,z1,c);
-    if(R()<.45)D.flat(x0+.2,x1-.2,z0+.2,z1-.2,h+.03,R()<.5?'#B8664B':'#C97A5A');
+    if(R()<.75)D.flat(x0+.2,x1-.2,z0+.2,z1-.2,h+.03,R()<.5?'#B8664B':'#C97A5A');
     if(R()<.7){const cx=x0+1+R()*(x1-x0-3),cz=z0+1+R()*(z1-z0-3);D.box(cx,cx+1.2,h,h+1.1,cz,cz+1.2,'#ECF0F1');if(R()<.5)D.box(cx+1.6,cx+2.6,h,h+.9,cz,cz+1,'#D5D8DC');}}
   /* primera línea de playa, a los dos lados del local */
-  const row=(x0,x1)=>{const d=10+R()*4,hh=9+R()*21,tw=x0===-79?[48,'#5E6B78']:x0===W+50?[40,'#F4F6F6']:null;bld(x0,x1,J0+1.5,J0+1.5+d,tw?tw[0]:hh,tw?tw[1]:pick(COL),-1);bld(x0,x1,J0+d+6,H+1,8+R()*8,pick(COL),1);};
+  const row=(x0,x1)=>{const d=10+R()*4,hh=6+R()*11,tw=null;bld(x0,x1,J0+1.5,J0+1.5+d,tw?tw[0]:hh,tw?tw[1]:pick(COL),-1);bld(x0,x1,J0+d+6,H+1,6+R()*6,pick(COL),1);};
   for(let x=-16;x>-150;x-=17)row(x-12,x);
   for(let x=W+16;x<W+150;x+=17)row(x,x+12);
   /* manzanas tierra adentro */
   for(let z=H+10;z<H+130;z+=19)for(let x=-110;x<W+110;x+=19){if(R()<.1)continue;const lo=z<H+30?.6:1,n=1+Math.floor(R()*3),w=13/n;
-    for(let q=0;q<n;q++)bld(x+q*w,x+(q+1)*w,z,z+12,(6+R()*13)*lo,pick(COL),-1);}
+    for(let q=0;q<n;q++)bld(x+q*w,x+(q+1)*w,z,z+12,(5+R()*9)*lo,pick(COL),-1);}
   /* calles y aceras */
   for(let x=-110;x<W+110;x+=19){D.flat(x+13.5,x+18.5,H+4,H+135,.02,'#6F7273');D.flat(x+13,x+13.5,H+4,H+135,.03,'#CFC9BE');D.flat(x+18.5,x+19,H+4,H+135,.03,'#CFC9BE');}
   for(let z=H+10;z<H+130;z+=19)D.flat(-110,W+110,z+12.5,z+17.5,.021,'#6F7273');
@@ -9399,30 +9401,30 @@ function isoScenery(c,CW,CH,W,H,HS){
   const jOf=(x,y)=>((y-ISO.OY)/16-(x-ISO.OX)/32)/2;
   /* tierra (la ciudad), el paseo, la arena y el mar */
   c.fillStyle='#D8D0C3';c.fillRect(0,0,CW,CH);
-  band(0,-1.6,'#AE5843');band(-1.6,-3.4,'#D9B066');band(-3.4,-3.7,'#A88452');
+  band(0,-1.6,'#AE5843');band(-1.6,-3.4,'#4A3F38');band(-3.4,-3.7,'#2F2925');
+  c.fillStyle='rgba(20,15,12,.4)';for(let k=0;k<420;k++){const p=P(-90+((k*53)%(W+180)),-1.75-((k*29)%17)/10);c.beginPath();c.ellipse(p.x,p.y,3+(k%3)*3,1.5+(k%2),0,0,7);c.fill();}
+  c.fillStyle='rgba(58,147,163,.85)';for(let k=0;k<40;k++){const p=P(-80+((k*71)%(W+160)),-2.2-((k*17)%10)/10);c.beginPath();c.ellipse(p.x,p.y,7+(k%3)*3,2.5,0,0,7);c.fill();}
   /* losas del paseo */
   c.strokeStyle='rgba(120,50,35,.45)';c.lineWidth=1;for(let i=-90;i<W+90;i+=.5){const p=P(i,0),q=P(i,-1.6);c.beginPath();c.moveTo(p.x,p.y);c.lineTo(q.x,q.y);c.stroke();}
   for(let j=-.4;j>-1.6;j-=.4){const p=P(-90,j),q=P(W+90,j);c.beginPath();c.moveTo(p.x,p.y);c.lineTo(q.x,q.y);c.stroke();}
   {c.save();c.beginPath();const a=P(-90,-3.7),b=P(W+90,-3.7),d=P(W+90,-90),e=P(-90,-90);c.moveTo(a.x,a.y);c.lineTo(b.x,b.y);c.lineTo(d.x,d.y);c.lineTo(e.x,e.y);c.closePath();
    const g=c.createLinearGradient(0,hz,0,CH*.62);g.addColorStop(0,'#A9D5E7');g.addColorStop(.25,'#5DADE2');g.addColorStop(1,'#2471A3');c.fillStyle=g;c.fill();c.clip();
-   band(-3.7,-8.6,'rgba(70,190,186,.8)');c.fillStyle='rgba(30,90,95,.28)';for(let k=0;k<60;k++){const p=P(-40+((k*37)%(W+80)),-4.6-((k*13)%35)/10);c.beginPath();c.ellipse(p.x,p.y,10+(k%4)*5,3+(k%3),0,0,7);c.fill();}
+   /* rocas sueltas en el agua, con espuma */
+   for(let k=0;k<22;k++){const p=P(-50+((k*61)%(W+100)),-5-((k*23)%40)/10);c.fillStyle='rgba(255,255,255,.75)';c.beginPath();c.ellipse(p.x,p.y+1,12,5,0,0,7);c.fill();c.fillStyle='#3B332E';c.beginPath();c.ellipse(p.x,p.y,7,3.5,0,0,7);c.fill();}
    c.strokeStyle='rgba(255,255,255,.55)';c.lineWidth=2;for(let k=0;k<160;k++){const x=(k*397)%CW,y=hz+8+(k*233)%Math.max(40,CH*.6);if(jOf(x,y)>-4.2)continue;c.beginPath();c.moveTo(x,y);c.lineTo(x+12+(k%3)*4,y-1);c.stroke();}
-   /* La Barra: las rocas que protegen la playa, con espuma */
-   c.lineCap='round';for(let i=-60;i<W+60;i+=.9){const p=P(i,-8.6),q=P(i+.55,-8.6);c.strokeStyle='#5B4D44';c.lineWidth=4;c.beginPath();c.moveTo(p.x,p.y);c.lineTo(q.x,q.y);c.stroke();}
-   c.strokeStyle='rgba(255,255,255,.75)';c.lineWidth=2;{const p=P(-60,-9),q=P(W+60,-9);c.beginPath();c.moveTo(p.x,p.y);c.lineTo(q.x,q.y);c.stroke();}
-   c.restore();}
+      c.restore();}
   {c.strokeStyle='rgba(255,255,255,.9)';c.lineWidth=2.5;const p=P(-90,-3.75),q=P(W+90,-3.75);c.beginPath();c.moveTo(p.x,p.y);c.lineTo(q.x,q.y);c.stroke();
    c.strokeStyle='#FDFEFE';c.lineWidth=1.5;const r=P(-90,-1.6),s=P(W+90,-1.6);c.fillStyle='#F1EEE7';c.beginPath();c.moveTo(r.x,r.y);c.lineTo(s.x,s.y);c.lineTo(s.x,s.y-6);c.lineTo(r.x,r.y-6);c.fill();
    c.strokeStyle='#9AA3A8';c.lineWidth=1.2;c.beginPath();c.moveTo(r.x,r.y-12);c.lineTo(s.x,s.y-12);c.stroke();}
   /* escaleras a la arena, casetas de hamacas de rayas, bancos y farolas */
-  for(let i=-40;i<W+40;i+=13){const a=P(i,-1.6),b=P(i+1,-1.6),d=P(i+1,-2.5),e=P(i,-2.5);c.fillStyle='#E4DED2';c.beginPath();c.moveTo(a.x,a.y);c.lineTo(b.x,b.y);c.lineTo(d.x,d.y);c.lineTo(e.x,e.y);c.fill();
+  for(let i=-40;i<-40;i+=13){const a=P(i,-1.6),b=P(i+1,-1.6),d=P(i+1,-2.5),e=P(i,-2.5);c.fillStyle='#E4DED2';c.beginPath();c.moveTo(a.x,a.y);c.lineTo(b.x,b.y);c.lineTo(d.x,d.y);c.lineTo(e.x,e.y);c.fill();
     c.strokeStyle='rgba(120,110,100,.5)';c.lineWidth=1;for(let q=.15;q<.9;q+=.15){const u=P(i,-1.6-q),v=P(i+1,-1.6-q);c.beginPath();c.moveTo(u.x,u.y);c.lineTo(v.x,v.y);c.stroke();}}
-  for(let i=-34;i<W+40;i+=9){if(((i%13)+13)%13<2)continue;for(let q=0;q<6;q++){const a=P(i+q*.25,-1.8),b=P(i+q*.25+.25,-1.8),hh=18;c.fillStyle=['#38BCD0','#E6CFA0','#FDFEFE'][q%3];c.beginPath();c.moveTo(a.x,a.y);c.lineTo(b.x,b.y);c.lineTo(b.x,b.y-hh);c.lineTo(a.x,a.y-hh);c.fill();}
+  for(let i=-34;i<-34;i+=9){if(((i%13)+13)%13<2)continue;for(let q=0;q<6;q++){const a=P(i+q*.25,-1.8),b=P(i+q*.25+.25,-1.8),hh=18;c.fillStyle=['#38BCD0','#E6CFA0','#FDFEFE'][q%3];c.beginPath();c.moveTo(a.x,a.y);c.lineTo(b.x,b.y);c.lineTo(b.x,b.y-hh);c.lineTo(a.x,a.y-hh);c.fill();}
     const t0=P(i,-1.8),t1=P(i+1.5,-1.8),t2=P(i+1.5,-2.6),t3=P(i,-2.6);c.fillStyle='#FDFEFE';c.beginPath();c.moveTo(t0.x,t0.y-18);c.lineTo(t1.x,t1.y-18);c.lineTo(t2.x,t2.y-18);c.lineTo(t3.x,t3.y-18);c.fill();}
   for(let i=-40;i<W+40;i+=4){const p=P(i,-1.25);c.strokeStyle='#4D5656';c.lineWidth=2;c.beginPath();c.moveTo(p.x,p.y);c.lineTo(p.x,p.y-34);c.stroke();c.fillStyle='#FDFEFE';c.fillRect(p.x-3,p.y-37,6,4);
     const b=P(i+2,-.9);c.fillStyle='#A0522D';c.fillRect(b.x-10,b.y-6,20,3);c.fillRect(b.x-10,b.y-12,20,3);}
   /* sombrillas en la arena */
-  ['#E74C3C','#F1C40F','#3498DB','#E67E22','#27AE60','#9B59B6'].forEach((col,k)=>{const p=P(3+k*5.5,-2.9-(k%2)*.3);c.strokeStyle='#ECF0F1';c.lineWidth=1.5;c.beginPath();c.moveTo(p.x,p.y);c.lineTo(p.x,p.y-16);c.stroke();
+  ['#E74C3C','#F1C40F','#3498DB','#E67E22','#27AE60','#9B59B6'].slice(0,0).forEach((col,k)=>{const p=P(3+k*5.5,-2.9-(k%2)*.3);c.strokeStyle='#ECF0F1';c.lineWidth=1.5;c.beginPath();c.moveTo(p.x,p.y);c.lineTo(p.x,p.y-16);c.stroke();
     c.fillStyle=col;c.beginPath();c.ellipse(p.x,p.y-16,13,5,0,Math.PI,0);c.lineTo(p.x+13,p.y-15);c.ellipse(p.x,p.y-15,13,3,0,0,Math.PI);c.fill();c.fillStyle=k%2?'#FDFEFE':'#5DADE2';c.fillRect(p.x+6,p.y-2,10,4);});
   /* el cielo y, en el horizonte, Tenerife con el Teide y La Isleta con El Confital */
   {const g=c.createLinearGradient(0,0,0,hz);g.addColorStop(0,'#7DBCE6');g.addColorStop(.6,sky[1]);g.addColorStop(1,'#E3EEF3');c.fillStyle=g;c.fillRect(0,0,CW,hz);}
@@ -9431,12 +9433,13 @@ function isoScenery(c,CW,CH,W,H,HS){
   const TX=prof(W3PANO_TF,tx0,tx1,-44,-2,8,'#8FA6BC');
   c.save();c.beginPath();c.rect(0,0,CW,hz-4.85*8);c.clip();prof(W3PANO_TF,tx0,tx1,-44,-2,8,'#F2F6F9');c.restore();
   const ix0=ISO.OX+(CW-ISO.OX)*.55,ix1=CW+(CW-ISO.OX)*.15;
-  const IX=prof(W3PANO_IS,ix0,ix1,18,90,10,'#9A7D66');
+  const IX=prof(W3PANO_IS,ix0,ix1,14,120,9,'#7E6352');
   c.fillStyle='#B7A48C';c.beginPath();c.moveTo(IX(19),hz+1);c.lineTo(IX(19.5),hz-5);c.lineTo(IX(33),hz-7);c.lineTo(IX(34),hz+1);c.fill();
   c.fillStyle='rgba(255,255,255,.85)';c.fillRect(IX(18.5),hz-1,IX(34)-IX(18.5),2);
   /* a la izquierda, tierra adentro: riscos y la ciudad en el horizonte */
   prof([[0,0],[1,14],[2,26],[3,20],[4,32],[5,24],[6,30],[7,18],[8,8],[9,0]],-20,ISO.OX*.95,0,9,1,'#B4A487');
-  for(let k=0;k<26;k++){const x=k*ISO.OX/26,bh=6+(k*7)%14;c.fillStyle=['#EFE6D6','#E7D2B3','#F4EEE4','#D9DEE2'][k%4];c.fillRect(x,hz-bh,ISO.OX/26-3,bh+1);}
+  c.fillStyle='#D9B066';c.fillRect(0,hz-4,ISO.OX*.95,5);
+  for(let k=0;k<26;k++){const x=k*ISO.OX/26,bh=6+(k*7)%14;c.fillStyle=['#EFE6D6','#E7D2B3','#F4EEE4','#D9DEE2'][k%4];c.fillRect(x,hz-bh-4,ISO.OX/26-3,bh);}
   /* edificios: a la izquierda del local, enfrente al otro lado de la calle y una plaza a la derecha */
   const B=[];
   [[1,6],[8,13],[15,20],[21.5,25.5]].forEach(([j0,j1],r)=>{B.push([-7.5,-3,j0,j1,r?70+(r*23)%40:118]);B.push([-14.5,-10,j0,j1,55+(r*31)%45]);B.push([-21.5,-17,j0,j1,45+(r*17)%30]);});
@@ -9618,24 +9621,21 @@ function world3d(A){
   const ground=new T.Mesh(new T.PlaneGeometry(420,260),mat('#C9BBA5'));ground.rotation.x=-Math.PI/2;ground.position.set(W/2,-.02,J0-.3+130);S.add(ground);
   /* el mar delante de la terraza (está a 3 m sobre el agua) */
   const sea=new T.Mesh(new T.PlaneGeometry(420,300),new T.MeshBasicMaterial({color:W3PANO_SEA,fog:false}));sea.rotation.x=-Math.PI/2;sea.position.set(W/2,-3.2,J0-.3-150);S.add(sea);
-  /* la arena de la playa, bajando un poco hasta la orilla, con la espuma */
-  {const sand=new T.Mesh(new T.PlaneGeometry(420,12.4),mat('#D9AF63'));sand.rotation.x=-Math.PI/2-.022;sand.position.set(W/2,-3.08,PZ-6.2);S.add(sand);
-   const wet=new T.Mesh(new T.PlaneGeometry(420,1.4),mat('#A98552'));wet.rotation.x=-Math.PI/2;wet.position.set(W/2,-3.19,PZ-12.9);S.add(wet);
-   const foam=new T.Mesh(new T.PlaneGeometry(420,.5),mat('#F4F9FB'));foam.rotation.x=-Math.PI/2;foam.position.set(W/2,-3.18,PZ-13.7);S.add(foam);
-   {const c=document.createElement('canvas');c.width=512;c.height=128;const x=c.getContext('2d');
-    const g=x.createLinearGradient(0,0,0,128);g.addColorStop(0,'#2F8DB5');g.addColorStop(.55,'#3DAEB6');g.addColorStop(1,'#62C9C1');x.fillStyle=g;x.fillRect(0,0,512,128);
-    let r=5;const RR=()=>(r=(r*16807)%2147483647)/2147483647;
-    for(let k=0;k<70;k++){const px=RR()*512,py=20+RR()*100,rx=6+RR()*26,ry=2+RR()*6;x.fillStyle='rgba(30,80,85,'+(.25+RR()*.3)+')';x.beginPath();x.ellipse(px,py,rx,ry,0,0,7);x.fill();}
-    x.strokeStyle='rgba(255,255,255,.35)';x.lineWidth=1;for(let k=0;k<40;k++){const px=RR()*512,py=RR()*128;x.beginPath();x.moveTo(px,py);x.lineTo(px+8+RR()*10,py);x.stroke();}
-    const tx=new T.CanvasTexture(c);tx.colorSpace=T.SRGBColorSpace;tx.wrapS=T.RepeatWrapping;tx.repeat.set(4,1);
-    const lag=new T.Mesh(new T.PlaneGeometry(420,25.4),new T.MeshBasicMaterial({map:tx,fog:false}));lag.rotation.x=-Math.PI/2;lag.position.set(W/2,-3.16,PZ-26.7);lag.userData.noSh=1;S.add(lag);}
-   /* La Barra: la hilera de rocas que protege la playa, con la espuma de las olas */
-   const bar=new T.Mesh(new T.BoxGeometry(150,.5,1.6),mat('#4A3F38'));bar.position.set(W/2+10,-3.05,PZ-40);S.add(bar);
-   const bf=new T.Mesh(new T.PlaneGeometry(150,1.2),mat('#F4F9FB'));bf.rotation.x=-Math.PI/2;bf.position.set(W/2+10,-3.15,PZ-41.3);S.add(bf);
-   /* unas sombrillas y toallas en la arena */
-   ['#E74C3C','#F1C40F','#3498DB','#E67E22','#27AE60','#F1C40F','#9B59B6','#E74C3C'].forEach((c,k)=>{const x0=-14+k*8.3+((k*5)%3),z0=PZ-4-((k*7)%6),sy=-3.07+(z0-(PZ-6.2))*.022;
-     cyl(.03,.03,2,'#ECF0F1',x0,sy,z0);const u=cyl(0,1.1,.45,c,x0,sy+1.65,z0,null,10);u.userData.noSh=1;
-     const tw=new T.Mesh(new T.PlaneGeometry(.8,1.7),mat(k%2?'#FDFEFE':'#5DADE2'));tw.rotation.x=-Math.PI/2-.022;tw.position.set(x0+1.2,sy+.02,z0+.4);S.add(tw);});}
+  /* v17.10: delante, la costa de roca volcánica de La Isleta: laja oscura, charcos, rocas en el agua y espuma (1 pieza) */
+  {let r=3;const RR=()=>(r=(r*16807)%2147483647)/2147483647,o=new T.Object3D(),col=new T.Color(),RK=['#3B332E','#4A3F38','#2F2925','#56493F','#433A34'];
+   const shelf=new T.Mesh(new T.PlaneGeometry(W+300,9.4),mat('#3F3631'));shelf.rotation.x=-Math.PI/2;shelf.position.set(W/2,-3.1,PZ-4.7);shelf.userData.noSh=1;S.add(shelf);
+   /* rocas: piedras de lava de muchas formas (1 pieza repetida) */
+   const NR=352,NS=330,rk=new T.InstancedMesh(new T.IcosahedronGeometry(1,0),new T.MeshStandardMaterial({roughness:.95,metalness:0,flatShading:true,envMapIntensity:.5}),NR);const SR=[];
+   for(let k=0;k<NR;k++){let x0,z0,sz,y0;if(k<NS){x0=-140+RR()*(W+280);z0=PZ-.3-RR()*9.3;sz=.35+RR()*1.2*(1-(PZ-z0)/14);y0=-3.1;}else{x0=-120+RR()*(W+240);z0=PZ-12-RR()*24;sz=.6+RR()*1.1;y0=-3.25;SR.push([x0,z0,sz]);}
+     o.position.set(x0,y0+sz*.12,z0);o.rotation.set(RR()*3,RR()*3,RR()*3);o.scale.set(sz*(1+RR()*.7),sz*(.3+RR()*.35),sz*(1+RR()*.7));o.updateMatrix();rk.setMatrixAt(k,o.matrix);rk.setColorAt(k,col.set(RK[k%5]));}
+   rk.userData.noSh=1;S.add(rk);
+   /* espuma en el borde de la roca y alrededor de las rocas del agua, y charcos sobre la laja (discos planos, 1 pieza) */
+   const ND=260,dk=new T.InstancedMesh(new T.CircleGeometry(1,12),new T.MeshBasicMaterial({color:'#FFFFFF'}),ND);let n=0;
+   const disc=(x0,y,z0,sx,sz,c)=>{if(n>=ND)return;o.position.set(x0,y,z0);o.rotation.set(-Math.PI/2,0,RR()*3);o.scale.set(sx,sz,1);o.updateMatrix();dk.setMatrixAt(n,o.matrix);dk.setColorAt(n,col.set(c));n++;};
+   for(let k=0;k<150;k++)disc(-140+RR()*(W+280),-3.17,PZ-9.4-RR()*1.4,.8+RR()*2.4,.3+RR()*.7,k%3?'#F2F7F9':'#DCEBF1');
+   SR.forEach(([x0,z0,sz])=>{disc(x0,-3.19,z0,sz*2,sz*1.3,'#E8F1F5');disc(x0+sz*.8,-3.185,z0-sz*.6,sz*1.2,sz*.6,'#FFFFFF');});
+   for(let k=0;k<40;k++)disc(-140+RR()*(W+280),-3.07,PZ-2-RR()*6.5,.6+RR()*1.6,.4+RR()*.8,k%2?'#2E7F95':'#3A93A3');
+   dk.count=n;dk.userData.noSh=1;S.add(dk);}
   /* el paseo de Las Canteras, entre la terraza y la arena */
   if(!A.solo)S.add(w3Paseo(T,W,J0,PZ));
   /* la ciudad alrededor (Las Palmas) */
