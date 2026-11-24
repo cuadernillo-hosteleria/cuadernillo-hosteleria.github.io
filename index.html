@@ -8410,7 +8410,7 @@ function retroScene(w){
   }
   function walk(a,dt){
     if(!a.path.length)return true;
-    if(w3on&&a.spf===undefined)a.spf=a===me?1:.85+Math.random()*.25;const n=a.path[0],sp=dt*(w3on?0.0015*(a.spf||1):0.0042),dx=n.i-a.fi,dy=n.j-a.fj;
+    if(w3on&&a.spf===undefined)a.spf=a===me?2:.85+Math.random()*.25;const n=a.path[0],sp=dt*(w3on?0.0015*(a.spf||1):0.0042),dx=n.i-a.fi,dy=n.j-a.fj;
     if(Math.abs(dx)>.001||Math.abs(dy)>.001){a.back=dx<0||dy<0;a.flip=dy>0||dx<0?(dy>0||(dx<0&&false)):false;a.flip=(dy>.001)||(dx<-.001);}
     if(Math.abs(dx)<=sp&&Math.abs(dy)<=sp){a.fi=n.i;a.fj=n.j;a.i=n.i;a.j=n.j;a.path.shift();
       /* v17.11: lo que sobra del paso sigue hacia la siguiente casilla (con pocos fps no se pierde camino) */
