@@ -104,6 +104,10 @@ details.mejora details.mj-mod{background:rgba(255,255,255,.85)}
 .vol-card h2{margin:0;font-size:1.8rem}.vol-card p{margin:0;font-size:1.2rem}.vol-n{font-size:2.6rem;line-height:1;color:#e67e22}
 section.part.expert{border:3px solid #7d3c98;background:linear-gradient(135deg,rgba(125,60,152,.10),rgba(242,183,5,.12))}
 section.part.expert .part-head{gap:10px}
+ol.falta{list-style:none;margin:6px 0 12px;padding:0;text-align:left;display:flex;flex-direction:column;gap:6px;max-height:50vh;overflow:auto}
+ol.falta li{display:flex;align-items:center;gap:10px;border:2px solid var(--line,#cfd8dc);border-radius:12px;padding:6px 10px;font-weight:600}
+ol.falta li span{flex:1}ol.falta li .tile{flex:0 0 auto;width:40px;height:40px}ol.falta{max-height:36vh}ol.falta li{padding:4px 8px;font-size:1rem}
+.modal:has(ol.falta){max-height:94vh;overflow:auto}.modal:has(ol.falta)>.tile.xl{width:72px;height:72px}.modal:has(ol.falta) h2{font-size:1.5rem;margin:6px 0}ol.falta li.now{border-color:#f2b705;box-shadow:0 0 0 3px rgba(242,183,5,.35)}
 </style></head><body>
 <meta name="claude:viewport-fit-sides" content="cover">
 <title>Cuadernillos · demo almacén</title>
@@ -6575,7 +6579,23 @@ function taskDone(sid,idx,it){
   if(it.t==='sim')return it.lv.every(l=>cleared(simRec(it.sim,l)));
   return false;
 }
-function markTask(ret){if(!ret)return;const r=sessRec(ret.sid);r.t[ret.idx]=1;save();}
+let JUST=null;   /* v17.14.2: última tarea de sesión terminada (para enseñar lo que falta al volver) */
+function markTask(ret){if(!ret)return;const r=sessRec(ret.sid);r.t[ret.idx]=1;save();if(/^\d+$/.test(String(ret.idx)))JUST={sid:ret.sid,t:Date.now()};}
+function faltaModal(m,ses){
+  const rec=sessRec(ses.id);if(rec.done)return;
+  const L=ses.items.map((it,i)=>({it,i})).filter(z=>!taskDone(ses.id,z.i,z.it));
+  if(!L.length){
+    const g=pracGate(ses),xb=(()=>{try{const a=xAccOf(ses);return a.n&&a.pct!=null&&a.pct>=XEXP_THR;}catch(e){return false;}})();
+    const t=xb?'Ahora tienes el nivel experto. Después puedes seguir practicando.':g.ok?'Ya puedes pasar a «Recogemos».':g.live?'Sigue practicando. Recogemos a las '+hhmm(g.at)+'.':'Ya puedes pasar a «Recogemos».';
+    try{speak('¡Has hecho todas las tareas! '+t);}catch(e){}
+    modal({ic:'estrella',title:'¡Has hecho todas las tareas!',text:t,actions:[['Vale',null,true]]});return;
+  }
+  const nx=L[0],say='Te '+(L.length===1?'falta una tarea':'faltan '+L.length+' tareas')+'. La siguiente es: '+nx.it.title+'.';
+  const body=h('ol',{class:'falta'},L.map((z,k)=>h('li',{class:k===0?'now':''},tile(z.it.ic||'lapiz','xs'),h('span',null,z.it.title),k===0?h('b',{class:'pill'},'Ahora'):null)));
+  try{speak(say);}catch(e){}
+  modal({ic:'checklist',title:L.length===1?'¡Muy bien! Te falta 1 tarea':'¡Muy bien! Te faltan '+L.length+' tareas',text:'Esto es lo que te queda por hacer:',body,
+    actions:[['Hacer la siguiente',()=>go(Object.assign({mod:m.id},taskTarget(m,nx.it,ses.id,nx.i))),true],['Ver mi sesión',null]]});
+}
 function sessStatus(ses){
   const s=S(),rec=s.sess[ses.id];
   if(rec&&rec.done)return'done';
@@ -6752,7 +6772,7 @@ function modal(o){
   const bd=h('div',{class:'modal-bd',role:'dialog','aria-modal':'true','aria-label':o.title});
   const close=()=>bd.remove();
   const acts=o.actions.map(([label,fn,primary])=>h('button',{class:'btn'+(primary?' primary':' ghost'),type:'button',onclick:()=>{close();if(fn)fn();}},label));
-  bd.append(h('div',{class:'modal'},h('span',{class:'tile xl pop'},ic(o.ic||'estrella')),h('h2',null,o.title),o.text?h('p',null,o.text):null,h('div',{class:'actions'},acts)));
+  bd.append(h('div',{class:'modal'},h('span',{class:'tile xl pop'},ic(o.ic||'estrella')),h('h2',null,o.title),o.text?h('p',null,o.text):null,o.body||null,h('div',{class:'actions'},acts)));
   document.body.append(bd);cheer();
   const f=bd.querySelector('.btn.primary')||bd.querySelector('.btn');if(f)f.focus();
 }
@@ -7192,6 +7212,7 @@ VIEWS.unit=()=>{
     const after=ev=>{
       good();
       const nowOpen=gameOpen(u);
+      if(nowOpen&&!wasOpen&&ret){wasOpen=true;unlockGame(u);refreshTabs();}   /* v17.14.1: en la sesión el juego ya es otra tarea: sin ventana */
       if(nowOpen&&!wasOpen){
         wasOpen=true;unlockGame(u);refreshTabs();
         modal({ic:'estrella',title:'¡Casos prácticos terminados!',text:'Ahora toca el juego de «'+u.title+'». Tiene 4 niveles.',
@@ -7200,7 +7221,7 @@ VIEWS.unit=()=>{
       }
       if(it0&&!retDone&&taskDone(ret.sid,ret.idx,it0)){
         retDone=true;markTask(ret);
-        modal({ic:'estrella',title:'¡Tarea terminada!',text:'Has hecho esta parte de tu sesión.',actions:[['Volver a mi sesión',()=>toSession(ret),true],['Seguir con la ficha',null]]});
+        toast('¡Tarea terminada! Volvemos a tu sesión');setTimeout(()=>{if(view&&view.ret===ret)toSession(ret);},1600);
         return;
       }
       if(ev.pageAfter&&!ev.pageBefore)toast('¡Página terminada!');
@@ -7265,7 +7286,7 @@ VIEWS.xnew=()=>{
   const after=()=>{
     good();
     if(it0&&!retDone&&taskDone(ret.sid,ret.idx,it0)){retDone=true;markTask(ret);
-      modal({ic:'estrella',title:'¡Tarea terminada!',text:'Has hecho esta parte de tu sesión.',actions:[['Volver a mi sesión',()=>toSession(ret),true]]});}
+      toast('¡Tarea terminada! Volvemos a tu sesión');setTimeout(()=>{if(view&&view.ret===ret)toSession(ret);},1600);}
   };
   shell(h('main',null,
     h('div',{class:'crumb'},h('button',{class:'btn ghost sm',type:'button',onclick:back},gl('back'),ret?'Mi sesión':'Mi plan')),
@@ -7641,6 +7662,7 @@ VIEWS.session=()=>{
     bar,
     h('h2',{class:'sec',style:'margin-top:8px'},(b+1)+'. '+BLOQUES[b].n),
     BLK[b](C)));
+  if(JUST&&JUST.sid===ses.id&&Date.now()-JUST.t<600000){JUST=null;setTimeout(()=>{if(view.name==='session'&&view.sid===ses.id&&!document.querySelector('.modal-bd'))faltaModal(m,ses);},250);}
 };
 
 /* ================= pantallas de la motivación: resumen de partida, mi cafetería, mis logros y bloque del inicio ================= */
