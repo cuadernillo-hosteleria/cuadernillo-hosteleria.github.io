@@ -99,6 +99,11 @@ details.mejora details.mj-mod{background:rgba(255,255,255,.85)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) details.mejora{background:linear-gradient(135deg,#5a4500,#7a5d00 60%,#8a6a00)}:root:not([data-theme="light"]) details.mejora>summary{color:#fff7d6}:root:not([data-theme="light"]) details.mejora details.mj-mod{background:rgba(0,0,0,.25)}}
 :root[data-theme="dark"] details.mejora{background:linear-gradient(135deg,#5a4500,#7a5d00 60%,#8a6a00)}:root[data-theme="dark"] details.mejora>summary{color:#fff7d6}:root[data-theme="dark"] details.mejora details.mj-mod{background:rgba(0,0,0,.25)}
 .rv-all{margin:4px 0 10px}.btn.warn{border-color:#c0392b;color:#c0392b}
+.voleo{position:fixed;inset:0;z-index:9999;background:rgba(20,20,20,.55);display:flex;align-items:center;justify-content:center;padding:16px}
+.vol-card{background:var(--card,#fff);color:var(--ink,#1b1b1b);border:5px solid #e67e22;border-radius:20px;padding:22px 26px;max-width:440px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px}
+.vol-card h2{margin:0;font-size:1.8rem}.vol-card p{margin:0;font-size:1.2rem}.vol-n{font-size:2.6rem;line-height:1;color:#e67e22}
+section.part.expert{border:3px solid #7d3c98;background:linear-gradient(135deg,rgba(125,60,152,.10),rgba(242,183,5,.12))}
+section.part.expert .part-head{gap:10px}
 </style></head><body>
 <meta name="claude:viewport-fit-sides" content="cover">
 <title>Cuadernillos de Hostelería</title>
@@ -2329,7 +2334,37 @@ const needHits=n=>n<=0?0:Math.max(1,Math.ceil(n*cfg().thr/100-1e-9));
 const maxAtt=()=>Math.max(1,(cfg().max|0)||3);
 /* un nivel/actividad está «cerrado» si se ha superado o se han gastado los intentos (los datos antiguos con estrellas cuentan como superados) */
 function cleared(r){return !!r&&(!!r.ok||!!r.ex||(r.a===undefined&&(r.s||0)>=1));}
+/* v17.14: ritmo al responder. Se cuenta cada toque en una actividad (tiempo desde el toque anterior).
+   Si falla dos veces seguidas tocando en menos de 2 s: «Para. Lee despacio», pantalla parada 5 s y 30 s sin propinas. */
+const VOL={last:0,gap:1e9,err:false,streak:0,noTip:0,on:false};
+const VOL_FAST=2000,VOL_STOP=5000,VOL_NOTIP=30000;
+function ritDay(){const s=S();if(!s)return null;if(!s.rit||typeof s.rit!=='object')s.rit={};const d=todayISO();return s.rit[d]||(s.rit[d]={n:0,f:0,e:0,fe:0,b:0,sum:0});}
+document.addEventListener('pointerdown',e=>{
+  const t=e.target&&e.target.closest&&e.target.closest('.part-body button,.part-body .opt,.part-body .chip,.part-body [role=button],.gq button,.gq .opt,.gq .chip,.gq [role=button]');
+  if(!t||VOL.on)return;
+  const now=Date.now();
+  if(!VOL.err)VOL.streak=0;
+  VOL.gap=VOL.last?now-VOL.last:1e9;VOL.last=now;VOL.err=false;
+  const r=ritDay();if(r&&VOL.gap<120000){r.n++;r.sum+=Math.min(VOL.gap,60000);if(VOL.gap<VOL_FAST)r.f++;}
+},true);
+function volErr(){
+  const r=ritDay();if(r)r.e++;
+  if(VOL.err)return;   /* un mismo toque cuenta una vez */
+  VOL.err=true;
+  if(VOL.gap<VOL_FAST){if(r)r.fe++;VOL.streak++;if(VOL.streak>=2)volBrake();}else VOL.streak=0;
+}
+function volBrake(){
+  VOL.streak=0;VOL.on=true;VOL.noTip=Date.now()+VOL_NOTIP;
+  const r=ritDay();if(r)r.b++;try{save();}catch(e){}
+  const say='Para. Lee despacio. Lee la pregunta y mira bien antes de tocar.';
+  const n=h('b',{class:'vol-n'},String(VOL_STOP/1000));
+  const ov=h('div',{class:'voleo',role:'alertdialog','aria-label':'Para. Lee despacio'},
+    h('div',{class:'vol-card'},tile('ojo2','lg'),h('h2',null,'Para. Lee despacio'),h('p',null,'Lee la pregunta y mira bien antes de tocar.'),n,h('small',null,'Si tocas sin leer, no ganas propinas.')));
+  document.body.append(ov);try{speak(say);}catch(e){}
+  let k=VOL_STOP/1000;const tm=setInterval(()=>{k--;n.textContent=String(Math.max(k,0));if(k<=0){clearInterval(tm);ov.remove();VOL.on=false;VOL.last=Date.now();}},1000);
+}
 function failLog(key,label){
+  try{volErr();}catch(e){}
   const s=S();if(!s)return;
   const f=s.fail[key]||(s.fail[key]={n:0,l:'',t:0});
   f.n++;f.t=Date.now();if(label&&!f.l)f.l=String(label).replace(/\s+/g,' ').slice(0,80);
@@ -2881,7 +2916,7 @@ RENDER.rodear=(b,p,x)=>{
 const OIDO_P=[['cafe_leche','café con leche','cafés con leche',0],['cafe_solo','café solo','cafés solos',0],['cortado','cortado','cortados',0],['tazacal','Cola Cao','Cola Caos',0],['zumo','zumo de naranja','zumos de naranja',0],['tostada','tostada','tostadas',1],['croissant','cruasán','cruasanes',0],['magdalena','magdalena','magdalenas',1],['sandwich','sándwich','sándwiches',0],['bocadillo','bocadillo','bocadillos',0],['agua','agua','aguas',0],['te','té','tés',0],['refresco','refresco','refrescos',0]];
 RENDER.oido=(b,p,x)=>{
   const R=rngOf(String(p.seed)),pick=n=>{const ix=[];while(ix.length<n){const k=Math.floor(R()*OIDO_P.length);if(!ix.includes(k))ix.push(k);}return ix;};
-  const orders=Array.from({length:p.n||3},()=>{const k=1+Math.floor(R()*2)+(R()<.3?1:0),ix=pick(k);return ix.map(i=>({i,q:1+Math.floor(R()*3)}));});
+  const orders=Array.from({length:p.n||3},()=>{const k=(p.hard?2:1)+Math.floor(R()*2)+(R()<.3?1:0),ix=pick(k);return ix.map(i=>({i,q:1+Math.floor(R()*3)}));});
   const num=(q,f)=>q===1?(f?'una':'un'):q===2?'dos':'tres';
   const say=o=>{const t=o.map(z=>{const P=OIDO_P[z.i];return num(z.q,P[3])+' '+(z.q===1?P[1]:P[2]);});return 'Hola. Quiero '+(t.length>1?t.slice(0,-1).join(', ')+' y '+t[t.length-1]:t[0])+', por favor.';};
   x.items(orders.length);
@@ -5302,6 +5337,7 @@ function playBegin(cfgv){
 }
 function pAdd(P,n){
   if(n<=0)return 0;
+  if(VOL.noTip>Date.now())return 0;   /* v17.14: justo después de tocar a voleo no se ganan propinas */
   const room=P.official?1e9:Math.max(0,PRACTICE_CAP-dayUsed()-P.pract);
   const g=Math.min(n,room);if(g<n)P.capped=true;
   if(!P.official)P.pract+=g;P.tips+=g;return g;
@@ -6307,6 +6343,44 @@ function xUnit(mid,key){
       if(i%3===1&&(mid==='apb'||mid==='sbr'))parts=parts.concat([{k:'oido',ins:'Escucha el pedido del cliente y prepáralo.',seed:id+'|'+i,n:3}]);
       return{typ:'Nuevo',t:pg.t,ic:pg.ic||(base&&base.ic)||'estrella',parts};})};
 }
+/* v17.14: nivel experto. Si en las actividades nuevas de la sesión acierta a la primera el 80 % o más, al terminar se abren 3 páginas más difíciles:
+   preguntas mezcladas de toda la AAE, escribir sin banco de palabras, pedidos de oído más largos y hay que acertar 9 de cada 10. */
+const XEXP_THR=80,XEXP_TIP=5;
+function xAccOf(ses){
+  const st=S();let H=0,T=0,n=0;
+  ses.items.forEach(it=>{if(it.t!=='xnew')return;const u=XU[it.xu];if(!u||!u.pages[it.pg])return;n++;
+    u.pages[it.pg].parts.forEach((p,j)=>{const a=st.att[pid(u,it.pg,j)];if(a&&a.t>0){H+=(a.f!=null?a.f:(a.h||0));T+=a.t;}});});
+  return{n,T,pct:T?Math.round(100*H/T):null};
+}
+function xExp(m,ses){
+  const id=m.id+':E'+ses.id;if(XU[id])return XU[id];
+  const keys=[...new Set(ses.items.filter(it=>it.t==='xnew'&&XU[it.xu]).map(it=>XU[it.xu].lab2))];
+  if(!keys.length)return null;
+  const R=rngOf(id),pool=[];
+  keys.forEach(k=>(XNEW[m.id+':'+k]||[]).forEach(pg=>pg.parts.forEach(p=>{if(p.k!=='lectura'&&RENDER[p.k])pool.push(p);})));
+  for(let i=pool.length-1;i>0;i--){const j=Math.floor(R()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
+  if(!pool.length)return null;
+  const hard=p=>p.k==='completar'?Object.assign({},p,{bank:false,ins:'Escribe la palabra que falta.'}):p;
+  const base=UBY[m.id+':'+keys[0]],pages=[];
+  for(let i=0;i<3;i++){let parts=[0,1].map(k=>hard(pool[(i*2+k)%pool.length]));
+    if(i===1&&(m.id==='apb'||m.id==='sbr'))parts=parts.concat([{k:'oido',ins:'Escucha el pedido del cliente y prepáralo. ¡Son pedidos largos!',seed:id+'|'+i,n:3,hard:1}]);
+    pages.push({typ:'Experto',t:'Nivel experto '+(i+1),ic:'estrella',parts});}
+  return XU[id]={uid:id,key:'E'+ses.id,mod:m,kind:'xnew',exp:1,lab2:keys.join(', '),title:base?base.title:keys[0],ic:'estrella',tri:base?base.tri:null,sub:'',pages};
+}
+function xExpBlock(m,ses){
+  const a=xAccOf(ses);if(!a.n||a.pct==null)return null;
+  if(a.pct<XEXP_THR)return h('p',{class:'hint'},'Hoy has acertado '+Math.round(a.pct/10)+' de cada 10 en las actividades nuevas. Con 8 de cada 10 se abre el nivel experto. ¡Mañana lo intentas!');
+  const eu=xExp(m,ses);if(!eu)return null;
+  const st=S(),done=eu.pages.map((_,i)=>pageDone(eu,i)),all=done.every(Boolean),key='xexp|'+ses.id;
+  if(all&&!st.data[key]){st.data[key]=1;const w=pwin();if(w){w.earned+=XEXP_TIP;save();setTimeout(()=>{try{tipChipBump(XEXP_TIP);toast('¡Nivel experto superado! +'+XEXP_TIP+' propinas');}catch(e){}},300);}else save();}
+  const first=done.indexOf(false);
+  return h('section',{class:'part expert'},
+    h('header',{class:'part-head'},tile('estrella','sm'),h('h2',{class:'ins'},all?'¡Eres experto!':'¡Nivel experto!'),h('span',{class:'pill'+(all?' ok':'')},done.filter(Boolean).length+' de 3')),
+    h('p',{class:'hint'},all?'Has superado el nivel experto de hoy.':'Has acertado '+Math.round(a.pct/10)+' de cada 10. Tienes 3 páginas más difíciles. Al terminarlas ganas '+XEXP_TIP+' propinas.'),
+    h('div',{class:'todo'},eu.pages.map((pg,i)=>{const lock=!done[i]&&i>first&&first>=0;
+      return h('button',{class:'btn'+(done[i]?' done':i===first?' now':'')+(lock?' locked':''),type:'button',disabled:lock,onclick:()=>go(Object.assign({mod:m.id},taskTarget(m,{t:'xnew',xu:eu.uid,pg:i},ses.id,'e'+i)))},
+        tile(done[i]?'check':lock?'candado':'estrella','xs'),h('span',{style:'flex:1'},pg.t),gl('next'));})));
+}
 function xItemsOf(m,L){
   if(XL.has(L))return XL.get(L);
   const nxt={},out={},seenAae=[];
@@ -7179,6 +7253,7 @@ VIEWS.mision=()=>{
 };
 VIEWS.xnew=()=>{
   if(!XU[view.xu]&&MBY[view.mod])try{planOf(MBY[view.mod]);}catch(e){}
+  if(!XU[view.xu]&&MBY[view.mod]&&String(view.xu||'').indexOf(':E')>0)try{const sid=String(view.xu).slice(String(view.xu).indexOf(':E')+2),se=sessionById(view.mod,sid);if(se)xExp(MBY[view.mod],se);}catch(e){}
   const u=XU[view.xu],ret=view.ret||null;
   if(!u){go({name:'mod',mod:view.mod,tab:'plan'},true);return;}
   const pi=Math.min(Math.max(0,+view.pg||0),u.pages.length-1),pg=u.pages[pi];
@@ -7193,9 +7268,9 @@ VIEWS.xnew=()=>{
   shell(h('main',null,
     h('div',{class:'crumb'},h('button',{class:'btn ghost sm',type:'button',onclick:back},gl('back'),ret?'Mi sesión':'Mi plan')),
     ret?h('div',{class:'retbar'},h('span',null,'Estás haciendo una tarea de tu sesión.'),h('button',{class:'btn primary sm',type:'button',onclick:back},gl('back'),'Volver a mi sesión')):null,
-    h('div',{class:'uhead'},tile(pg.ic,'lg'),h('div',null,h('span',{class:'lab sun'},'Actividad nueva · AAE '+u.lab2),h('h1',null,pg.t),h('div',{class:'ref'},u.title))),
-    h('p',{class:'hint'},'Escucha bien. Las respuestas se pueden tocar cuando termina la pregunta. Necesitas acertar 8 de cada 10 a la primera.'),
-    h('div',null,pg.parts.map((p,j)=>partCard(u,pi,j,Object.assign({},p,{thr:80,listen:p.k==='rodear'||p.k==='lectura'}),{after})),
+    h('div',{class:'uhead'},tile(pg.ic,'lg'),h('div',null,h('span',{class:'lab sun'},u.exp?'Nivel experto · hay que acertar 9 de cada 10':'Actividad nueva · AAE '+u.lab2),h('h1',null,pg.t),h('div',{class:'ref'},u.title))),
+    h('p',{class:'hint'},'Escucha bien. Las respuestas se pueden tocar cuando termina la pregunta. Necesitas acertar '+(u.exp?9:8)+' de cada 10 a la primera.'),
+    h('div',null,pg.parts.map((p,j)=>partCard(u,pi,j,Object.assign({},p,{thr:u.exp?90:80,listen:p.k==='rodear'||p.k==='lectura'}),{after})),
       h('div',{class:'pnav'},h('span'),h('button',{class:'btn primary',type:'button',onclick:back},gl('back'),ret?'Volver a mi sesión':'Volver')))));
 };
 function lvlTag(rec){
@@ -7494,7 +7569,7 @@ function blkPrac(C){
     warn.textContent=q.all?'Muy bien. Recogemos a las '+hhmm(q.at)+'. Mientras, sigue practicando.':'Antes de recoger, termina tus tareas. Te quedan '+(total-nd())+'.';
     warn.hidden=false;shake(nb);bad();return false;});
   if(!g.ok&&!rec.done)nb.classList.add('wait');
-  let more=null;
+  let more=null;const expB=g.all&&!rec.done?xExpBlock(m,ses):null;
   if(g.live&&g.all&&!g.ok&&!rec.done){
     const its=morePractice(m,ses);
     more=h('section',{class:'part'},h('header',{class:'part-head'},h('h2',{class:'ins'},'¡Muy bien! Sigue practicando'),h('span',{class:'pill'},'Recogemos a las '+hhmm(g.at))),
@@ -7503,7 +7578,7 @@ function blkPrac(C){
   }
   const box=h('div',null,
     h('section',{class:'part'},h('header',{class:'part-head'},h('h2',{class:'ins'},'Lo practicamos'),h('span',{class:'pill'+(n0===total?' ok':'')},n0+' de '+total)),list,hint),
-    more,h('div',{class:'actions'},nb),warn);
+    expB,more,h('div',{class:'actions'},nb),warn);
   if(g.live&&!g.ok&&!rec.done){const tm=setInterval(()=>{if(!box.isConnected){clearInterval(tm);return;}const q=pracGate(ses);if(q.ok){clearInterval(tm);go({name:'session',mod:m.id,sid:ses.id,b:3},true);}},20000);}
   return box;
 }
@@ -11281,6 +11356,15 @@ function tabResumen(){
     h('h2',{class:'sec'},'Panel de logros del grupo'),logros);
 }
 
+/* v17.14: ritmo al responder (últimos 10 días con datos) */
+function ritBlock(st){
+  const R=st.rit||{},days=Object.keys(R).filter(d=>R[d]&&R[d].n>0).sort().reverse().slice(0,10);
+  if(!days.length)return h('p',{class:'muted'},'Todavía no hay datos. Se empiezan a guardar con esta versión: cada toque en una ficha, juego o taller.');
+  const pct=(a,b)=>b?Math.round(100*a/b)+' %':'—';
+  const rows=days.map(d=>{const r=R[d];const fp=r.n?r.f/r.n:0;return[{t:fmtISO(d)},{t:r.n},{t:r.n?(r.sum/r.n/1000).toFixed(1).replace('.',',')+' s':'—'},{t:pct(r.f,r.n),c:fp>=.5?'warn':''},{t:r.fe||0,c:(r.fe||0)>=6?'warn':''},{t:r.b||0,c:(r.b||0)>=2?'warn':''}];});
+  return h('div',null,tblEl(['Día','Toques','Tiempo medio entre toques','Tocados en menos de 2 s','Fallos tocando rápido','Avisos «Lee despacio»'],rows,'tx'),
+    h('p',{class:'note'},'Si toca muy rápido y falla, va a voleo. Con dos fallos seguidos en menos de 2 s le sale «Para. Lee despacio»: la pantalla se para 5 s y durante 30 s no gana propinas.'));
+}
 /* ---------- pestaña: alumnado (dónde falla) ---------- */
 function tabAlumnado(v){
   const names=studentNames();
@@ -11347,6 +11431,7 @@ function tabAlumnado(v){
     cards,
     h('h2',{class:'sec'},'Habilidades y motivación'),skillsBlock(st),
     h('h2',{class:'sec'},'Lo que más le cuesta'),fails,
+    h('h2',{class:'sec'},'Ritmo al responder'),ritBlock(st),
     h('h2',{class:'sec'},'Para repasar con el profe'),h('p',{class:'note'},'Son las actividades en las que ha gastado todos los intentos sin llegar al '+cfg().thr+' % de aciertos a la primera. Al alumno no se le bloquea nada: puede seguir. Tú decides si le das más intentos o si ya lo habéis repasado.'),allBtn,rvList,grpBtn?h('div',{class:'actions'},grpBtn):null,
     h('h2',{class:'sec'},'Mapa por AAE'),modSeg(mid,id=>go({name:'teacher',tab:'alumnado',stu:n,mod:id},true)),tblEl(mapHead,mapRows,'tx'),
     h('h2',{class:'sec'},'Actividad reciente'),recent);
@@ -11548,6 +11633,7 @@ function mergeStu(a,b){
   mlv(a.games,b.games);mlv(a.sim,b.sim);
   Object.keys(b.man||{}).forEach(k=>{const y=b.man[k],x=(a.man||(a.man={}))[k];if(!x||(y.t||0)>(x.t||0))a.man[k]=y;});   /* nota del profe: gana la más reciente */
   Object.keys(b.srs||{}).forEach(k=>{if(!a.srs[k]||(b.srs[k].n||0)>(a.srs[k].n||0))a.srs[k]=b.srs[k];});
+  if(b.rit&&typeof b.rit==='object'){a.rit=a.rit||{};Object.keys(b.rit).forEach(d=>{const y=b.rit[d]||{},x=a.rit[d]||(a.rit[d]={});['n','f','e','fe','b','sum'].forEach(k=>{x[k]=mx(x[k],y[k]);});});}
   Object.keys(b.time||{}).forEach(mid=>{const A=a.time[mid]||(a.time[mid]={});Object.keys(b.time[mid]).forEach(d=>{A[d]=mx(A[d],b.time[mid][d]);});});
   Object.keys(b.mood||{}).forEach(k=>{if(a.mood[k]===undefined)a.mood[k]=b.mood[k];});
   Object.keys(b.sess||{}).forEach(k=>{const y=b.sess[k],x=a.sess[k];if(!x){a.sess[k]=y;return;}
