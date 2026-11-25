@@ -71,6 +71,34 @@
 .btn.wait{opacity:.55}
 .opt.espera{opacity:.45;cursor:wait}
 .part.k-lectura .lect-p{font-size:1.08em}
+details.mejora{background:var(--card,#fff);border:3px solid #f2b705;border-radius:16px;padding:6px 12px;margin:12px 0}
+details.mejora summary,details.mj-mod summary,details.mj-fi summary{display:flex;align-items:center;gap:12px;cursor:pointer;list-style:none;padding:8px 2px;min-height:56px}
+details.mejora summary::-webkit-details-marker,details.mj-mod summary::-webkit-details-marker,details.mj-fi summary::-webkit-details-marker{display:none}
+details.mejora summary::after,details.mj-mod summary::after,details.mj-fi summary::after{content:'▸';font-size:1.4rem;margin-left:4px;transition:transform .2s}
+details[open]>summary::after{transform:rotate(90deg)}
+.mj-t{display:flex;flex-direction:column;flex:1;min-width:0}.mj-t small{font-weight:400;opacity:.8}
+.mj-n{background:#f2b705;color:#1b1b1b;font-weight:800;border-radius:999px;min-width:2em;text-align:center;padding:2px 8px}
+details.mj-mod{border:2px solid var(--line,#cfd8dc);border-radius:14px;margin:8px 0;padding:0 10px}
+details.mj-fi{border-top:1px dashed var(--line,#cfd8dc);margin-left:8px;padding:0 4px}
+details.mj-fi .todo{margin:4px 0 10px}
+.todo .btn.locked{opacity:.5;filter:grayscale(.6);cursor:not-allowed}
+.todo .btn.now{border-width:3px;border-color:#f2b705;box-shadow:0 0 0 4px rgba(242,183,5,.25)}
+.retocard.locked{border-style:dashed;opacity:.92}.retocard .btn.locked{opacity:.6;cursor:not-allowed}
+.retocard .btn.ayer{background:#f2b705;color:#1b1b1b;border-color:#f2b705}.retocard .ayer-t{display:block;margin-top:6px}
+details.mejora{background:linear-gradient(135deg,#fff3c4 0%,#ffe082 55%,#ffd54f 100%);border:4px solid #f2b705;box-shadow:0 0 0 0 rgba(242,183,5,.6);animation:mjPulse 2.4s ease-out infinite;position:relative;overflow:hidden}
+details.mejora[open]{animation:none;box-shadow:0 6px 18px rgba(242,183,5,.35)}
+details.mejora>summary{color:#1b1b1b}details.mejora>summary .mj-t>b{font-size:1.35rem}
+details.mejora>summary::before{content:'';position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.65),transparent);animation:mjShine 3.2s ease-in-out infinite;pointer-events:none}
+.mj-star{display:inline-flex;animation:mjStar 1.6s ease-in-out infinite}
+.mj-prize{display:inline-flex;align-items:center;gap:6px;margin-top:4px;background:#1b1b1b;color:#ffd54f;font-weight:800;border-radius:999px;padding:3px 10px;width:fit-content;font-size:.95rem}
+details.mejora details.mj-mod{background:rgba(255,255,255,.85)}
+@keyframes mjPulse{0%{box-shadow:0 0 0 0 rgba(242,183,5,.65)}70%{box-shadow:0 0 0 14px rgba(242,183,5,0)}100%{box-shadow:0 0 0 0 rgba(242,183,5,0)}}
+@keyframes mjShine{0%{left:-60%}60%,100%{left:130%}}
+@keyframes mjStar{0%,100%{transform:scale(1) rotate(0)}50%{transform:scale(1.15) rotate(-8deg)}}
+@media (prefers-reduced-motion:reduce){details.mejora,.mj-star,details.mejora>summary::before{animation:none}}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) details.mejora{background:linear-gradient(135deg,#5a4500,#7a5d00 60%,#8a6a00)}:root:not([data-theme="light"]) details.mejora>summary{color:#fff7d6}:root:not([data-theme="light"]) details.mejora details.mj-mod{background:rgba(0,0,0,.25)}}
+:root[data-theme="dark"] details.mejora{background:linear-gradient(135deg,#5a4500,#7a5d00 60%,#8a6a00)}:root[data-theme="dark"] details.mejora>summary{color:#fff7d6}:root[data-theme="dark"] details.mejora details.mj-mod{background:rgba(0,0,0,.25)}
+.rv-all{margin:4px 0 10px}.btn.warn{border-color:#c0392b;color:#c0392b}
 </style></head><body>
 <meta name="claude:viewport-fit-sides" content="cover">
 <title>Cuadernillos de Hostelería</title>
@@ -2742,7 +2770,7 @@ function partCard(u,pi,j,p,hooks){
         good();return;
       }
       const a=st.att[id]||(st.att[id]={n:0,ok:0,ex:0});
-      a.n++;a.h=hits;a.t=n;a.ts=Date.now();a.best=Math.max(a.best||0,hits);if(a.n===1)a.f=hits;   /* f = aciertos a la primera del primer intento (sirve para orientar el nivel de apoyo) */
+      a.n++;a.h=hits;a.t=n;a.ts=Date.now();a.best=Math.max(a.best||0,hits);if(a.n===1)a.f=hits;if(a.gt&&n>0)mejoraPay(a,hits/n,pass);   /* f = aciertos a la primera del primer intento (sirve para orientar el nivel de apoyo) */
       logRes('p',id,hits,n,a.n);
       /* propinas: se pagan los aciertos a la primera una vez (el mejor intento) y 1 más al superarla */
       if(playOn()&&n>0){const pr=playPart(p,hits,n,pass,false,a.tp||0);if(pr)a.tp=Math.max(a.tp||0,hits);}
@@ -3944,6 +3972,7 @@ function recRound(map,key,l,res){
   const open=!cleared(r);
   if(open){r.a=(r.a||0)+1;if(r.a===1){r.f=res.hits;r.fn=res.n;}if(res.n>0)r.b=Math.max(r.b||0,res.hits/res.n);if(res.pass)r.ok=1;else if(r.a>=maxAtt())r.ex=1;}   /* f/fn: primer intento · b: mejor proporción de aciertos (solo intentos oficiales) */
   r.s=Math.max(r.s,res.stars);r.e=res.errs;r.h=res.hits;r.n=res.n;r.t=Date.now();
+  if(open&&r.gt&&res.n>0)mejoraPay(r,res.hits/res.n,!!res.pass);
   return{a:r.a||0,ok:!!r.ok,ex:!!r.ex&&!r.ok,first:open};
 }
 function recGame(uid,l,res){const o=recRound(S().games,uid,l,res);logRes('g',uid+'|'+l,res.hits,res.n,o.a);save();return o;}
@@ -4494,7 +4523,7 @@ function simsForUnit(u){return SIMS.filter(s=>s.mods.includes(u.mod.id)&&s.units
 /* Todo se gana con aciertos «a la primera»: los fallos no se premian, pero tampoco se castigan. Nada que se gana se pierde nunca.
    Las propinas se abonan al terminar la partida (o al salir de ella), y las de práctica tienen un tope diario para que repetir lo fácil no sirva de nada. */
 const PRACTICE_CAP=30;
-const TIP={pass:3,perfect:2,combo:1,every:3,part:1,reto:10};
+const TIP={pass:3,perfect:2,combo:1,every:3,part:1,reto:10,mejora:5,mejoraP:2};
 const playOn=()=>cfg().play!==false;
 
 /* ---------- habilidades ---------- */
@@ -6865,19 +6894,32 @@ function grantedItems(st){
   UNITS.forEach(u=>{
     if(!unitOn(u))return;
     u.pages.forEach((pg,pi)=>pg.parts.forEach((p,j)=>{if(!isAct(p))return;const id=pid(u,pi,j),a=st.att[id];
-      if(a&&a.gt&&!a.ok&&!st.done[id]&&(a.ts||0)<a.gt)out.push({go:{name:'unit',unit:u.uid,page:pi},t:u.title+' · '+(TABN[pg.typ]||pg.typ),ic:u.ic});}));
-    for(let l=1;l<=4;l++){const r=((st.games||{})[u.uid]||{})[l];if(r&&r.gt&&!r.ok&&(r.t||0)<r.gt)out.push({go:{name:'game',unit:u.uid,lvl:l},t:u.title+' · Juego, nivel '+l,ic:'estrella'});}
+      if(a&&a.gt&&!a.ok&&!st.done[id]&&(a.ts||0)<a.gt)out.push({mid:u.mod.id,g:u.uid,gt:u.kind==='aae'?'AAE '+u.lab2+' · '+u.title:u.title,gic:u.ic,go:{name:'unit',unit:u.uid,page:pi},t:(TABN[pg.typ]||pg.typ)+': '+p.ins,ic:'lapiz'});}));
+    for(let l=1;l<=4;l++){const r=((st.games||{})[u.uid]||{})[l];if(r&&r.gt&&!r.ok&&(r.t||0)<r.gt)out.push({mid:u.mod.id,g:u.uid,gt:u.kind==='aae'?'AAE '+u.lab2+' · '+u.title:u.title,gic:u.ic,go:{name:'game',unit:u.uid,lvl:l},t:'Juego, nivel '+l,ic:'estrella'});}
   });
-  SIMS.forEach(sm=>{for(let l=1;l<=3;l++){const r=((st.sim||{})[sm.id]||{})[l];if(r&&r.gt&&!r.ok&&(r.t||0)<r.gt)out.push({go:{name:'sim',sim:sm.id,lvl:l,mod:sm.mods[0]},t:'Taller virtual · '+sm.n+' · Nivel '+l,ic:sm.ic});}});
+  SIMS.forEach(sm=>{for(let l=1;l<=3;l++){const r=((st.sim||{})[sm.id]||{})[l];if(r&&r.gt&&!r.ok&&(r.t||0)<r.gt)out.push({mid:sm.mods[0],g:'sim:'+sm.id,gt:'Taller virtual · '+sm.n,gic:sm.ic,go:{name:'sim',sim:sm.id,lvl:l,mod:sm.mods[0]},t:'Nivel '+l,ic:sm.ic});}});
   return out;
 }
+/* v17.13: «¡Puedes mejorar tu nota!» plegado: se abre con un toque y dentro va por módulos y por fichas (cada ficha con su sesión) */
 function grantBlock(){
   let L=[];try{L=grantedItems(S());}catch(e){}
   if(!L.length)return null;
-  return h('section',{class:'part',style:'border:3px solid #f2b705'},
-    h('header',{class:'part-head'},spk('Tu profe te deja repetir '+(L.length===1?'una actividad':L.length+' actividades')+'. Puedes mejorar tu nota.'),h('h2',{class:'ins'},'¡Puedes mejorar tu nota!')),
-    h('p',{class:'hint'},'Tu profe te deja repetir '+(L.length===1?'esta actividad':'estas actividades')+'. Tienes '+maxAtt()+' intentos nuevos.'),
-    h('div',{class:'todo'},L.map(it=>h('button',{class:'btn',type:'button',onclick:()=>go(it.go)},tile(it.ic,'xs'),h('span',{style:'flex:1'},it.t),gl('next')))));
+  const n=L.length,ses=g=>{try{const u=UBY[g];const d=u&&unitFirst(u);return d?'Sesión del '+fmtISO(d):'';}catch(e){return '';}};
+  const mods=MODS.filter(m=>L.some(it=>it.mid===m.id));
+  const say='Tu profe te deja repetir '+(n===1?'una actividad':n+' actividades')+'. Puedes mejorar tu nota y ganar '+TIP.mejora+' propinas en cada una. Toca para verlas.';
+  const box=h('details',{class:'mejora'},
+    h('summary',null,h('span',{class:'mj-star'},tile('estrella','lg')),h('span',{class:'mj-t'},h('b',null,'¡Puedes mejorar tu nota!'),h('small',null,n===1?'Tienes 1 actividad para repetir':'Tienes '+n+' actividades para repetir'),h('span',{class:'mj-prize'},tipEl('sm'),'+'+TIP.mejora+' propinas por cada una que superes')),h('span',{class:'mj-n'},String(n)),spk(say,'sm')),
+    h('p',{class:'hint'},'Tu profe te deja repetir. Tienes '+maxAtt()+' intentos nuevos en cada una. Si la superas, ganas '+TIP.mejora+' propinas. Si lo haces mejor que antes, ganas '+TIP.mejoraP+'. Elige un módulo.'),
+    mods.map(m=>{const Lm=L.filter(it=>it.mid===m.id),groups=[...new Set(Lm.map(it=>it.g))];
+      return h('details',{class:'mj-mod'},
+        h('summary',null,tile(m.ic,'sm'),h('span',{class:'mj-t'},h('b',null,m.name),h('small',null,Lm.length===1?'1 actividad':Lm.length+' actividades')),h('span',{class:'mj-n'},String(Lm.length))),
+        groups.map(g=>{const Lg=Lm.filter(it=>it.g===g),f=Lg[0],sd=g.startsWith('sim:')?'':ses(g);
+          return h('details',{class:'mj-fi'},
+            h('summary',null,tile(f.gic,'sm'),h('span',{class:'mj-t'},h('b',null,f.gt),sd?h('small',null,sd):null),h('span',{class:'mj-n'},String(Lg.length))),
+            h('div',{class:'todo'},Lg.map(it=>h('button',{class:'btn',type:'button',onclick:()=>go(it.go)},tile(it.ic,'xs'),h('span',{style:'flex:1'},it.t),gl('next')))));}));
+    }));
+  box.addEventListener('click',e=>{const t=e.target;if(t.closest&&t.closest('summary')&&t.closest('button'))e.preventDefault();});   /* el altavoz lee sin abrir ni cerrar */
+  return box;
 }
 function lateBlock(){
   const all=MODS.flatMap(m=>lateOf(m).map(x=>({m,x}))).sort((a,b)=>a.x.date<b.x.date?-1:a.x.date>b.x.date?1:a.x.per-b.x.per);
@@ -7321,7 +7363,7 @@ VIEWS.train=()=>{
   const own=mode==='micafe'?cafeProducts().own:true;
   shell(h('main',null,vRun({
     title:TRAIN_INFO[mode][0],sub:mode==='micafe'&&!own?'Todavía no tienes productos en tu carta: usamos los del cole. Compra productos en tu cafetería.':TRAIN_INFO[mode][1],rounds,back,backLabel:ret?'Mi sesión':'Entrenar',free:true,ctx:'train:'+m.id,
-    extra:()=>{if(mode!=='reto'||retoDone())return[];markReto();return[{t:'Reto del día',v:TIP.reto}];},
+    extra:()=>{if(mode!=='reto')return[];const t=todayISO(),d=view.rday||t;if(retoDoneOn(d)||!dayDone(d)||(d!==t&&d!==prevClassDay()))return[];markReto(d);return[d===t?{t:'Reto del día',v:TIP.reto}:{t:'Reto pendiente (propinas extra)',v:TIP.reto}];},
     onEnd:()=>{if(ret)markTask(ret);},
     actions:()=>{
       const a=[];
@@ -7435,14 +7477,17 @@ function blkPrac(C){
   const nd=()=>ses.items.filter((it,i)=>taskDone(ses.id,i,it)).length;
   const n0=nd();
   if(n0===total&&!rec.b.prac){rec.b.prac=1;save();}
+  const dn=ses.items.map((it,idx)=>taskDone(ses.id,idx,it)),firstOpen=dn.indexOf(false);
   const list=h('div',{class:'todo'},ses.items.map((it,idx)=>{
-    const done=taskDone(ses.id,idx,it);
-    return h('button',{class:'btn'+(done?' done':''),type:'button',onclick:()=>go(Object.assign({mod:m.id},taskTarget(m,it,ses.id,idx)))},
+    const done=dn[idx],locked=!rec.done&&!done&&firstOpen>=0&&idx>firstOpen;   /* v17.13.2: en orden; lo ya hecho siempre se puede repetir */
+    if(locked)return h('button',{class:'btn locked',type:'button',disabled:true,'aria-label':it.title+'. Se abre al terminar la tarea de antes'},
+      tile(it.ic,'xs'),h('span',{style:'flex:1'},it.title,h('small',{style:'display:block;font-weight:400'},'Se abre cuando termines la tarea de antes')),gl('lock'));
+    return h('button',{class:'btn'+(done?' done':idx===firstOpen?' now':''),type:'button',onclick:()=>go(Object.assign({mod:m.id},taskTarget(m,it,ses.id,idx)))},
       tile(it.ic,'xs'),
       h('span',{style:'flex:1'},it.title,h('small',{style:'display:block;font-weight:400'},it.t==='mision'?'En el taller, de verdad. La revisa el profe':it.t==='xnew'?'Actividad nueva':it.rep?'Repaso':'Ficha, juego o taller')),
       done?gl('check'):gl('next'));
   }));
-  const hint=h('p',{class:'hint'},n0<total?'Te quedan '+(total-n0)+' tareas. Puedes hacerlas en el orden que quieras.':'¡Has hecho todo lo de hoy!');
+  const hint=h('p',{class:'hint'},n0<total?'Te quedan '+(total-n0)+' tareas. Hazlas en orden: empieza por la que brilla. Cuando la termines, se abre la siguiente.':'¡Has hecho todo lo de hoy!');
   const g=pracGate(ses),warn=h('p',{class:'hint warn',hidden:true,role:'alert'});
   const nb=C.nextBtn('prac','Siguiente: Recogemos',()=>{
     const q=pracGate(ses);if(q.ok||rec.done)return true;
@@ -7522,8 +7567,17 @@ VIEWS.session=()=>{
 };
 
 /* ================= pantallas de la motivación: resumen de partida, mi cafetería, mis logros y bloque del inicio ================= */
-const retoDone=()=>{const w=pwin();return !!w&&w.reto===todayISO();};
-function markReto(){const w=pwin();if(!w)return;w.reto=todayISO();w.retos=(w.retos||0)+1;}
+/* v17.13.3: el reto de un día se abre cuando están terminadas TODAS las sesiones de ese día (de todos los módulos).
+   Si no da tiempo, el día de clase siguiente se puede hacer el de ayer y da propinas extra. w.rd guarda los días con reto hecho. */
+function daySess(iso){const L=[];MODS.forEach(m=>{try{todaySessions(m,iso).forEach(x=>L.push(x));}catch(e){}});return L;}
+function dayLeft(iso){const L=daySess(iso);return{n:L.length,left:L.filter(x=>sessStatus(x)!=='done').length};}
+const dayDone=iso=>{const d=dayLeft(iso);return d.n>0&&d.left===0;};
+function prevClassDay(){const t=todayISO();let best='';MODS.forEach(m=>{allSessions(m).forEach(x=>{if(x.date<t&&x.date>best)best=x.date;});});return best;}
+const retoDoneOn=iso=>{const w=pwin();return !!w&&!!iso&&(!!(w.rd&&w.rd[iso])||w.reto===iso);};
+const retoDone=()=>retoDoneOn(todayISO());
+function markReto(iso){const w=pwin();if(!w)return;iso=iso||todayISO();if(!w.rd||typeof w.rd!=='object')w.rd={};w.rd[iso]=1;if(iso>=String(w.reto||''))w.reto=iso;w.retos=(w.retos||0)+1;}
+/* reto de ayer pendiente: solo el día de clase anterior, si no se hizo y sus sesiones ya están terminadas (o se terminan hoy) */
+function retoAyer(){const y=prevClassDay();if(!y||retoDoneOn(y))return null;const d=dayLeft(y);return{iso:y,n:d.n,left:d.left,ok:d.n>0&&d.left===0,lab:addDaysISO(todayISO(),-1)===y?'de ayer':'del '+['domingo','lunes','martes','miércoles','jueves','viernes','sábado'][new Date(y+'T12:00:00').getDay()]};}
 /* módulo del reto del día: el que toca hoy según el horario; si no, el último en el que ha trabajado */
 function retoMod(){
   const iso=todayISO(),c=MODS.map(m=>({m,sl:todaySessions(m,iso)})).filter(z=>z.sl.length).sort((a,b)=>a.sl[0].per-b.sl[0].per);
@@ -10741,13 +10795,18 @@ function playBlock(){
     h('div',{class:'actions',style:'margin-top:2px'},
       h('button',{class:'btn primary',type:'button',onclick:()=>go({name:'cafe'})},tipEl('sm'),'Mi cafetería'),
       h('button',{class:'btn ghost',type:'button',onclick:()=>go({name:'logros',tab:'carnet'})},'Mis logros')));
-  const done=retoDone();
-  const reto=h('article',{class:'pcard2 retocard'+(done?' done':'')},
-    h('div',{class:'pc-h'},tile('puzzle','sm'),h('div',{style:'min-width:0;flex:1'},h('h3',null,'Reto del día'),h('small',{class:'muted'},done?'Hecho hoy. ¡Vuelve mañana!':'Un poco de todo: +'+TIP.reto+' propinas'))),
+  const done=retoDone(),dl=dayLeft(iso),open=dl.n>0&&dl.left===0,ay=retoAyer();
+  const lockTxt=!dl.n?'Hoy no hay sesiones. El reto se abre los días de clase.':'Se abre cuando termines las sesiones de hoy. '+(dl.left===1?'Te queda 1 sesión.':'Te quedan '+dl.left+' sesiones.');
+  const reto=h('article',{class:'pcard2 retocard'+(done?' done':'')+(!open&&!done?' locked':'')},
+    h('div',{class:'pc-h'},tile(open||done?'puzzle':'candado','sm'),h('div',{style:'min-width:0;flex:1'},h('h3',null,'Reto del día'),h('small',{class:'muted'},done?'Hecho hoy. ¡Vuelve mañana!':open?'Un poco de todo: +'+TIP.reto+' propinas':lockTxt)),
+      !done&&!open?spk(lockTxt,'sm'):null),
     h('p',{class:'note',style:'margin:0'},st>=2?'Llevas '+st+' días de clase seguidos. ¡Sigue así!':'Cada día que trabajas pones un sello.'),
     sellos,
     h('div',{class:'actions',style:'margin-top:2px'},
-      h('button',{class:'btn'+(done?' ghost':' primary'),type:'button',onclick:()=>go({name:'train',mod:rm.id,mode:'reto'})},gl(done?'redo':'play'),done?'Jugar otra vez':'Jugar el reto')));
+      done||open?h('button',{class:'btn'+(done?' ghost':' primary'),type:'button',onclick:()=>go({name:'train',mod:rm.id,mode:'reto'})},gl(done?'redo':'play'),done?'Jugar otra vez':'Jugar el reto')
+        :h('button',{class:'btn locked',type:'button',disabled:true},tile('candado','xs'),'Termina tus sesiones'),
+      ay?(ay.ok?h('button',{class:'btn primary ayer',type:'button',onclick:()=>go({name:'train',mod:rm.id,mode:'reto',rday:ay.iso})},tipEl('sm'),'Reto '+ay.lab+': +'+TIP.reto+' propinas extra')
+        :h('small',{class:'muted ayer-t'},'Reto '+ay.lab+': termina esas sesiones y gana +'+TIP.reto+' propinas extra. '+(ay.left===1?'Te falta 1.':'Te faltan '+ay.left+'.'))):null));
   return h('section',{class:'playblock'},h('h2',{class:'sec'},'Mi cafetería y mi reto'),h('div',{class:'playrow'},cafe,reto),boteOn()?h('div',{style:'margin-top:12px'},boteCard(w,true)):null);
 }
 
@@ -11039,7 +11098,16 @@ function reviewItems(st){
 }
 function reviewTarget(st,it){return it.kind==='p'?st.att[it.id]:it.kind==='g'?(st.games[it.uid]||{})[it.l]:(st.sim[it.sim]||{})[it.l];}
 const stuMark=st=>{try{const n=Object.keys(store.students).find(k=>store.students[k]===st);if(n&&!st.test)SY.pend.add(n);}catch(e){}};
-function giveTries(st,it){const r=reviewTarget(st,it);if(!r)return;r.gt=Date.now();if(it.kind==='p'){r.n=0;r.ex=0;r.ok=0;delete st.done[it.id];}else{r.a=0;r.ex=0;r.ok=0;}stuMark(st);save();}
+/* v17.13.4: cuando el alumno repite lo que el profe le ha abierto: superarla = +5 propinas; mejorar sin llegar = +2. Se paga una vez por cada vez que el profe da intentos. */
+function mejoraPay(r,pct,pass){
+  try{if(!r||!r.gt||(r.ts||r.t||0)<=r.gt)return 0;const w=pwin();if(!w)return 0;
+    if(r.gpg!==r.gt){r.gpg=r.gt;r.gpv=0;}
+    const goal=pass?TIP.mejora:(pct>(r.gp||0)+1e-9?TIP.mejoraP:0),d=Math.max(0,goal-(r.gpv||0));if(!d)return 0;
+    r.gpv=goal;w.earned+=d;try{touchDay();}catch(e){}save();
+    setTimeout(()=>{try{tipChipBump(d);toast(pass?'¡Has mejorado tu nota! +'+d+' propinas':'¡Lo haces mejor que antes! +'+d+' propinas');}catch(e){}},300);
+    return d;}catch(e){return 0;}
+}
+function giveTries(st,it){const r=reviewTarget(st,it);if(!r)return;r.gt=Date.now();r.gp=it.kind==='p'?((r.t>0)?(r.best||r.h||0)/r.t:0):(r.b||0);if(it.kind==='p'){r.n=0;r.ex=0;r.ok=0;delete st.done[it.id];}else{r.a=0;r.ex=0;r.ok=0;}stuMark(st);save();}
 function markReviewed(st,it){const r=reviewTarget(st,it);if(!r)return;r.ok=1;r.ex=0;r.rv=Date.now();if(it.kind==='p')st.done[it.id]=1;stuMark(st);save();}
 /* aciertos a la primera (primer intento oficial de cada actividad, juego o simulador) */
 function firstAcc(st,m){
@@ -11242,6 +11310,15 @@ function tabAlumnado(v){
     :h('p',{class:'muted'},'Todavía no hay fallos registrados. Los fallos salen en rojo para el alumno y quedan apuntados aquí.');
   /* para repasar */
   const rv=reviewItems(st);
+  const giveAll=(sts)=>{let c=0;sts.forEach(x=>{reviewItems(x).forEach(it=>{giveTries(x,it);c++;});});return c;};
+  const grpN=names.reduce((a,k)=>a+reviewItems(fixStu(store.students[k])).length,0);
+  let grpArm=false;
+  const grpBtn=grpN?h('button',{class:'btn ghost sm',type:'button',onclick:e=>{
+      if(!grpArm){grpArm=true;e.currentTarget.textContent='¿Seguro? Toca otra vez para dar '+maxAtt()+' intentos en las '+grpN+' actividades de todo el grupo';e.currentTarget.classList.add('warn');return;}
+      const c=giveAll(names.map(k=>fixStu(store.students[k])));toast('Hecho: '+c+' actividades abiertas otra vez');go({name:'teacher',tab:'alumnado',stu:n,mod:mid},true);}},
+    'Dar '+maxAtt()+' intentos a todo el grupo ('+grpN+' actividades)'):null;
+  const allBtn=rv.length>1?h('div',{class:'actions rv-all'},
+    h('button',{class:'btn primary',type:'button',onclick:()=>{const c=giveAll([st]);toast('Hecho: '+c+' actividades abiertas otra vez');go({name:'teacher',tab:'alumnado',stu:n,mod:mid},true);}},'Dar '+maxAtt()+' intentos más en todas ('+rv.length+')')):null;
   const rvList=rv.length?h('div',{class:'rvlist'},rv.map(it=>h('div',{class:'rvrow'},
     h('div',{class:'rv-t'},h('b',null,it.label),h('small',null,(it.hits!=null?it.hits+' de '+it.t+' a la primera · ':'')+stamp(it.ts))),
     h('div',{class:'rv-b'},
@@ -11270,7 +11347,7 @@ function tabAlumnado(v){
     cards,
     h('h2',{class:'sec'},'Habilidades y motivación'),skillsBlock(st),
     h('h2',{class:'sec'},'Lo que más le cuesta'),fails,
-    h('h2',{class:'sec'},'Para repasar con el profe'),h('p',{class:'note'},'Son las actividades en las que ha gastado todos los intentos sin llegar al '+cfg().thr+' % de aciertos a la primera. Al alumno no se le bloquea nada: puede seguir. Tú decides si le das más intentos o si ya lo habéis repasado.'),rvList,
+    h('h2',{class:'sec'},'Para repasar con el profe'),h('p',{class:'note'},'Son las actividades en las que ha gastado todos los intentos sin llegar al '+cfg().thr+' % de aciertos a la primera. Al alumno no se le bloquea nada: puede seguir. Tú decides si le das más intentos o si ya lo habéis repasado.'),allBtn,rvList,grpBtn?h('div',{class:'actions'},grpBtn):null,
     h('h2',{class:'sec'},'Mapa por AAE'),modSeg(mid,id=>go({name:'teacher',tab:'alumnado',stu:n,mod:id},true)),tblEl(mapHead,mapRows,'tx'),
     h('h2',{class:'sec'},'Actividad reciente'),recent);
 }
@@ -11427,6 +11504,7 @@ function mergeWins(A,B){
   A.days=uniq([...(Array.isArray(A.days)?A.days:[]),...(Array.isArray(B.days)?B.days:[])]).sort();
   A.badges=ob(A.badges);Object.keys(ob(B.badges)).forEach(k=>{const y=B.badges[k],x=A.badges[k];A.badges[k]=x?Math.min(x,y||x):y;});
   A.best=mx(A.best,B.best);A.retos=mx(A.retos,B.retos);
+  A.rd=Object.assign({},ob(A.rd),ob(B.rd));
   if(String(B.reto||'')>String(A.reto||''))A.reto=B.reto;
   if(!A.cafe&&B.cafe)A.cafe=B.cafe;
   A.up=ob(A.up);Object.keys(ob(B.up)).forEach(k=>{A.up[k]=mx(A.up[k],B.up[k]);});
