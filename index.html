@@ -104,6 +104,15 @@ details.mejora details.mj-mod{background:rgba(255,255,255,.85)}
 .vol-card h2{margin:0;font-size:1.8rem}.vol-card p{margin:0;font-size:1.2rem}.vol-n{font-size:2.6rem;line-height:1;color:#e67e22}
 section.part.expert{border:3px solid #7d3c98;background:linear-gradient(135deg,rgba(125,60,152,.10),rgba(242,183,5,.12))}
 section.part.expert .part-head{gap:10px}
+ol.falta{list-style:none;margin:6px 0 12px;padding:0;text-align:left;display:flex;flex-direction:column;gap:6px;max-height:50vh;overflow:auto}
+ol.falta li{display:flex;align-items:center;gap:10px;border:2px solid var(--line,#cfd8dc);border-radius:12px;padding:6px 10px;font-weight:600}
+ol.falta li span{flex:1}div.falta-late{display:flex;align-items:center;gap:10px;text-align:left;background:#fdebd0;border:2px solid #e67e22;border-radius:12px;padding:6px 10px;margin:0 0 10px;font-weight:600;color:#1b1b1b}div.falta-late .tile{flex:0 0 auto;width:36px;height:36px}
+ol.falta li .tile{flex:0 0 auto;width:40px;height:40px}ol.falta{max-height:36vh}ol.falta li{padding:4px 8px;font-size:1rem}
+.modal:has(ol.falta){max-height:94vh;overflow:auto}.modal:has(ol.falta)>.tile.xl{width:72px;height:72px}.modal:has(ol.falta) h2{font-size:1.5rem;margin:6px 0}ol.falta li.now{border-color:#f2b705;box-shadow:0 0 0 3px rgba(242,183,5,.35)}
+.bcell .bname{position:absolute;left:4px;right:4px;bottom:4px;background:rgba(27,27,27,.85);color:#fff;font-weight:700;font-size:.95rem;line-height:1.15;border-radius:8px;padding:3px 4px;text-align:center}
+.bcell.pista{border-color:#f2b705;box-shadow:0 0 0 5px rgba(242,183,5,.55);animation:bPista 1s ease-in-out infinite}
+@keyframes bPista{50%{box-shadow:0 0 0 10px rgba(242,183,5,.25)}}
+@media (prefers-reduced-motion:reduce){.bcell.pista{animation:none}}
 </style></head><body>
 <meta name="claude:viewport-fit-sides" content="cover">
 <title>Cuadernillos de Hostelería</title>
@@ -5424,7 +5433,7 @@ const fanfare=()=>tone([523,659,784,1047,1319],.1);
 
 /* ---------- bingo de pictogramas: oigo una palabra y toco su dibujo en mi cartón ---------- */
 RENDER.bingo=(b,p,x)=>{
-  const calls=p.calls;let step=0,wrong=0,shown=false;
+  const calls=p.calls;let step=0,wrong=0,shown=true,miss=0;
   x.items(calls.length);
   const grid=h('div',{class:'bingo c'+(p.cols||3)}),bola=h('div',{class:'bola','aria-live':'polite'}),cells=[];
   const cur=()=>p.cells[calls[step]];
@@ -5433,10 +5442,10 @@ RENDER.bingo=(b,p,x)=>{
     bola.replaceChildren(
       h('span',{class:'bola-n'},'Palabra '+(step+1)+' de '+calls.length),
       canSpeak?h('button',{class:'btn primary',type:'button',onclick:()=>speak(c.name)},gl('speaker'),'Escuchar'):null,
-      (p.show||!canSpeak||shown)?h('strong',{class:'bola-w'},c.name):h('button',{class:'btn ghost sm',type:'button',onclick:()=>{shown=true;paint();}},'Ver la palabra'));
+      h('strong',{class:'bola-w'},c.name));   /* v17.14.4: la palabra siempre escrita además de la voz */
   }
   function call(){
-    shown=false;paint();
+    miss=0;paint();
     cells.forEach((bt,i)=>{if(i===calls[step])bt.setAttribute('data-ok','1');else bt.removeAttribute('data-ok');});
     if(canSpeak)setTimeout(()=>{if(b.isConnected&&step<calls.length)speak(cur().name);},350);
   }
@@ -5445,16 +5454,22 @@ RENDER.bingo=(b,p,x)=>{
     bt.addEventListener('click',()=>{
       if(bt.classList.contains('done')||step>=calls.length)return;
       if(i===calls[step]){
-        bt.classList.add('done');bt.disabled=true;bt.removeAttribute('data-ok');good();step++;
+        bt.classList.add('done');bt.classList.remove('pista');bt.disabled=true;bt.removeAttribute('data-ok');good();step++;
         if(step>=calls.length){bola.replaceChildren(h('strong',{class:'bola-w'},'¡Bingo!'));x.finish();}else call();
       }else{
         bt.classList.add('x');shake(grid);bad();setTimeout(()=>bt.classList.remove('x'),1100);
-        if(++wrong%2===0)x.err(step,'Bingo de pictogramas: '+cur().name);
+        /* v17.14.4: el dibujo tocado dice qué es; al 2.º fallo se ilumina el bueno. El fallo se apunta por palabra (una vez por palabra) */
+        wrong++;miss++;
+        let nm=bt.querySelector('.bname');if(!nm){nm=h('span',{class:'bname'});bt.append(nm);}
+        nm.textContent=c.name;bt.classList.add('named');
+        try{speak('Esto es: '+c.name+'. Busca: '+cur().name+'.');}catch(e){}
+        if(miss===1)x.err(norm(cur().name).slice(0,40),'Bingo de pictogramas: '+cur().name);
+        if(miss>=2){const okb=cells[calls[step]];if(okb)okb.classList.add('pista');}
       }
     });
     cells[i]=bt;grid.append(bt);
   });
-  b.append(bola,grid,h('p',{class:'hint'},'Escucha la palabra y toca su dibujo en el cartón.'));
+  b.append(bola,grid,h('p',{class:'hint'},'Lee o escucha la palabra y toca su dibujo. Si fallas, el dibujo te dice qué es.'));
   call();
 };
 
@@ -6574,7 +6589,38 @@ function taskDone(sid,idx,it){
   if(it.t==='sim')return it.lv.every(l=>cleared(simRec(it.sim,l)));
   return false;
 }
-function markTask(ret){if(!ret)return;const r=sessRec(ret.sid);r.t[ret.idx]=1;save();}
+let JUST=null;   /* v17.14.2: última tarea de sesión terminada (para enseñar lo que falta al volver) */
+function markTask(ret){if(!ret)return;const r=sessRec(ret.sid);r.t[ret.idx]=1;save();if(/^\d+$/.test(String(ret.idx)))JUST={sid:ret.sid,t:Date.now()};}
+/* lo atrasado de otras sesiones (días anteriores sin terminar), contado por tipo */
+function lateSum(curSid){
+  const all=MODS.flatMap(mm=>lateOf(mm).filter(x=>x.id!==curSid).map(x=>({m:mm,x}))).sort((a,b)=>a.x.date<b.x.date?-1:a.x.date>b.x.date?1:a.x.per-b.x.per);
+  if(!all.length)return null;
+  const c={f:0,t:0,j:0,mi:0,o:0};
+  all.forEach(({x})=>x.items.forEach((it,i)=>{if(taskDone(x.id,i,it))return;
+    if(it.t==='pages'||it.t==='xnew')c.f++;else if(it.t==='sim')c.t++;else if(it.t==='game')c.j++;else if(it.t==='mision')c.mi++;else c.o++;}));
+  const parts=[[c.f,'ficha','fichas'],[c.t,'nivel del taller virtual','niveles del taller virtual'],[c.j,'juego','juegos'],[c.mi,'misión','misiones'],[c.o,'práctica','prácticas']].filter(z=>z[0]>0).map(z=>z[0]+' '+(z[0]===1?z[1]:z[2]));
+  const n=c.f+c.t+c.j+c.mi+c.o;
+  if(!n)return null;
+  const txt='Además tienes '+(all.length===1?'1 sesión atrasada':all.length+' sesiones atrasadas')+' con '+(parts.length>1?parts.slice(0,-1).join(', ')+' y '+parts[parts.length-1]:parts[0])+' sin hacer.';
+  return{n,txt,first:all[0]};
+}
+function lateEl(ls){return ls?h('div',{class:'falta-late'},tile('reloj','xs'),h('span',null,ls.txt)):null;}
+function faltaModal(m,ses){
+  const rec=sessRec(ses.id);if(rec.done)return;
+  const ls=(()=>{try{return lateSum(ses.id);}catch(e){return null;}})(),lateAct=ls?[['Ver lo atrasado',()=>go({name:'session',mod:ls.first.m.id,sid:ls.first.x.id}),false]]:[];
+  const L=ses.items.map((it,i)=>({it,i})).filter(z=>!taskDone(ses.id,z.i,z.it));
+  if(!L.length){
+    const g=pracGate(ses),xb=(()=>{try{const a=xAccOf(ses);return a.n&&a.pct!=null&&a.pct>=XEXP_THR;}catch(e){return false;}})();
+    const t=xb?'Ahora tienes el nivel experto. Después puedes seguir practicando.':g.ok?'Ya puedes pasar a «Recogemos».':g.live?'Sigue practicando. Recogemos a las '+hhmm(g.at)+'.':'Ya puedes pasar a «Recogemos».';
+    try{speak('¡Has hecho todas las tareas! '+t+(ls?' '+ls.txt:''));}catch(e){}
+    modal({ic:'estrella',title:'¡Has hecho todas las tareas!',text:t,body:lateEl(ls),actions:[['Vale',null,true]].concat(lateAct)});return;
+  }
+  const nx=L[0],say='Te '+(L.length===1?'falta una tarea':'faltan '+L.length+' tareas')+'. La siguiente es: '+nx.it.title+'.';
+  const body=h('ol',{class:'falta'},L.map((z,k)=>h('li',{class:k===0?'now':''},tile(z.it.ic||'lapiz','xs'),h('span',null,z.it.title),k===0?h('b',{class:'pill'},'Ahora'):null)));
+  try{speak(say+(ls?' '+ls.txt+' Hazlo cuando termines esta sesión.':''));}catch(e){}
+  modal({ic:'checklist',title:L.length===1?'¡Muy bien! Te falta 1 tarea':'¡Muy bien! Te faltan '+L.length+' tareas',text:'Esto es lo que te queda por hacer:',body:h('div',null,body,ls?h('div',{class:'falta-late'},tile('reloj','xs'),h('span',null,ls.txt+' Hazlo cuando termines esta sesión.')):null),
+    actions:[['Hacer la siguiente',()=>go(Object.assign({mod:m.id},taskTarget(m,nx.it,ses.id,nx.i))),true],['Ver mi sesión',null]]});
+}
 function sessStatus(ses){
   const s=S(),rec=s.sess[ses.id];
   if(rec&&rec.done)return'done';
@@ -6750,7 +6796,7 @@ function modal(o){
   const bd=h('div',{class:'modal-bd',role:'dialog','aria-modal':'true','aria-label':o.title});
   const close=()=>bd.remove();
   const acts=o.actions.map(([label,fn,primary])=>h('button',{class:'btn'+(primary?' primary':' ghost'),type:'button',onclick:()=>{close();if(fn)fn();}},label));
-  bd.append(h('div',{class:'modal'},h('span',{class:'tile xl pop'},ic(o.ic||'estrella')),h('h2',null,o.title),o.text?h('p',null,o.text):null,h('div',{class:'actions'},acts)));
+  bd.append(h('div',{class:'modal'},h('span',{class:'tile xl pop'},ic(o.ic||'estrella')),h('h2',null,o.title),o.text?h('p',null,o.text):null,o.body||null,h('div',{class:'actions'},acts)));
   document.body.append(bd);cheer();
   const f=bd.querySelector('.btn.primary')||bd.querySelector('.btn');if(f)f.focus();
 }
@@ -7190,6 +7236,7 @@ VIEWS.unit=()=>{
     const after=ev=>{
       good();
       const nowOpen=gameOpen(u);
+      if(nowOpen&&!wasOpen&&ret){wasOpen=true;unlockGame(u);refreshTabs();}   /* v17.14.1: en la sesión el juego ya es otra tarea: sin ventana */
       if(nowOpen&&!wasOpen){
         wasOpen=true;unlockGame(u);refreshTabs();
         modal({ic:'estrella',title:'¡Casos prácticos terminados!',text:'Ahora toca el juego de «'+u.title+'». Tiene 4 niveles.',
@@ -7198,7 +7245,7 @@ VIEWS.unit=()=>{
       }
       if(it0&&!retDone&&taskDone(ret.sid,ret.idx,it0)){
         retDone=true;markTask(ret);
-        modal({ic:'estrella',title:'¡Tarea terminada!',text:'Has hecho esta parte de tu sesión.',actions:[['Volver a mi sesión',()=>toSession(ret),true],['Seguir con la ficha',null]]});
+        toast('¡Tarea terminada! Volvemos a tu sesión');setTimeout(()=>{if(view&&view.ret===ret)toSession(ret);},1600);
         return;
       }
       if(ev.pageAfter&&!ev.pageBefore)toast('¡Página terminada!');
@@ -7263,7 +7310,7 @@ VIEWS.xnew=()=>{
   const after=()=>{
     good();
     if(it0&&!retDone&&taskDone(ret.sid,ret.idx,it0)){retDone=true;markTask(ret);
-      modal({ic:'estrella',title:'¡Tarea terminada!',text:'Has hecho esta parte de tu sesión.',actions:[['Volver a mi sesión',()=>toSession(ret),true]]});}
+      toast('¡Tarea terminada! Volvemos a tu sesión');setTimeout(()=>{if(view&&view.ret===ret)toSession(ret);},1600);}
   };
   shell(h('main',null,
     h('div',{class:'crumb'},h('button',{class:'btn ghost sm',type:'button',onclick:back},gl('back'),ret?'Mi sesión':'Mi plan')),
@@ -7639,6 +7686,7 @@ VIEWS.session=()=>{
     bar,
     h('h2',{class:'sec',style:'margin-top:8px'},(b+1)+'. '+BLOQUES[b].n),
     BLK[b](C)));
+  if(JUST&&JUST.sid===ses.id&&Date.now()-JUST.t<600000){JUST=null;setTimeout(()=>{if(view.name==='session'&&view.sid===ses.id&&!document.querySelector('.modal-bd'))faltaModal(m,ses);},250);}
 };
 
 /* ================= pantallas de la motivación: resumen de partida, mi cafetería, mis logros y bloque del inicio ================= */
